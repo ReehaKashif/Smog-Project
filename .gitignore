@@ -1,0 +1,4 @@
+fastapi-server/venv
+fastapi-server/docs
+
+html-client/main.tests
