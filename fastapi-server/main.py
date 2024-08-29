@@ -24,8 +24,6 @@ try:
 except FileNotFoundError as e:
     raise HTTPException(status_code=404, detail=str(e))
 
-
-
 def get_pakistan_time():
     # Example of getting the current date and time in Pakistan
     # now = datetime.now(timezone('Asia/Karachi'))
@@ -363,8 +361,8 @@ def get_forecast_data(
 
 
 # Example of how to run the FastAPI server with Uvicorn
-# if __name__ == "__main__":
-#     import uvicorn
-#     uvicorn.run(app, host="127.0.0.1", port=8000)
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port=8000)
 
 

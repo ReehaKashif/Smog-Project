@@ -21,14 +21,13 @@ const districtsHTML = (data) => {
   <div class="small-box bg-ash-gray">
     <div class="inner">
       <p>
-        Best District Name and AQI
+        Best Air Quality
         <a href="#">&#9900; &#9900; &#9900;</a>
       </p>
       <h3>
         ${data.best_district.district}
         <span>
-          <i class="fa fa-long-arrow-up"></i>
-          ${data.best_district.aqi}
+          ${data.best_district.aqi.toFixed(3)}
         </span>
       </h3>
     </div>
@@ -39,14 +38,13 @@ const districtsHTML = (data) => {
   <div class="small-box bg-ash-gray">
     <div class="inner">
       <p>
-        Worst District Name and AQI
+        Worst Air Quality
         <a href="#">&#9900; &#9900; &#9900;</a>
       </p>
       <h3>
         ${data.worst_district.district}
-        <span>
-          <i class="fa fa-long-arrow-up"></i>
-          ${data.worst_district.aqi}
+        <span style="color: red;">
+          ${data.worst_district.aqi.toFixed(3)}
         </span>
       </h3>
     </div>
@@ -57,14 +55,11 @@ const districtsHTML = (data) => {
   <div class="small-box bg-ash-gray">
     <div class="inner">
       <p>
-        Highest Pollutant District
+        Highest Pollutant
         <a href="#">&#9900; &#9900; &#9900;</a>
       </p>
       <h3>
         ${data.highest_pollutant}
-        <span>
-          <i class="fa fa-long-arrow-up"></i>
-        </span>
       </h3>
     </div>
   </div>
@@ -79,9 +74,6 @@ const districtsHTML = (data) => {
       </p>
       <h3>
         ${data.cause_of_pollutant}
-        <span>
-          <i class="fa fa-long-arrow-up"></i>
-        </span>
       </h3>
     </div>
   </div>
@@ -151,5 +143,5 @@ const processAndCacheData = (data) => {
   districts.forEach((district) => {
     $("#district-selector").append(`<option>${district}</option>`);
   });
-  $("#district-selector").val(districts[0]).trigger('change');
+  $("#district-selector").val(districts[0]).trigger("change");
 };

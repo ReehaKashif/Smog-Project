@@ -22,8 +22,8 @@ const getMapRanking = () => {
 getMapRanking()
   .then((districtData) => {
     // Initialize the map
-    var map1 = L.map("map1").setView([0, 0], 2);
-    var map2 = L.map("map2").setView([0, 0], 2);
+    var map1 = L.map("map1").setView([31.14711, 75.3412], 6);
+    var map2 = L.map("map2").setView([31.14711, 75.3412], 6);
 
     // Add Google Maps layer
     L.tileLayer("http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", {
@@ -39,11 +39,9 @@ getMapRanking()
     // Load Shapefiles for each district using the fetched data
     Promise.all(
       districtData.map_ranking.map((districtInfo) => {
-        const formattedDistrict = districtInfo.district
-          .replace(/_/g, " ") // Replace underscores with spaces
-          .replace(/\s+/g, "_"); // Replace spaces with underscores
-
-        const shapefilePath = `../../../shapefiles/${formattedDistrict}.shp`;
+        const formattedDistrict = districtInfo.district.replace(/\s+/g, "_"); // Replace spaces with underscores
+        // .replace(/_/g, " ") // Replace underscores with spaces
+        const shapefilePath = `./shapefiles/${formattedDistrict}.shp`;
         return loadShapefile(shapefilePath, districtInfo.color, map1, map2);
       })
     )
