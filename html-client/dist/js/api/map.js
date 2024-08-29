@@ -35,14 +35,13 @@ getMapRanking()
       maxZoom: 20,
       subdomains: ["mt0", "mt1", "mt2", "mt3"],
     }).addTo(map2);
-
     // Load Shapefiles for each district using the fetched data
     Promise.all(
       districtData.map_ranking.map((districtInfo) => {
         const formattedDistrict = districtInfo.district.replace(/\s+/g, "_"); // Replace spaces with underscores
         // .replace(/_/g, " ") // Replace underscores with spaces
         const shapefilePath = `./shapefiles/${formattedDistrict}.shp`;
-        return loadShapefile(shapefilePath, districtInfo.color, map1, map2);
+        return loadShapefile(shapefilePath, districtInfo, map1, map2);
       })
     )
       .then(() => {

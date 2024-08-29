@@ -86,7 +86,7 @@
 //   .catch((error) => console.error("Error loading Shapefiles:", error));
 
 // Function to load a single Shapefile
-const loadShapefile = (shapefilePath, color, map1, map2) => {
+const loadShapefile = (shapefilePath, district, map1, map2) => {
   return fetch(shapefilePath)
     .then((response) => response.arrayBuffer())
     .then((arrayBuffer) => {
@@ -103,24 +103,32 @@ const loadShapefile = (shapefilePath, color, map1, map2) => {
           L.geoJSON(geojson, {
             style: function () {
               return {
-                color: color,
+                color: district.color,
                 weight: 2,
                 opacity: 0.7,
                 fillOpacity: 0.5,
               };
             },
-          }).addTo(map1);
+          })
+            .bindPopup(function (layer) {
+              return `District name: ${district.district} <br /> AQI: ${district.aqi}`;
+            })
+            .addTo(map1);
 
           L.geoJSON(geojson, {
             style: function () {
               return {
-                color: color,
+                color: district.color,
                 weight: 2,
                 opacity: 0.7,
                 fillOpacity: 0.5,
               };
             },
-          }).addTo(map2);
+          })
+          .bindPopup(function (layer) {
+            return `District name: ${district.district} <br /> AQI: ${district.aqi}`;
+          })
+          .addTo(map2);
 
           return source.read().then(process);
         })
