@@ -2,6 +2,7 @@ from fastapi import FastAPI, Query ,HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 from typing import Optional
+from pytz import timezone
 from datetime import datetime, timedelta
 
 app = FastAPI()
@@ -26,8 +27,8 @@ except FileNotFoundError as e:
 
 def get_pakistan_time():
     # Example of getting the current date and time in Pakistan
-    # now = datetime.now(timezone('Asia/Karachi'))
-    now = "2024-07-01 23:00:00"
+    now = datetime.now(timezone('Asia/Karachi'))
+    # now = "2024-07-01 23:00:00"
     # converting to time format
     now = datetime.strptime(now, '%Y-%m-%d %H:%M:%S')
     # returning it in this format '2024-07-01 00:00:00'
