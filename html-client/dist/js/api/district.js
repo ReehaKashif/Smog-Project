@@ -27,7 +27,7 @@ const districtsHTML = (data) => {
       <h3>
         ${data.best_district.district}
         <span>
-          ${data.best_district.aqi.toFixed(3)}
+          ${data.best_district.aqi.toFixed(0)}
         </span>
       </h3>
     </div>
@@ -44,7 +44,7 @@ const districtsHTML = (data) => {
       <h3>
         ${data.worst_district.district}
         <span style="color: red;">
-          ${data.worst_district.aqi.toFixed(3)}
+          ${data.worst_district.aqi.toFixed(0)}
         </span>
       </h3>
     </div>
@@ -119,6 +119,7 @@ const getDistrictAqiColor = () => {
         })
         .then((data) => {
           processAndCacheData(data.districts_aqi_color);
+          return data;
         });
     })
     .catch((err) => {

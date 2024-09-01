@@ -75,14 +75,14 @@ color_palette = [
 # Define the pollutant to districts mapping
 pollutant_districts = {
     "Vehicle": [
-        "Bahawalpur", "Rahim Yar Khan", "Gujranwala", "Gujrat", "Hafizabad", "Mandi Bahauddin",
+        "Bahawalpur", "Rahim Yar Khan", "Gujranwala", "Gujrat", "Hafizabad", "Mandi Bahuddin",
         "Narowal", "Sialkot", "Dera Ghazi Khan", "Layyah", "Muzaffargarh", "Rajanpur", "Lahore",
         "Kasur", "Nankana Sahib", "Sheikhupura", "Faisalabad", "Chiniot", "Toba Tek Singh", "Jhang",
         "Multan", "Lodhran", "Khanewal", "Vehari"
     ],
     "Industry": [
         "Bahawalpur", "Bahawalnagar", "Rahim Yar Khan", "Gujranwala", "Gujrat", "Hafizabad",
-        "Mandi Bahauddin", "Narowal", "Sialkot", "Dera Ghazi Khan", "Layyah", "Muzaffargarh",
+        "Mandi Bahuddin", "Narowal", "Sialkot", "Dera Ghazi Khan", "Layyah", "Muzaffargarh",
         "Rajanpur", "Lahore", "Kasur", "Nankana Sahib", "Sheikhupura", "Faisalabad", "Chiniot",
         "Toba Tek Singh", "Jhang", "Multan", "Lodhran", "Khanewal", "Vehari"
     ],
@@ -93,13 +93,13 @@ pollutant_districts = {
     ],
     "Construction": [
         "Bahawalpur", "Bahawalnagar", "Rahim Yar Khan", "Gujranwala", "Gujrat", "Hafizabad",
-        "Mandi Bahauddin", "Narowal", "Sialkot", "Dera Ghazi Khan", "Layyah", "Muzaffargarh",
+        "Mandi Bahuddin", "Narowal", "Sialkot", "Dera Ghazi Khan", "Layyah", "Muzaffargarh",
         "Rajanpur", "Lahore", "Kasur", "Nankana Sahib", "Sheikhupura", "Faisalabad", "Chiniot",
         "Toba Tek Singh", "Jhang", "Multan", "Lodhran", "Khanewal", "Vehari"
     ],
     "General Wasting": [
         "Bahawalpur", "Bahawalnagar", "Rahim Yar Khan", "Gujranwala", "Gujrat", "Hafizabad",
-        "Mandi Bahauddin", "Narowal", "Sialkot", "Dera Ghazi Khan", "Layyah", "Muzaffargarh",
+        "Mandi Bahuddin", "Narowal", "Sialkot", "Dera Ghazi Khan", "Layyah", "Muzaffargarh",
         "Rajanpur", "Lahore", "Kasur", "Nankana Sahib", "Sheikhupura", "Faisalabad", "Chiniot",
         "Toba Tek Singh", "Jhang", "Multan", "Lodhran", "Khanewal", "Vehari"
     ]
