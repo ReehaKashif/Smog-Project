@@ -19,20 +19,30 @@ app.add_middleware(
 # Load CSV files
 try:
     forecasted_pollutant_df = pd.read_csv('forecasted_pollutant.csv')
-    last_year_pollutant_df = pd.read_csv('last_year_pollutant.csv')
+    # renaming unnamed 0 as date
+    forecasted_pollutant_df.rename(columns = {'Unnamed: 0':'date'}, inplace = True)
+    # print(forecasted_pollutant_df.head())
     aqi_forecast_df = pd.read_csv('aqi_forecast.csv')
-    historical_df = pd.read_csv('ready_historical.csv')
+    daily_max_forecasted = pd.read_csv('daily_forecasted_data.csv')
+    daily_max_historical = pd.read_csv('daily_historical_data.csv')
 except FileNotFoundError as e:
-    raise HTTPException(status_code=404, detail=str(e))
+    forecasted_pollutant_df = pd.read_csv('fastapi-server/forecasted_pollutant.csv')
+    # renaming unnamed 0 as date
+    forecasted_pollutant_df.rename(columns = {'Unnamed: 0':'date'}, inplace = True)
+    aqi_forecast_df = pd.read_csv('fastapi-server/aqi_forecast.csv')
+    daily_max_forecasted = pd.read_csv('fastapi-server/daily_forecasted_data.csv')
+    daily_max_historical = pd.read_csv('fastapi-server/daily_historical_data.csv')
+    # raise HTTPException(status_code=404, detail=str(e))
 
 def get_pakistan_time():
     # Example of getting the current date and time in Pakistan
     now = datetime.now(timezone('Asia/Karachi'))
     # now = "2024-07-01 23:00:00"
     # converting to time format
-    now = datetime.strptime(now, '%Y-%m-%d %H:%M:%S')
+    # now = datetime.strptime(now, '%Y-%m-%d %H:%M:%S')
     # returning it in this format '2024-07-01 00:00:00'
     formatted_time = now.strftime('%Y-%m-%d %H:00:00')
+    print(formatted_time)
     return formatted_time
 
 
@@ -54,13 +64,46 @@ def get_AQI_color(aqi):
 
 # Assuming the color palette provided corresponds to these hex codes
 color_palette = [
-    "#6EC3D0", "#61BF97", "#F5B565", "#EAA29C", "#B0A6C9", "#D282A6",  # Row 1
-    "#4699CC", "#0FAA62", "#F18B12", "#DC3D3D", "#4839A0", "#B11277",  # Row 2
-    "#4A79B6", "#0D8A5E", "#EB9300", "#CF3434", "#403093", "#A4106F",  # Row 3
-    "#4077A3", "#077F4F", "#DAA105", "#BC2C2C", "#362C82", "#8C095E",  # Row 4
-    "#6E9CC4", "#3B8C86", "#EDB143", "#DD6861", "#8575AD", "#C66F95",  # Row 5
-    "#286CA5", "#0E9253", "#E49806", "#D14A4A", "#5245A6", "#A31377"   # Row 6
+    "#00FF00", "#19F719", "#32EF32", "#4BE74B", "#64DF64", "#7DD77D",
+    "#96CF96", "#AFC7AF", "#C8BFC8", "#E1B7E1", "#FF9FFF", "#FF99E5",
+    "#FF92CC", "#FF8CB2", "#FF8699", "#FF7F80", "#FF7966", "#FF734D",
+    "#FF6C33", "#FF662A", "#FF6020", "#FF5917", "#FF5313", "#FF4C0F",
+    "#FF460B", "#FF4007", "#FF3A03", "#FF3300", "#FF2D00", "#FF2600",
+    "#FF2000", "#FF1A00", "#FF1400", "#FF0D00", "#FF0700", "#FF0000"
 ]
+
+# Define the pollutant to districts mapping
+pollutant_districts = {
+    "Vehicle": [
+        "Bahawalpur", "Rahim Yar Khan", "Gujranwala", "Gujrat", "Hafizabad", "Mandi Bahauddin",
+        "Narowal", "Sialkot", "Dera Ghazi Khan", "Layyah", "Muzaffargarh", "Rajanpur", "Lahore",
+        "Kasur", "Nankana Sahib", "Sheikhupura", "Faisalabad", "Chiniot", "Toba Tek Singh", "Jhang",
+        "Multan", "Lodhran", "Khanewal", "Vehari"
+    ],
+    "Industry": [
+        "Bahawalpur", "Bahawalnagar", "Rahim Yar Khan", "Gujranwala", "Gujrat", "Hafizabad",
+        "Mandi Bahauddin", "Narowal", "Sialkot", "Dera Ghazi Khan", "Layyah", "Muzaffargarh",
+        "Rajanpur", "Lahore", "Kasur", "Nankana Sahib", "Sheikhupura", "Faisalabad", "Chiniot",
+        "Toba Tek Singh", "Jhang", "Multan", "Lodhran", "Khanewal", "Vehari"
+    ],
+    "Agriculture": [
+        "Bahawalpur", "Bahawalnagar", "Rahim Yar Khan", "Dera Ghazi Khan", "Layyah", "Muzaffargarh",
+        "Rajanpur", "Kasur", "Nankana Sahib", "Sheikhupura", "Faisalabad", "Chiniot", "Toba Tek Singh",
+        "Jhang", "Multan", "Lodhran", "Khanewal", "Vehari"
+    ],
+    "Construction": [
+        "Bahawalpur", "Bahawalnagar", "Rahim Yar Khan", "Gujranwala", "Gujrat", "Hafizabad",
+        "Mandi Bahauddin", "Narowal", "Sialkot", "Dera Ghazi Khan", "Layyah", "Muzaffargarh",
+        "Rajanpur", "Lahore", "Kasur", "Nankana Sahib", "Sheikhupura", "Faisalabad", "Chiniot",
+        "Toba Tek Singh", "Jhang", "Multan", "Lodhran", "Khanewal", "Vehari"
+    ],
+    "General Wasting": [
+        "Bahawalpur", "Bahawalnagar", "Rahim Yar Khan", "Gujranwala", "Gujrat", "Hafizabad",
+        "Mandi Bahauddin", "Narowal", "Sialkot", "Dera Ghazi Khan", "Layyah", "Muzaffargarh",
+        "Rajanpur", "Lahore", "Kasur", "Nankana Sahib", "Sheikhupura", "Faisalabad", "Chiniot",
+        "Toba Tek Singh", "Jhang", "Multan", "Lodhran", "Khanewal", "Vehari"
+    ]
+}
 
 @app.get("/api/pakistan_time")
 def get_pakistan_time_endpoint():
@@ -70,129 +113,146 @@ def get_pakistan_time_endpoint():
     return {"pakistan_time": get_pakistan_time()}
 
 @app.get("/api/aggregate_pollutants/last_year")
-def last_year_aggregate_pollutants(initial_time: str, district: str):
-    forecasted_df = last_year_pollutant_df.copy()
+# def last_year_aggregate_pollutants(initial_time: str, district: str):
+#     forecasted_df = last_year_pollutant_df.copy()
     
-    # Rename and process columns
-    # remove the unnamed column
-    forecasted_df = forecasted_df.drop(columns=['Unnamed: 0'])
-    forecasted_df = forecasted_df.set_index('Date')
-    forecasted_df.index = pd.to_datetime(forecasted_df.index)
-    # print(forecasted_df)
+#     # Rename and process columns
+#     # remove the unnamed column
+#     forecasted_df = forecasted_df.drop(columns=['Unnamed: 0'])
+#     forecasted_df = forecasted_df.set_index('Date')
+#     forecasted_df.index = pd.to_datetime(forecasted_df.index)
+#     # print(forecasted_df)
     
-    # Convert initial time to last year
-    initial_time = pd.to_datetime(initial_time)
-    initial_time = initial_time - pd.Timedelta(days=366)
-    final_time = initial_time + pd.Timedelta(days=60)
+#     # Convert initial time to last year
+#     initial_time = pd.to_datetime(initial_time)
+#     initial_time = initial_time - pd.Timedelta(days=366)
+#     final_time = initial_time + pd.Timedelta(days=60)
 
-    # Filter DataFrame
-    filtered_df = forecasted_df[(forecasted_df.index >= initial_time) & 
-                                (forecasted_df.index <= final_time) & 
-                                (forecasted_df['District'] == district)]
-    # print(filtered_df)
-    # Aggregate pollutants
-    numeric_columns = filtered_df.select_dtypes(include=['float64', 'int64']).columns
-    aggregated_df = filtered_df[numeric_columns].resample('h').mean()
+#     # Filter DataFrame
+#     filtered_df = forecasted_df[(forecasted_df.index >= initial_time) & 
+#                                 (forecasted_df.index <= final_time) & 
+#                                 (forecasted_df['District'] == district)]
+#     # print(filtered_df)
+#     # Aggregate pollutants
+#     numeric_columns = filtered_df.select_dtypes(include=['float64', 'int64']).columns
+#     aggregated_df = filtered_df[numeric_columns].resample('h').mean()
     
-    return aggregated_df.to_dict(orient="index")
+#     return aggregated_df.to_dict(orient="index")
 
 
 @app.get("/api/aggregate_pollutants/daily")
-def daily_aggregate_pollutants(initial_time: str, district: str):
-    forecasted_df = forecasted_pollutant_df.copy()
-    # counting the unique districts
-    print(forecasted_df['District'].nunique())
+# def daily_aggregate_pollutants(initial_time: str, district: str):
+#     forecasted_df = forecasted_pollutant_df.copy()
+#     # counting the unique districts
+#     print(forecasted_df['District'].nunique())
     
-    # Rename and process columns
-    # forecasted_df = forecasted_df.drop(columns=['Unnamed: 0'])
-    forecasted_df = forecasted_df.set_index('date')
-    forecasted_df.index = pd.to_datetime(forecasted_df.index)
+#     # Rename and process columns
+#     # forecasted_df = forecasted_df.drop(columns=['Unnamed: 0'])
+#     forecasted_df = forecasted_df.set_index('date')
+#     forecasted_df.index = pd.to_datetime(forecasted_df.index)
     
-    # Process initial time
-    initial_time = pd.to_datetime(initial_time)
-    final_time = initial_time + pd.Timedelta(days=14)
+#     # Process initial time
+#     initial_time = pd.to_datetime(initial_time)
+#     final_time = initial_time + pd.Timedelta(days=14)
 
-    # Filter DataFrame
-    filtered_df = forecasted_df[(forecasted_df.index >= initial_time) & 
-                                (forecasted_df.index <= final_time) & 
-                                (forecasted_df['District'] == district)]
+#     # Filter DataFrame
+#     filtered_df = forecasted_df[(forecasted_df.index >= initial_time) & 
+#                                 (forecasted_df.index <= final_time) & 
+#                                 (forecasted_df['District'] == district)]
     
-    # Aggregate pollutants
-    numeric_columns = filtered_df.select_dtypes(include=['float64', 'int64']).columns
-    aggregated_df = filtered_df[numeric_columns].resample('D').mean()
+#     # Aggregate pollutants
+#     numeric_columns = filtered_df.select_dtypes(include=['float64', 'int64']).columns
+#     aggregated_df = filtered_df[numeric_columns].resample('D').mean()
     
-    return aggregated_df.to_dict(orient="index")
-
-
-@app.get("/api/forecast_aqi")
-def forecast_aqi(district_name: str, date: str, forecast_period: Optional[str] = "60 days"):
-    district_data = aqi_forecast_df[aqi_forecast_df['District'] == district_name].copy()
-    # removing the unnamed column
-    district_data = district_data.drop(columns=['Unnamed: 0'])
-    district_data['date'] = pd.to_datetime(district_data['date'])
-    
-    if forecast_period == "7 days":
-        start_date = pd.to_datetime(date).normalize()
-        end_date = start_date + pd.Timedelta(days=7)
-    elif forecast_period == "14 days":
-        start_date = pd.to_datetime(date).normalize()
-        end_date = start_date + pd.Timedelta(days=14)
-    else:
-        start_date = pd.to_datetime(date).normalize()
-        end_date = start_date + pd.Timedelta(days=60)
-    
-    # Filter the data
-    forecast_data = district_data[(district_data['date'] >= start_date) & 
-                                  (district_data['date'] <= end_date)]
-    
-    return forecast_data.to_dict(orient="index")
+#     return aggregated_df.to_dict(orient="index")
 
 
-@app.get("/api/best_districts_aqi")
-def get_best_districts_aqi(time: str = Query(..., description="Time in format 'YYYY-MM-DD HH:00:00'")):
-    """
-    Endpoint to get the four districts with the best (lowest) AQI at a specific time.
-    """
-    try:
-        # Filter the DataFrame by the given time
-        filtered_df = forecasted_pollutant_df[forecasted_pollutant_df['date'] == time]
+# @app.get("/api/forecast_aqi")
+# def forecast_aqi(district_name: str, date: str, forecast_period: Optional[str] = "60 days"):
+#     district_data = aqi_forecast_df[aqi_forecast_df['district'] == district_name].copy()
+#     # removing the unnamed column
+#     district_data = district_data.drop(columns=['Unnamed: 0'])
+#     district_data['date'] = pd.to_datetime(district_data['date'])
+    
+#     if forecast_period == "7 days":
+#         start_date = pd.to_datetime(date).normalize()
+#         end_date = start_date + pd.Timedelta(days=7)
+#     elif forecast_period == "14 days":
+#         start_date = pd.to_datetime(date).normalize()
+#         end_date = start_date + pd.Timedelta(days=14)
+#     else:
+#         start_date = pd.to_datetime(date).normalize()
+#         end_date = start_date + pd.Timedelta(days=60)
+    
+#     # Filter the data
+#     forecast_data = district_data[(district_data['date'] >= start_date) & 
+#                                   (district_data['date'] <= end_date)]
+    
+#     return forecast_data.to_dict(orient="index")
+
+
+# @app.get("/api/best_districts_aqi")
+# def get_best_districts_aqi():
+#     """
+#     Endpoint to get the four districts with the best (lowest) AQI at a specific time.
+#     """
+#     try:
+#         time = get_pakistan_time()
+#         # Filter the DataFrame by the given time
+#         filtered_df = forecasted_pollutant_df[forecasted_pollutant_df['date'] == time]
         
-        if filtered_df.empty:
-            raise HTTPException(status_code=404, detail="No data found for the specified time.")
+#         if filtered_df.empty:
+#             raise HTTPException(status_code=404, detail="No data found for the specified time.")
         
-        # Sort by AQI in ascending order and get the top 4
-        sorted_df = filtered_df.sort_values(by='Aqi')
-        # getting the unique top 4 districts
-        sorted_df = sorted_df.drop_duplicates(subset=['District']).head(4)
+#         # Sort by AQI in ascending order and get the top 4
+#         sorted_df = filtered_df.sort_values(by='Aqi')
+#         # getting the unique top 4 districts
+#         sorted_df = sorted_df.drop_duplicates(subset=['District']).head(4)
         
-        # Prepare the response
-        response = [{"district": row["District"], "aqi": row["Aqi"]} for index, row in sorted_df.iterrows()]
+#         # Prepare the response
+#         response = [{"district": row["District"], "aqi": row["Aqi"]} for index, row in sorted_df.iterrows()]
         
-        return {"best_districts": response}
+#         return {"best_districts": response}
     
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+#     except Exception as e:
+#         raise HTTPException(status_code=500, detail=str(e))
     
     
 
 
 @app.get("/api/districts_aqi_color")
-def get_districts_aqi_color(time: str = Query(..., description="Time in format 'YYYY-MM-DD HH:00:00'")):
+def get_districts_aqi_color():
     """
     Endpoint to get the AQI and color for each district at a specific time.
     """
     try:
         # Filter the DataFrame by the given time
+        # convert the time to date time format
+        time = get_pakistan_time()
         filtered_df = forecasted_pollutant_df[forecasted_pollutant_df['date'] == time]
+        # reset the index
+        filtered_df = filtered_df.reset_index(drop=True)
+        # print(filtered_df)
         
         if filtered_df.empty:
             raise HTTPException(status_code=404, detail="No data found for the specified time.")
         
+        # sort in ascending order
+        filtered_df = filtered_df.sort_values(by='Aqi')
+        
+        # Ensure unique districts
+        unique_districts_df = filtered_df.drop_duplicates(subset=['District'])
+        
         # Assign colors based on AQI and prepare the response
         response = []
-        for index, row in filtered_df.iterrows():
+        for index, row in unique_districts_df.iterrows():
             color_name, color_code = get_AQI_color(row["Aqi"])
-            response.append({"district": row["District"], "aqi": row["Aqi"], "color": color_name, "color_code": color_code})
+            response.append({
+                "district": row["District"],
+                "aqi": row["Aqi"],
+                "aqi_name": color_name,  # Assuming color_name is the AQI name
+                "color_code": color_code
+            })
         
         return {"districts_aqi_color": response}
     
@@ -200,16 +260,23 @@ def get_districts_aqi_color(time: str = Query(..., description="Time in format '
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/aqi_status")
-def get_aqi_status(time: str = Query(..., description="Time in format 'YYYY-MM-DD HH:00:00'")):
+def get_aqi_status():
     """
     Endpoint to get the AQI status including best and worst district, highest pollutant, and cause of pollutant.
     """
     try:
+        time = get_pakistan_time()
         # Filter the DataFrame by the given time
         filtered_df = forecasted_pollutant_df[forecasted_pollutant_df['date'] == time]
         
         if filtered_df.empty:
             raise HTTPException(status_code=404, detail="No data found for the specified time.")
+        
+        # sort in ascending order
+        filtered_df = filtered_df.sort_values(by='Aqi')
+        
+        # ensure unique districts
+        filtered_df = filtered_df.drop_duplicates(subset=['District'])
         
         # Find the district with the lowest (best) AQI
         best_district_row = filtered_df.loc[filtered_df['Aqi'].idxmin()]
@@ -238,27 +305,38 @@ def get_aqi_status(time: str = Query(..., description="Time in format 'YYYY-MM-D
     
     
 @app.get("/api/map_ranking")
-def get_map_ranking(time: str = Query(..., description="Time in format 'YYYY-MM-DD HH:00:00'")):
+def get_map_ranking():
     """
     Endpoint to get the AQI ranking of districts and assign colors based on the provided color palette.
     """
     try:
+        time = get_pakistan_time()
         # Filter the DataFrame by the given time
         filtered_df = forecasted_pollutant_df[forecasted_pollutant_df['date'] == time]
         
         if filtered_df.empty:
             raise HTTPException(status_code=404, detail="No data found for the specified time.")
         
-        # Sort districts by AQI in ascending order
-        sorted_df = filtered_df.sort_values(by='Aqi')
-        # ensure there's no duplicate districts
-        sorted_df = sorted_df.drop_duplicates(subset=['District'])
+        # sort in ascending order
+        filtered_df = filtered_df.sort_values(by='Aqi')
         
+        # Ensure unique districts and sort by AQI in ascending order
+        sorted_df = filtered_df.drop_duplicates(subset=['District']).sort_values(by='Aqi')
+ 
+        
+        # selecting the needed columns
+        sorted_df = sorted_df[['District', 'Aqi']].reset_index(drop=True)
+        # print(sorted_df)
+        # print(len(color_palette))
         # Assign colors based on the sorted order
         response = []
         for index, row in sorted_df.iterrows():
-            color_index = index % len(color_palette)
-            response.append({"district": row["District"], "aqi": row["Aqi"], "color": color_palette[color_index]})
+            # preparing the response
+            response.append({
+                "district": row["District"],
+                "aqi": row["Aqi"],
+                "color": color_palette[index]
+            })
         
         return {"map_ranking": response}
     
@@ -268,7 +346,6 @@ def get_map_ranking(time: str = Query(..., description="Time in format 'YYYY-MM-
 
 @app.get("/api/historical_data")
 def get_historical_data(
-    time: str = Query(..., description="Time in format 'YYYY-MM-DD HH:00:00'"),
     district: str = Query(..., description="District name"),
     duration: str = Query(..., description="Duration can be 'weekly', 'biweekly', 'monthly', or '2 months'")
 ):
@@ -276,8 +353,11 @@ def get_historical_data(
     Endpoint to get historical AQI data for a given district and time period.
     """
     try:
+        time = get_pakistan_time()
         # Convert time to datetime
         time_dt = datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
+        # converting time to date alone
+        time_dt = time_dt.date()
 
         # Calculate date range based on duration
         if duration == 'weekly':
@@ -292,22 +372,26 @@ def get_historical_data(
             raise HTTPException(status_code=400, detail="Invalid duration. Choose from 'weekly', 'biweekly', 'monthly', or '2 months'.")
         
         # Filter the DataFrame by district and date range
-        filtered_df = historical_df[
-            (historical_df['District'] == district) &
-            (historical_df['date'] >= start_date.strftime('%Y-%m-%d')) &
-            (historical_df['date'] <= time_dt.strftime('%Y-%m-%d'))
+        filtered_df = daily_max_historical[
+            (daily_max_historical['District'] == district) &
+            (daily_max_historical['date'] >= start_date.strftime('%Y-%m-%d')) &
+            (daily_max_historical['date'] <= time_dt.strftime('%Y-%m-%d'))
         ]
         # droppig the unnamed column
-        filtered_df = filtered_df.drop(columns=['Unnamed: 0'])
+        # filtered_df = filtered_df.drop(columns=['Unnamed: 0'])
         
         if filtered_df.empty:
             raise HTTPException(status_code=404, detail="No data found for the specified parameters.")
         
         # selecting the date and aqi columns
         filtered_df = filtered_df[['date', 'Aqi']]
+        
+        # return two array, one for date and one for aqi
+        date_array = filtered_df['date'].tolist()
+        aqi_array = filtered_df['Aqi'].tolist()
 
         # Return the filtered data as a JSON response
-        return filtered_df.to_dict(orient="records")
+        return {"date": date_array, "aqi": aqi_array}
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -316,37 +400,38 @@ def get_historical_data(
 
 @app.get("/api/forecast_data")
 def get_forecast_data(
-    time: str = Query(..., description="Time in format 'YYYY-MM-DD HH:00:00'"),
     district: str = Query(..., description="District name"),
-    duration: str = Query(..., description="Duration can be 'weekly', 'biweekly', 'monthly', or '2 months'")
+    duration: str = "2 months"
 ):
     """
     Endpoint to get AQI forecast data for a given district and time period.
     """
     try:
+        time = get_pakistan_time()
         # Convert time to datetime
         time_dt = datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
+        # converting time to date alone
+        time_dt = time_dt.date()
 
         # Calculate end date based on duration
-        if duration == 'weekly':
-            end_date = time_dt + timedelta(days=7)
-        elif duration == 'biweekly':
-            end_date = time_dt + timedelta(days=14)
-        elif duration == 'monthly':
-            end_date = time_dt + timedelta(days=30)
-        elif duration == '2 months':
-            end_date = time_dt + timedelta(days=60)
-        else:
-            raise HTTPException(status_code=400, detail="Invalid duration. Choose from 'weekly', 'biweekly', 'monthly', or '2 months'.")
+        # if duration == 'weekly':
+        #     end_date = time_dt + timedelta(days=7)
+        # elif duration == 'biweekly':
+        #     end_date = time_dt + timedelta(days=14)
+        # elif duration == 'monthly':
+        #     end_date = time_dt + timedelta(days=30)
+        end_date = time_dt + timedelta(days=60)
+        # else:
+        #     raise HTTPException(status_code=400, detail="Invalid duration. Choose from 'weekly', 'biweekly', 'monthly', or '2 months'.")
         
         # Filter the DataFrame by district and date range
-        filtered_df = aqi_forecast_df[
-            (aqi_forecast_df['District'] == district) &
-            (aqi_forecast_df['date'] >= time_dt.strftime('%Y-%m-%d %H:00:00')) &
-            (aqi_forecast_df['date'] <= end_date.strftime('%Y-%m-%d %H:00:00'))
+        filtered_df = daily_max_forecasted[
+            (daily_max_forecasted['District'] == district) &
+            (daily_max_forecasted['date'] >= time_dt.strftime('%Y-%m-%d')) &
+            (daily_max_forecasted['date'] <= end_date.strftime('%Y-%m-%d'))
         ]
         # removing the unnamed column
-        filtered_df = filtered_df.drop(columns=['Unnamed: 0'])
+        # filtered_df = filtered_df.drop(columns=['Unnamed: 0'])
         
         if filtered_df.empty:
             raise HTTPException(status_code=404, detail="No forecast data found for the specified parameters.")
@@ -354,11 +439,33 @@ def get_forecast_data(
         # selecting the date and aqi columns
         filtered_df = filtered_df[['date', 'Aqi']]
         
+        # return two array, one for date and one for aqi
+        date_array = filtered_df['date'].tolist()
+        aqi_array = filtered_df['Aqi'].tolist()
+        
         # Return the filtered data as a JSON response
-        return filtered_df.to_dict(orient="records")
+        return {"date": date_array, "aqi": aqi_array}
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/pollutant_districts")
+def get_districts_by_pollutant(pollutant_name: str):
+    """
+    Endpoint to get the districts for a given pollutant.
+    """
+    try:
+        if pollutant_name not in pollutant_districts:
+            raise HTTPException(status_code=404, detail="Pollutant not found.")
+        districts = pollutant_districts[pollutant_name]
+        # removing the duplicate districts
+        districts = list(set(districts))
+        # print(districts)
+        return {"districts": districts}
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 
 # Example of how to run the FastAPI server with Uvicorn
