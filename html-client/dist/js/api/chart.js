@@ -38,6 +38,7 @@ const getHistoricalData = (district, duration) => {
     });
 };
 
+
 const getForecastAqi = (district) => {
   return fetch(`${SERVER_URL}/forecast_data?district=${district}`)
     .then((response) => {
@@ -72,6 +73,8 @@ const handleForecastDistrictChange = () => {
   }
 };
 
+
+
 const plotLeftGraph = (labels, datasets) => {
   if (leftChart) {
     leftChart.destroy();
@@ -102,10 +105,6 @@ const plotLeftGraph = (labels, datasets) => {
   });
 };
 
-// const skipped = (ctx, value) =>
-//   ctx.p0.skip || ctx.p1.skip ? value : undefined;
-// const down = (ctx, value) =>
-//   ctx.p0.parsed.y > ctx.p1.parsed.y ? value : undefined;
 
 const plotRightGraph = (labels, datasets) => {
   const { firstSection, secondSection, thirdSection } = divideArray(datasets);
@@ -155,32 +154,6 @@ const plotRightGraph = (labels, datasets) => {
   });
 };
 
-// const plotForecastChart = (labels, datasets) => {
-//   var ctx = document.getElementById("forecastChart").getContext("2d");
-//   new Chart(ctx, {
-//     type: "line",
-//     data: {
-//       labels,
-//       datasets: [
-//         {
-//           label: "Actual vs Prediction",
-//           data: datasets,
-//           borderColor: "green",
-//           fill: false,
-//         },
-//       ],
-//     },
-//     options: {
-//       scales: {
-//         y: {
-//           beginAtZero: false,
-//           min: 0,
-//           max: 160,
-//         },
-//       },
-//     },
-//   });
-// };
 
 const convertDateFormat = (dateStr) => {
   const [year, month, day] = dateStr.split("-");
