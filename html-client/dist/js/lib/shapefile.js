@@ -1,4 +1,4 @@
-const loadShapefile = (shapefilePath, district, map1, map2) => {
+const loadShapefile = (shapefilePath, district, map) => {
   return fetch(shapefilePath)
     .then((response) => response.arrayBuffer())
     .then((arrayBuffer) => {
@@ -15,7 +15,7 @@ const loadShapefile = (shapefilePath, district, map1, map2) => {
           L.geoJSON(geojson, {
             style: function () {
               return {
-                color: district.color,
+                color: district.color || district.color_code,
                 weight: 2,
                 opacity: 0.7,
                 fillOpacity: 0.5,
@@ -25,24 +25,7 @@ const loadShapefile = (shapefilePath, district, map1, map2) => {
             .bindPopup(function (layer) {
               return `District name: ${district.district} <br /> AQI: ${district.aqi}`;
             })
-            .addTo(map1);
-
-          if (map2) {
-            L.geoJSON(geojson, {
-              style: function () {
-                return {
-                  color: district.color,
-                  weight: 2,
-                  opacity: 0.7,
-                  fillOpacity: 0.5,
-                };
-              },
-            })
-              .bindPopup(function (layer) {
-                return `District name: ${district.district} <br /> AQI: ${district.aqi}`;
-              })
-              .addTo(map2);
-          }
+            .addTo(map);
 
           return source.read().then(process);
         })

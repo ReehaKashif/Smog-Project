@@ -10,6 +10,50 @@ $(document).ready(function () {
 });
 
 // Fetch district data
+const getMapAqi = () => {
+  return fetch(`${SERVER_URL}/districts_aqi_color`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .catch((err) => {
+      console.error("Fetch error:", err);
+      return null;
+    });
+};
+
+getMapAqi()
+  .then((districtData) => {
+    // Initialize the map
+    var map = L.map("map1").setView([31.14711, 75.3412], 6);
+
+    // Add Google Maps layer
+    L.tileLayer("http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", {
+      maxZoom: 20,
+      subdomains: ["mt0", "mt1", "mt2", "mt3"],
+    }).addTo(map);
+
+    // Load Shapefiles for each district using the fetched data
+    Promise.all(
+      districtData.districts_aqi_color.map((districtInfo) => {
+        const formattedDistrict = districtInfo.district.replace(/\s+/g, "_"); // Replace spaces with underscores
+        // .replace(/_/g, " ") // Replace underscores with spaces
+        const shapefilePath = `./shapefiles/${formattedDistrict}.shp`;
+        return loadShapefile(shapefilePath, districtInfo, map);
+      })
+    )
+      .then(() => {
+        console.log("All Shapefiles loaded successfully");
+      })
+      .catch((error) => console.error("Error loading Shapefiles:", error));
+  })
+  .catch((error) => console.error("Error fetching district data:", error));
+
+
+
+// Fetch district data
 const getMapRanking = () => {
   return fetch(`${SERVER_URL}/map_ranking`)
     .then((response) => {
@@ -26,28 +70,22 @@ const getMapRanking = () => {
 
 getMapRanking()
   .then((districtData) => {
-    // console.log({ districtData });
     // Initialize the map
-    var map1 = L.map("map1").setView([31.14711, 75.3412], 6);
-    var map2 = L.map("map2").setView([31.14711, 75.3412], 6);
+    var map = L.map("map2").setView([31.14711, 75.3412], 6);
 
     // Add Google Maps layer
     L.tileLayer("http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", {
       maxZoom: 20,
       subdomains: ["mt0", "mt1", "mt2", "mt3"],
-    }).addTo(map1);
+    }).addTo(map);
 
-    L.tileLayer("http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", {
-      maxZoom: 20,
-      subdomains: ["mt0", "mt1", "mt2", "mt3"],
-    }).addTo(map2);
     // Load Shapefiles for each district using the fetched data
     Promise.all(
       districtData.map_ranking.map((districtInfo) => {
         const formattedDistrict = districtInfo.district.replace(/\s+/g, "_"); // Replace spaces with underscores
         // .replace(/_/g, " ") // Replace underscores with spaces
         const shapefilePath = `./shapefiles/${formattedDistrict}.shp`;
-        return loadShapefile(shapefilePath, districtInfo, map1, map2);
+        return loadShapefile(shapefilePath, districtInfo, map);
       })
     )
       .then(() => {
@@ -76,7 +114,6 @@ const fetchPollutantDistrictsApi = (map) => {
   // Fetch district data
   getPollutantDistricts(source)
     .then((data) => {
-      console.log({ data, source });
       // Add Google Maps layer
       L.tileLayer("http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", {
         maxZoom: 20,

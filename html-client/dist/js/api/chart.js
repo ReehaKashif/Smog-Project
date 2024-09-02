@@ -5,14 +5,17 @@ let leftChart, rightChart;
 
 $(document).ready(function () {
   // Initial function call when the page loads
-  handleSelectChanges();
+  handleHistoricalParamsChange();
+  handleForecastDistrictChange();
 
   // Attach event listeners to select inputs
-  $("#district-selector, #duration-selector").change(function () {
-    handleSelectChanges();
+  $("#district-selector").change(function () {
+    handleHistoricalParamsChange();
+    handleForecastDistrictChange();
   });
-  $("#forecast-cause-selector").change(function () {
-    handleCauseSelectChanges();
+
+  $("#duration-selector").change(function () {
+    handleHistoricalParamsChange();
   });
 });
 
@@ -28,7 +31,6 @@ const getHistoricalData = (district, duration) => {
     })
     .then((data) => {
       plotLeftGraph(data.date, data.aqi);
-      plotRightGraph(data.date, data.aqi);
     })
     .catch((err) => {
       console.error("Fetch error:", err);
@@ -45,8 +47,7 @@ const getForecastAqi = (district) => {
       return response.json();
     })
     .then((data) => {
-      console.log({ data });
-      plotForecastChart(data.date, data.aqi);
+      plotRightGraph(data.date, data.aqi);
     })
     .catch((err) => {
       console.error("Fetch error:", err);
@@ -54,7 +55,7 @@ const getForecastAqi = (district) => {
     });
 };
 
-const handleSelectChanges = () => {
+const handleHistoricalParamsChange = () => {
   // Get the values from the select inputs
   const district = $("#district-selector").val();
   const duration = $("#duration-selector").val();
@@ -64,15 +65,14 @@ const handleSelectChanges = () => {
   }
 };
 
-const handleCauseSelectChanges = () => {
-  const district = $("#forecast-clause-selector").val();
+const handleForecastDistrictChange = () => {
+  const district = $("#district-selector").val();
   if (district) {
     getForecastAqi(district);
   }
 };
 
 const plotLeftGraph = (labels, datasets) => {
-  console.log({ leftChart });
   if (leftChart) {
     leftChart.destroy();
   }
@@ -80,7 +80,7 @@ const plotLeftGraph = (labels, datasets) => {
   leftChart = new Chart(leftChartCtx, {
     type: "line",
     data: {
-      labels,
+      labels: labels.map(convertDateFormat),
       datasets: [
         {
           label: "Actual vs Prediction",
@@ -109,24 +109,23 @@ const plotLeftGraph = (labels, datasets) => {
 
 const plotRightGraph = (labels, datasets) => {
   const { firstSection, secondSection, thirdSection } = divideArray(datasets);
-  // console.log({ firstSection, secondSection, thirdSection });
   let groupedDatasets = [
     {
-      label: "First 7 days",
+      label: "Model 1",
       data: firstSection,
       borderColor: "green",
       fill: false,
     },
     {
-      label: "Next 7 days",
+      label: "Model 2",
       data: secondSection,
       borderColor: "yellow",
       fill: false,
     },
     {
-      label: "The rest of the day",
+      label: "Model 3",
       data: thirdSection,
-      borderColor: "blue",
+      borderColor: "red",
       fill: false,
     },
   ];
@@ -138,7 +137,7 @@ const plotRightGraph = (labels, datasets) => {
   rightChart = new Chart(rightChartCtx, {
     type: "line",
     data: {
-      labels,
+      labels: labels.map(convertDateFormat),
       datasets: groupedDatasets,
     },
     options: {
@@ -156,29 +155,34 @@ const plotRightGraph = (labels, datasets) => {
   });
 };
 
-const plotForecastChart = (labels, datasets) => {
-  var ctx = document.getElementById("forecastChart").getContext("2d");
-  new Chart(ctx, {
-    type: "line",
-    data: {
-      labels,
-      datasets: [
-        {
-          label: "Actual vs Prediction",
-          data: datasets,
-          borderColor: "green",
-          fill: false,
-        },
-      ],
-    },
-    options: {
-      scales: {
-        y: {
-          beginAtZero: false,
-          min: 0,
-          max: 160,
-        },
-      },
-    },
-  });
+// const plotForecastChart = (labels, datasets) => {
+//   var ctx = document.getElementById("forecastChart").getContext("2d");
+//   new Chart(ctx, {
+//     type: "line",
+//     data: {
+//       labels,
+//       datasets: [
+//         {
+//           label: "Actual vs Prediction",
+//           data: datasets,
+//           borderColor: "green",
+//           fill: false,
+//         },
+//       ],
+//     },
+//     options: {
+//       scales: {
+//         y: {
+//           beginAtZero: false,
+//           min: 0,
+//           max: 160,
+//         },
+//       },
+//     },
+//   });
+// };
+
+const convertDateFormat = (dateStr) => {
+  const [year, month, day] = dateStr.split("-");
+  return `${day}-${year}-${month}`;
 };
