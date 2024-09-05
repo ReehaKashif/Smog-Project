@@ -23,6 +23,8 @@ try:
     forecasted_pollutant_df.rename(columns = {'Unnamed: 0':'date'}, inplace = True)
     # print(forecasted_pollutant_df.head())
     aqi_forecast_df = pd.read_csv('aqi_forecast.csv')
+    aqi_7_days_forecast_df = pd.read_csv('daily_7_days_lag_data.csv')
+    aqi_14_days_forecast_df = pd.read_csv('daily_14_days_lag_data.csv')
     daily_max_forecasted = pd.read_csv('daily_forecasted_data.csv')
     daily_max_historical = pd.read_csv('daily_historical_data.csv')
 except FileNotFoundError as e:
@@ -30,6 +32,8 @@ except FileNotFoundError as e:
     # renaming unnamed 0 as date
     forecasted_pollutant_df.rename(columns = {'Unnamed: 0':'date'}, inplace = True)
     aqi_forecast_df = pd.read_csv('fastapi-server/aqi_forecast.csv')
+    aqi_7_days_forecast_df = pd.read_csv('fastapi-server/daily_7_days_lag_data.csv')
+    aqi_14_days_forecast_df = pd.read_csv('fastapi-server/daily_14_days_lag_data.csv')
     daily_max_forecasted = pd.read_csv('fastapi-server/daily_forecasted_data.csv')
     daily_max_historical = pd.read_csv('fastapi-server/daily_historical_data.csv')
     # raise HTTPException(status_code=404, detail=str(e))
@@ -112,7 +116,7 @@ def get_pakistan_time_endpoint():
     """
     return {"pakistan_time": get_pakistan_time()}
 
-@app.get("/api/aggregate_pollutants/last_year")
+# @app.get("/api/aggregate_pollutants/last_year")
 # def last_year_aggregate_pollutants(initial_time: str, district: str):
 #     forecasted_df = last_year_pollutant_df.copy()
     
@@ -140,7 +144,7 @@ def get_pakistan_time_endpoint():
 #     return aggregated_df.to_dict(orient="index")
 
 
-@app.get("/api/aggregate_pollutants/daily")
+# @app.get("/api/aggregate_pollutants/daily")
 # def daily_aggregate_pollutants(initial_time: str, district: str):
 #     forecasted_df = forecasted_pollutant_df.copy()
 #     # counting the unique districts
@@ -430,6 +434,18 @@ def get_forecast_data(
             (daily_max_forecasted['date'] >= time_dt.strftime('%Y-%m-%d')) &
             (daily_max_forecasted['date'] <= end_date.strftime('%Y-%m-%d'))
         ]
+        # showing forecast data for 7 days lag
+        filtered_df_7_days_lag = aqi_7_days_forecast_df[
+            (aqi_7_days_forecast_df['district'] == district) &
+            (aqi_7_days_forecast_df['date'] >= time_dt.strftime('%Y-%m-%d')) &
+            (aqi_7_days_forecast_df['date'] <= end_date.strftime('%Y-%m-%d'))
+        ]
+        # showing forecast data for 14 days lag
+        filtered_df_14_days_lag = aqi_14_days_forecast_df[
+            (aqi_14_days_forecast_df['district'] == district) & 
+            (aqi_14_days_forecast_df['date'] >= time_dt.strftime('%Y-%m-%d')) &
+            (aqi_14_days_forecast_df['date'] <= end_date.strftime('%Y-%m-%d'))
+        ]
         # removing the unnamed column
         # filtered_df = filtered_df.drop(columns=['Unnamed: 0'])
         
@@ -438,13 +454,16 @@ def get_forecast_data(
 
         # selecting the date and aqi columns
         filtered_df = filtered_df[['date', 'Aqi']]
-        
+        filtered_df_7_days_lag = filtered_df_7_days_lag[['date', 'Aqi']]
+        filtered_df_14_days_lag = filtered_df_14_days_lag[['date', 'Aqi']]
         # return two array, one for date and one for aqi
         date_array = filtered_df['date'].tolist()
         aqi_array = filtered_df['Aqi'].tolist()
-        
+        aqi_array_7_days_lag = filtered_df_7_days_lag['Aqi'].tolist()
+        aqi_array_14_days_lag = filtered_df_14_days_lag['Aqi'].tolist()
+
         # Return the filtered data as a JSON response
-        return {"date": date_array, "aqi": aqi_array}
+        return {"date": date_array, "aqi": aqi_array, "aqi_7_days_lag": aqi_array_7_days_lag, "aqi_14_days_lag": aqi_array_14_days_lag}
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
