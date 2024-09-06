@@ -51,8 +51,6 @@ getMapAqi()
   })
   .catch((error) => console.error("Error fetching district data:", error));
 
-
-
 // Fetch district data
 const getMapRanking = () => {
   return fetch(`${SERVER_URL}/map_ranking`)
@@ -109,6 +107,14 @@ const getPollutantDistricts = (source) => {
     });
 };
 
+const sources_color = {
+  Vehicle: "#ffa500",
+  Industry: "#f2af2a",
+  Construction: "#ff2600",
+  Agriculture: "#36454f",
+  "General Wasting": "#7a288a",
+};
+
 const fetchPollutantDistrictsApi = (map) => {
   const source = $("#pollutant-source-selector").val();
   // Fetch district data
@@ -133,7 +139,7 @@ const fetchPollutantDistrictsApi = (map) => {
 
             let districtInfo = {
               district: currentDistrict["district"],
-              color: currentDistrict["color_code"],
+              color: sources_color[source],
               aqi: currentDistrict["aqi"],
             };
             return loadShapefile(shapefilePath, districtInfo, map);

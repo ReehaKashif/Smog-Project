@@ -355,6 +355,47 @@
                   style="height: 350px"
                   class="w-100 tab-content no-padding"
                 ></div>
+
+                <div class="district-aqi-map-legend">
+                  <div class="district-aqi-map-legend-item">
+                    <div style="background-color: #00e400">0-50 Good</div>
+                    <span>Low AQI</span>
+                  </div>
+                  <div class="district-aqi-map-legend-item">
+                    <div style="background-color: #ffff00">51-100 Moderate</div>
+                    <span></span>
+                  </div>
+                  <div class="district-aqi-map-legend-item">
+                    <div style="background-color: #ff7e00">
+                      101-150 Unhealthy for <br />Sensitive Groups (USG)
+                    </div>
+                    <span></span>
+                  </div>
+                  <div class="district-aqi-map-legend-item">
+                    <div style="background-color: #ff0000">
+                      151-200 Unhealthy
+                    </div>
+                    <span></span>
+                  </div>
+                  <div class="district-aqi-map-legend-item">
+                    <div style="background-color: #8f3f97">
+                      201-300 Very Unhealthy
+                    </div>
+                    <span></span>
+                  </div>
+                  <div class="district-aqi-map-legend-item">
+                    <div style="background-color: #7e0023">
+                      301-500 Hazardous
+                    </div>
+                    <span></span>
+                  </div>
+                  <div class="district-aqi-map-legend-item">
+                    <div style="background-color: #767171">
+                      >501 Very Hazardous
+                    </div>
+                    <span>High AQI</span>
+                  </div>
+                </div>
               </div>
               <!-- /.nav-tabs-custom -->
             </section>
@@ -372,6 +413,7 @@
                   style="height: 350px"
                   class="w-100 tab-content no-padding"
                 ></div>
+                <div id="district-rankings-map-legend"></div>
               </div>
               <!-- /.nav-tabs-custom -->
             </section>
@@ -406,7 +448,7 @@
                   </li>
 
                   <li class="pull-left header">
-                    <h3>Actual vs Prediction </h3>
+                    <h3>Actual vs Prediction</h3>
                   </li>
                 </ul>
                 <div class="tab-content no-padding">
@@ -502,7 +544,10 @@
                       />
                       Construction
                     </div>
-                    <div class="industry-4 btn-flat" style="background-color: #36454f50;border-color: #36454F;">
+                    <div
+                      class="industry-4 btn-flat"
+                      style="background-color: #36454f50; border-color: #36454f"
+                    >
                       <img
                         src="dist/img/icon4.svg"
                         class="user-image"
@@ -545,7 +590,7 @@
                 </ul>
                 <div class="row mb20">
                   <section class="col-lg-6">
-                    <div class="legend-1 col-lg-12">
+                    <div class="legend-1">
                       <p>
                         <img
                           src="dist/img/icon1.svg"
@@ -554,9 +599,9 @@
                         />
                         Vehicle
                       </p>
-                      <span></span>
+                      <div></div>
                     </div>
-                    <div class="legend-1 col-lg-12">
+                    <div class="legend-1">
                       <p>
                         <img
                           src="dist/img/icon2.svg"
@@ -565,22 +610,22 @@
                         />
                         Industry
                       </p>
-                      <span class="two"></span>
+                      <div class="two"></div>
                     </div>
-                    <div class="legend-1 col-lg-12">
+                    <div class="legend-1">
                       <p>
                         <img
                           src="dist/img/icon3.svg"
                           class="user-image"
                           alt="User Image"
                         />
-                        Constrcution
+                        Construction
                       </p>
-                      <span class="three"></span>
+                      <div class="three"></div>
                     </div>
                   </section>
                   <section class="col-lg-6">
-                    <div class="legend-1 col-lg-12">
+                    <div class="legend-1">
                       <p>
                         <img
                           src="dist/img/icon4.svg"
@@ -589,9 +634,9 @@
                         />
                         Agriculture
                       </p>
-                      <span class="four" style="background-color: #36454F;"></span>
+                      <div class="four"></div>
                     </div>
-                    <div class="legend-1 col-lg-12">
+                    <div class="legend-1">
                       <p>
                         <img
                           src="dist/img/icon5.svg"
@@ -600,7 +645,7 @@
                         />
                         General Wasting
                       </p>
-                      <span class="five"></span>
+                      <div class="five"></div>
                     </div>
                   </section>
                 </div>
