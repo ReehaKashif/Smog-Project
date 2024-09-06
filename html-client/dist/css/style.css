@@ -1,5 +1,4 @@
-.pallete-container,
-.ranking-map-pallete-container {
+.pallete-container {
   width: 100%;
   display: grid;
   grid-template-columns: repeat(1, 1fr);
@@ -7,28 +6,52 @@
 }
 
 .ranking-map-pallete-container {
-  gap: 8px
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.5rem;
 }
 
 .pallete-item,
 .ranking-map-pallete-item {
-  background-color: aqua;
-  padding: 10px;
   width: 100%;
-  height: 20px;
-}
-.ranking-map-pallete-item p {
-  text-align: center;
+  height: 16px;
 }
 
-/* Legend 1 */
-.district-aqi-map-legend {
+.ranking-map-pallete-row {
   width: 100%;
+  height: 40px;
+  border-bottom: 1px solid;
+}
+.ranking-map-pallete-row:last-child {
+  border-bottom: 0;
+}
+.ranking-map-pallete-label {
+  width: 100%;
+  height: 18px;
+  font-weight: 500;
+  font-size: small;
+}
+/* Legend 1 */
+.district-aqi-map-legend,
+.district-rankings-map-legend {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  width: 35%;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   justify-content: flex-end;
   margin-top: 2rem;
+  z-index: 1000;
+  border: 1px solid;
+}
+.district-rankings-map-legend {
+  width: 45%;
+  height: 240px;
+  background: rgba(250, 250, 250, 0.25);
+  backdrop-filter: blur(2px);
 }
 .district-aqi-map-legend-item {
   width: 100%;
@@ -37,36 +60,31 @@
   gap: 8px;
 }
 .district-aqi-map-legend-item div {
-  width: 85%;
-  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 20px;
+  max-height: 40px;
   padding: 0px 8px;
 }
-.district-aqi-map-legend-item span {
-  width: 15%;
+
+.legend-colour-code,
+.legend-source-option {
+  height: 100%;
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 @media screen and (min-width: 768px) {
-  .pallete-container,
-  .ranking-map-pallete-container {
+  .pallete-container {
     width: 100%;
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     margin-bottom: 1.5rem;
   }
-  .ranking-map-pallete-container {
-    margin-bottom: 0;
-  }
-
-  .pallete-item,
-  .ranking-map-pallete-item {
-    height: 24px;
-  }
-  .district-aqi-map-legend-item {
-    width: 60%;
-  }
-  .district-aqi-map-legend-item div {
+  .pallete-item {
     height: 24px;
   }
 }

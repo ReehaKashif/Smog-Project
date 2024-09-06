@@ -253,7 +253,6 @@
                       class="img-circle bg-white"
                       alt="User Image"
                     />
-
                     <p>
                       Admin - PITB
                       <small>Member since Nov. 2012</small>
@@ -348,48 +347,47 @@
                 </ul>
                 <div
                   id="map1"
-                  style="height: 350px"
+                  style="height: 350px; position: relative"
                   class="w-100 tab-content no-padding"
-                ></div>
-
-                <div class="district-aqi-map-legend">
-                  <div class="district-aqi-map-legend-item">
-                    <div style="background-color: #00e400">0-50 Good</div>
-                    <span>Low AQI</span>
-                  </div>
-                  <div class="district-aqi-map-legend-item">
-                    <div style="background-color: #ffff00">51-100 Moderate</div>
-                    <span></span>
-                  </div>
-                  <div class="district-aqi-map-legend-item">
-                    <div style="background-color: #ff7e00">
-                      101-150 Unhealthy for <br />Sensitive Groups (USG)
+                >
+                  <div class="district-aqi-map-legend">
+                    <div class="district-aqi-map-legend-item">
+                      <div style="background-color: #00e400">
+                        <span>0-50 Good</span>
+                        <span>Low AQI</span>
+                      </div>
                     </div>
-                    <span></span>
-                  </div>
-                  <div class="district-aqi-map-legend-item">
-                    <div style="background-color: #ff0000">
-                      151-200 Unhealthy
+                    <div class="district-aqi-map-legend-item">
+                      <div style="background-color: #ffff00">
+                        51-100 Moderate
+                      </div>
                     </div>
-                    <span></span>
-                  </div>
-                  <div class="district-aqi-map-legend-item">
-                    <div style="background-color: #8f3f97">
-                      201-300 Very Unhealthy
+                    <div class="district-aqi-map-legend-item">
+                      <div style="background-color: #ff7e00">
+                        101-150 Unhealthy for <br />Sensitive Groups (USG)
+                      </div>
                     </div>
-                    <span></span>
-                  </div>
-                  <div class="district-aqi-map-legend-item">
-                    <div style="background-color: #7e0023">
-                      301-500 Hazardous
+                    <div class="district-aqi-map-legend-item">
+                      <div style="background-color: #ff0000">
+                        151-200 Unhealthy
+                      </div>
                     </div>
-                    <span></span>
-                  </div>
-                  <div class="district-aqi-map-legend-item">
-                    <div style="background-color: #767171">
-                      >501 Very Hazardous
+                    <div class="district-aqi-map-legend-item">
+                      <div style="background-color: #8f3f97">
+                        201-300 Very Unhealthy
+                      </div>
                     </div>
-                    <span>High AQI</span>
+                    <div class="district-aqi-map-legend-item">
+                      <div style="background-color: #7e0023">
+                        301-500 Hazardous
+                      </div>
+                    </div>
+                    <div class="district-aqi-map-legend-item">
+                      <div style="background-color: #767171">
+                        <span> >501 Very Hazardous</span>
+                        <span>High AQI</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -408,6 +406,19 @@
                 </ul>
 
                 <div id="color-palette"></div>
+                <div class="map-disclaimer">
+                  <p style="font-size: medium;">
+                    <span style="font-weight: 700;text-decoration: underline;"> Disclaimer: </span> The map represents AQI levels in
+                    Punjab, Pakistan, using color-coded ranges to indicate the
+                    quality of air in different districts.
+                  </p>
+                  <p style="font-size: medium;">
+                    <span style="font-weight: 700;text-decoration: underline;">Disclaimer: </span> The map provides a visual
+                    representation of the air quality levels across various
+                    districts in Punjab, Pakistan, using a color-coded system to
+                    rank each district based on its Air Quality Index (AQI).
+                  </p>
+                </div>
               </div>
               <!-- /.nav-tabs-custom -->
             </section>
@@ -422,10 +433,14 @@
                 </ul>
                 <div
                   id="map2"
-                  style="height: 350px"
+                  style="height: 350px; position: relative"
                   class="w-100 tab-content no-padding"
-                ></div>
-                <div id="district-rankings-map-legend"></div>
+                >
+                  <div
+                    id="district-rankings-map-legend"
+                    class="district-rankings-map-legend"
+                  ></div>
+                </div>
               </div>
               <!-- /.nav-tabs-custom -->
             </section>
@@ -506,10 +521,9 @@
             </section>
             <!-- right col -->
           </div>
-          <div class="row">
-            <section class="col-lg-12">
-              <!-- Custom tabs (Charts with tabs)-->
-              <div class="nav-tabs-custom">
+          <div class="row" style="height: 550px">
+            <div class="col-lg-6" style="height: 100%">
+              <div class="nav-tabs-custom legend-source-option">
                 <!-- Tabs within a box -->
                 <ul class="nav nav-tabs pull-right no-border mb20">
                   <li class="pull-left header">
@@ -517,7 +531,7 @@
                   </li>
                 </ul>
                 <div class="row mb20">
-                  <section class="col-lg-6 cause-section">
+                  <section class="col-lg-12 cause-section">
                     <select id="pollutant-source-selector" class="form-control">
                       <option value="Vehicle">Vehicles</option>
                       <option value="Industry">Industry</option>
@@ -526,7 +540,7 @@
                       <option value="General Wasting">General Wasting</option>
                     </select>
                   </section>
-                  <section class="col-lg-6">
+                  <section style="margin-top: 16px" class="col-lg-12">
                     <p
                       style="float: left; margin-right: 10px; line-height: 25px"
                     >
@@ -586,14 +600,10 @@
                   ></div>
                 </div>
               </div>
-              <!-- /.nav-tabs-custom -->
-            </section>
-          </div>
+            </div>
 
-          <div class="row">
-            <section class="col-lg-12">
-              <!-- Custom tabs (Charts with tabs)-->
-              <div class="nav-tabs-custom">
+            <div class="col-lg-6" style="height: 100%">
+              <div class="nav-tabs-custom legend-colour-code">
                 <!-- Tabs within a box -->
                 <ul class="nav nav-tabs pull-right no-border mb20">
                   <li class="pull-left header">
@@ -601,7 +611,7 @@
                   </li>
                 </ul>
                 <div class="row mb20">
-                  <section class="col-lg-6">
+                  <section class="col-lg-12">
                     <div class="legend-1">
                       <p>
                         <img
@@ -635,8 +645,6 @@
                       </p>
                       <div class="three"></div>
                     </div>
-                  </section>
-                  <section class="col-lg-6">
                     <div class="legend-1">
                       <p>
                         <img
@@ -663,7 +671,7 @@
                 </div>
               </div>
               <!-- /.nav-tabs-custom -->
-            </section>
+            </div>
           </div>
           <!-- /.row (main row) -->
         </section>
