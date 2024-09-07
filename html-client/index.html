@@ -319,6 +319,18 @@
                     class="user-image"
                     alt="User Image"
                   />
+                  <div class="map-disclaimer">
+                    <p style="font-size: medium">
+                      <span
+                        style="font-weight: 700; text-decoration: underline"
+                      >
+                        Disclaimer:
+                      </span>
+                      The map represents AQI levels in Punjab, Pakistan, using
+                      color-coded ranges to indicate the quality of air in
+                      different districts.
+                    </p>
+                  </div>
                 </div>
               </div>
               <!-- /.nav-tabs-custom -->
@@ -351,6 +363,7 @@
                   class="w-100 tab-content no-padding"
                 >
                   <div class="district-aqi-map-legend">
+                    <p class="legend">Legend</p>
                     <div class="district-aqi-map-legend-item">
                       <div style="background-color: #00e400">
                         <span>0-50 Good</span>
@@ -359,27 +372,35 @@
                     </div>
                     <div class="district-aqi-map-legend-item">
                       <div style="background-color: #ffff00">
-                        51-100 Moderate
+                        <span> 51-100 Moderate</span>
+                        <div class="legend-arrow"></div>
                       </div>
                     </div>
                     <div class="district-aqi-map-legend-item">
                       <div style="background-color: #ff7e00">
-                        101-150 Unhealthy for <br />Sensitive Groups (USG)
+                        <span>
+                          101-150 Unhealthy for <br />Sensitive Groups
+                          (USG)</span
+                        >
+                        <div class="legend-arrow h-40"></div>
                       </div>
                     </div>
                     <div class="district-aqi-map-legend-item">
                       <div style="background-color: #ff0000">
-                        151-200 Unhealthy
+                        <span> 151-200 Unhealthy</span>
+                        <div class="legend-arrow"></div>
                       </div>
                     </div>
                     <div class="district-aqi-map-legend-item">
                       <div style="background-color: #8f3f97">
-                        201-300 Very Unhealthy
+                        <span> 201-300 Very Unhealthy</span>
+                        <div class="legend-arrow"></div>
                       </div>
                     </div>
                     <div class="district-aqi-map-legend-item">
                       <div style="background-color: #7e0023">
-                        301-500 Hazardous
+                        <span> 301-500 Hazardous</span>
+                        <div class="legend-arrow legend-arrow-head"></div>
                       </div>
                     </div>
                     <div class="district-aqi-map-legend-item">
@@ -407,16 +428,14 @@
 
                 <div id="color-palette"></div>
                 <div class="map-disclaimer">
-                  <p style="font-size: medium;">
-                    <span style="font-weight: 700;text-decoration: underline;"> Disclaimer: </span> The map represents AQI levels in
-                    Punjab, Pakistan, using color-coded ranges to indicate the
-                    quality of air in different districts.
-                  </p>
-                  <p style="font-size: medium;">
-                    <span style="font-weight: 700;text-decoration: underline;">Disclaimer: </span> The map provides a visual
-                    representation of the air quality levels across various
-                    districts in Punjab, Pakistan, using a color-coded system to
-                    rank each district based on its Air Quality Index (AQI).
+                  <p style="font-size: medium">
+                    <span style="font-weight: 700; text-decoration: underline"
+                      >Disclaimer:
+                    </span>
+                    The map provides a visual representation of the air quality
+                    levels across various districts in Punjab, Pakistan, using a
+                    color-coded system to rank each district based on its Air
+                    Quality Index (AQI).
                   </p>
                 </div>
               </div>
@@ -439,7 +458,9 @@
                   <div
                     id="district-rankings-map-legend"
                     class="district-rankings-map-legend"
-                  ></div>
+                  >
+                    <p class="legend">Legend</p>
+                  </div>
                 </div>
               </div>
               <!-- /.nav-tabs-custom -->
@@ -523,6 +544,77 @@
           </div>
           <div class="row" style="height: 550px">
             <div class="col-lg-6" style="height: 100%">
+              <div class="nav-tabs-custom legend-colour-code">
+                <!-- Tabs within a box -->
+                <ul class="nav nav-tabs pull-right no-border mb20">
+                  <li class="pull-left header">
+                    <h3><span>Legend</span> colour code</h3>
+                  </li>
+                </ul>
+                <div class="row mb20">
+                  <section class="col-lg-12">
+                    <div class="legend-1">
+                      <p>
+                        <img
+                          src="dist/img/icon1.svg"
+                          class="user-image"
+                          alt="User Image"
+                        />
+                        Vehicle
+                      </p>
+                      <div></div>
+                    </div>
+                    <div class="legend-1">
+                      <p>
+                        <img
+                          src="dist/img/icon2.svg"
+                          class="user-image"
+                          alt="User Image"
+                        />
+                        Industry
+                      </p>
+                      <div class="two"></div>
+                    </div>
+                    <div class="legend-1">
+                      <p>
+                        <img
+                          src="dist/img/icon3.svg"
+                          class="user-image"
+                          alt="User Image"
+                        />
+                        Construction
+                      </p>
+                      <div class="three"></div>
+                    </div>
+                    <div class="legend-1">
+                      <p>
+                        <img
+                          src="dist/img/icon4.svg"
+                          class="user-image"
+                          alt="User Image"
+                        />
+                        Agriculture
+                      </p>
+                      <div class="four"></div>
+                    </div>
+                    <div class="legend-1">
+                      <p>
+                        <img
+                          src="dist/img/icon5.svg"
+                          class="user-image"
+                          alt="User Image"
+                        />
+                        General Wasting
+                      </p>
+                      <div class="five"></div>
+                    </div>
+                  </section>
+                </div>
+              </div>
+              <!-- /.nav-tabs-custom -->
+            </div>
+
+            <div class="col-lg-6" style="height: 100%">
               <div class="nav-tabs-custom legend-source-option">
                 <!-- Tabs within a box -->
                 <ul class="nav nav-tabs pull-right no-border mb20">
@@ -595,82 +687,70 @@
                 <div>
                   <div
                     id="forecastMap"
-                    style="height: 350px"
+                    style="height: 350px; position: relative"
                     class="w-100 tab-content no-padding"
-                  ></div>
+                  >
+                    <section class="color-legend-on-map">
+                      <p class="legend">Legend</p>
+                      <div class="legend-1">
+                        <p>
+                          <img
+                            src="dist/img/icon1.svg"
+                            class="user-image"
+                            alt="User Image"
+                          />
+                          Vehicle
+                        </p>
+                        <div style="height: 20px"></div>
+                      </div>
+                      <div class="legend-1">
+                        <p>
+                          <img
+                            src="dist/img/icon2.svg"
+                            class="user-image"
+                            alt="User Image"
+                          />
+                          Industry
+                        </p>
+                        <div style="height: 20px" class="two"></div>
+                      </div>
+                      <div class="legend-1">
+                        <p>
+                          <img
+                            src="dist/img/icon3.svg"
+                            class="user-image"
+                            alt="User Image"
+                          />
+                          Construction
+                        </p>
+                        <div style="height: 20px" class="three"></div>
+                      </div>
+                      <div class="legend-1">
+                        <p>
+                          <img
+                            src="dist/img/icon4.svg"
+                            class="user-image"
+                            alt="User Image"
+                          />
+                          Agriculture
+                        </p>
+                        <div style="height: 20px" class="four"></div>
+                      </div>
+                      <div class="legend-1">
+                        <p>
+                          <img
+                            src="dist/img/icon5.svg"
+                            class="user-image"
+                            alt="User Image"
+                          />
+                          General Wasting
+                        </p>
+                        <div style="height: 20px" class="five"></div>
+                      </div>
+                    </section>
+                  </div>
                 </div>
               </div>
-            </div>
-
-            <div class="col-lg-6" style="height: 100%">
-              <div class="nav-tabs-custom legend-colour-code">
-                <!-- Tabs within a box -->
-                <ul class="nav nav-tabs pull-right no-border mb20">
-                  <li class="pull-left header">
-                    <h3><span>Legend</span> colour code</h3>
-                  </li>
-                </ul>
-                <div class="row mb20">
-                  <section class="col-lg-12">
-                    <div class="legend-1">
-                      <p>
-                        <img
-                          src="dist/img/icon1.svg"
-                          class="user-image"
-                          alt="User Image"
-                        />
-                        Vehicle
-                      </p>
-                      <div></div>
-                    </div>
-                    <div class="legend-1">
-                      <p>
-                        <img
-                          src="dist/img/icon2.svg"
-                          class="user-image"
-                          alt="User Image"
-                        />
-                        Industry
-                      </p>
-                      <div class="two"></div>
-                    </div>
-                    <div class="legend-1">
-                      <p>
-                        <img
-                          src="dist/img/icon3.svg"
-                          class="user-image"
-                          alt="User Image"
-                        />
-                        Construction
-                      </p>
-                      <div class="three"></div>
-                    </div>
-                    <div class="legend-1">
-                      <p>
-                        <img
-                          src="dist/img/icon4.svg"
-                          class="user-image"
-                          alt="User Image"
-                        />
-                        Agriculture
-                      </p>
-                      <div class="four"></div>
-                    </div>
-                    <div class="legend-1">
-                      <p>
-                        <img
-                          src="dist/img/icon5.svg"
-                          class="user-image"
-                          alt="User Image"
-                        />
-                        General Wasting
-                      </p>
-                      <div class="five"></div>
-                    </div>
-                  </section>
-                </div>
-              </div>
-              <!-- /.nav-tabs-custom -->
             </div>
           </div>
           <!-- /.row (main row) -->
