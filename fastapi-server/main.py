@@ -350,52 +350,59 @@ def get_map_ranking():
 
 @app.get("/api/historical_data")
 def get_historical_data(
-    district: str = Query(..., description="District name"),
-    duration: str = Query(..., description="Duration can be 'weekly', 'biweekly', 'monthly', or '2 months'")
+    district: str = Query(..., description="District name")
 ):
     """
-    Endpoint to get historical AQI data for a given district and time period.
+    Endpoint to get historical AQI data for a given district for the last 2 months,
+    including recent historical forecasts from 7-day and 14-day lag data.
     """
     try:
         time = get_pakistan_time()
-        # Convert time to datetime
-        time_dt = datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
-        # converting time to date alone
-        time_dt = time_dt.date()
+        time_dt = datetime.strptime(time, '%Y-%m-%d %H:%M:%S').date()
 
-        # Calculate date range based on duration
-        if duration == 'weekly':
-            start_date = time_dt - timedelta(days=7)
-        elif duration == 'biweekly':
-            start_date = time_dt - timedelta(days=14)
-        elif duration == 'monthly':
-            start_date = time_dt - timedelta(days=30)
-        elif duration == '2 months':
-            start_date = time_dt - timedelta(days=60)
-        else:
-            raise HTTPException(status_code=400, detail="Invalid duration. Choose from 'weekly', 'biweekly', 'monthly', or '2 months'.")
+        # Set duration to 2 months
+        start_date = time_dt - timedelta(days=60)
         
-        # Filter the DataFrame by district and date range
+        # Filter historical data
         filtered_df = daily_max_historical[
             (daily_max_historical['District'] == district) &
             (daily_max_historical['date'] >= start_date.strftime('%Y-%m-%d')) &
             (daily_max_historical['date'] <= time_dt.strftime('%Y-%m-%d'))
         ]
-        # droppig the unnamed column
-        # filtered_df = filtered_df.drop(columns=['Unnamed: 0'])
         
-        if filtered_df.empty:
+        # Get last 7 days of forecast data
+        forecast_7d = aqi_7_days_forecast_df[
+            (aqi_7_days_forecast_df['district'] == district) &
+            (aqi_7_days_forecast_df['date'] > (time_dt - timedelta(days=7)).strftime('%Y-%m-%d')) &
+            (aqi_7_days_forecast_df['date'] <= time_dt.strftime('%Y-%m-%d'))
+        ]
+
+        # Get last 14 days of forecast data
+        forecast_14d = aqi_14_days_forecast_df[
+            (aqi_14_days_forecast_df['district'] == district) &
+            (aqi_14_days_forecast_df['date'] > (time_dt - timedelta(days=14)).strftime('%Y-%m-%d')) &
+            (aqi_14_days_forecast_df['date'] <= time_dt.strftime('%Y-%m-%d'))
+        ]
+
+        if filtered_df.empty and forecast_7d.empty and forecast_14d.empty:
             raise HTTPException(status_code=404, detail="No data found for the specified parameters.")
         
-        # selecting the date and aqi columns
-        filtered_df = filtered_df[['date', 'Aqi']]
+        # Prepare response data
+        historical_dates = filtered_df['date'].tolist()
+        historical_aqi = filtered_df['Aqi'].tolist()
         
-        # return two array, one for date and one for aqi
-        date_array = filtered_df['date'].tolist()
-        aqi_array = filtered_df['Aqi'].tolist()
+        forecast_7d_dates = forecast_7d['date'].tolist()
+        forecast_7d_aqi = forecast_7d['Aqi'].tolist()
+        
+        forecast_14d_dates = forecast_14d['date'].tolist()
+        forecast_14d_aqi = forecast_14d['Aqi'].tolist()
 
-        # Return the filtered data as a JSON response
-        return {"date": date_array, "aqi": aqi_array}
+        # Return the data as a JSON response
+        return {
+            "historical": {"date": historical_dates, "aqi": historical_aqi},
+            "forecast_7d": {"date": forecast_7d_dates, "aqi": forecast_7d_aqi},
+            "forecast_14d": {"date": forecast_14d_dates, "aqi": forecast_14d_aqi}
+        }
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
