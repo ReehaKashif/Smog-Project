@@ -20,10 +20,8 @@ $(document).ready(function () {
   });
 });
 
-const getHistoricalData = (district, duration) => {
-  return fetch(
-    `${SERVER_URL}/historical_data?district=${district}&duration=${duration}`
-  )
+const getHistoricalData = (district) => {
+  return fetch(`${SERVER_URL}/historical_data?district=${district}`)
     .then((response) => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -93,30 +91,31 @@ const handleForecastDistrictChange = () => {
 };
 
 const plotHistoricalGraph = (data) => {
-  // const dataFor7DaysBefore = data[0];
-  // const dataFor14DaysBefore = data[1];
-  // const dataFor2MonthsBefore = data[2];
+  const dataFor7DaysBefore = data.forecast_7d.aqi;
+  const dataFor14DaysBefore = data.forecast_14d.aqi;
+  const dataFor2MonthsBefore = data.historical;
+  const totalLength = dataFor2MonthsBefore.aqi.length;
 
-  // const datasets = [
-  //   {
-  //     label: "Actual",
-  //     data: dataFor2MonthsBefore.aqi,
-  //     borderColor: "green",
-  //     fill: false,
-  //   },
-  //   {
-  //     label: "Prediction Model 1",
-  //     data: padList(dataFor14DaysBefore.aqi, dataFor2MonthsBefore.aqi.length),
-  //     borderColor: "yellow",
-  //     fill: false,
-  //   },
-  //   {
-  //     label: "Prediction Model 2",
-  //     data: padList(dataFor7DaysBefore.aqi, dataFor2MonthsBefore.aqi.length),
-  //     borderColor: "red",
-  //     fill: false,
-  //   },
-  // ];
+  const datasets = [
+    {
+      label: "Actual",
+      data: dataFor2MonthsBefore.aqi,
+      borderColor: "blue",
+      fill: false,
+    },
+    {
+      label: "14 days",
+      data: padList(dataFor14DaysBefore, totalLength),
+      borderColor: "yellow",
+      fill: false,
+    },
+    {
+      label: "7 days",
+      data: padList(dataFor7DaysBefore, totalLength),
+      borderColor: "green",
+      fill: false,
+    },
+  ];
 
   if (leftChart) {
     leftChart.destroy();
@@ -125,17 +124,19 @@ const plotHistoricalGraph = (data) => {
   leftChart = new Chart(leftChartCtx, {
     type: "line",
     data: {
-      labels: data.date.map(convertDateFormat),
-      datasets: [
-        {
-          label: "Actual",
-          data: data.aqi,
-          borderColor: "green",
-          fill: false,
-        },
-      ],
+      labels: dataFor2MonthsBefore.date.map(convertDateFormat),
+      datasets,
+      // [
+      //   {
+      //     label: "Actual",
+      //     data: data.aqi,
+      //     borderColor: "green",
+      //     fill: false,
+      //   },
+      // ],
     },
     options: {
+      responsive: true,
       scales: {
         y: {
           beginAtZero: false,
@@ -148,26 +149,27 @@ const plotHistoricalGraph = (data) => {
 };
 
 const plotPredictionGraph = (data) => {
-  const { aqi, aqi_7_days_lag, aqi_14_days_lag, date } = data;
-  // const { firstSection, secondSection, thirdSection } = divideArray(datasets);
-  // console.log({ aqi, aqi_7_days_lag, aqi_14_days_lag, date });
+  const { firstSection, secondSection, thirdSection } = divideArray(data.aqi);
+  // const { aqi, aqi_7_days_lag, aqi_14_days_lag, date } = data;
 
   let groupedDatasets = [
     {
       label: "Model 1",
-      data: aqi,
+      data: firstSection,
       borderColor: "green",
       fill: false,
     },
     {
-      label: "Model 2",
-      data: aqi_14_days_lag,
+      label: "",
+      data: secondSection,
+      backgroundColor: "transparent",
       borderColor: "yellow",
       fill: false,
     },
     {
-      label: "Model 3",
-      data: aqi_7_days_lag,
+      label: "",
+      data: thirdSection,
+      backgroundColor: "transparent",
       borderColor: "red",
       fill: false,
     },
@@ -180,10 +182,20 @@ const plotPredictionGraph = (data) => {
   rightChart = new Chart(rightChartCtx, {
     type: "line",
     data: {
-      labels: date.map(convertDateFormat),
+      labels: data.date.map(convertDateFormat),
       datasets: groupedDatasets,
     },
     options: {
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: (ctx) => "Prediction Data",
+        },
+        legend: {
+          display: false,
+        },
+      },
       scales: {
         y: {
           beginAtZero: false,
