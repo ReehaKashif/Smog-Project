@@ -67,9 +67,9 @@ li.header h3 {
   font-weight: 700;
   margin: 0;
 }
-li.header h3 span {
+/* li.header h3 span {
   border-bottom: solid 2px orange;
-}
+} */
 .nav-tabs-custom > .nav-tabs.pull-right li a {
   padding: 0px;
 }
