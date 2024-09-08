@@ -32,21 +32,44 @@ const color_palette = [
   ["#FF2000", "#FF1A00", "#FF1400", "#FF0D00", "#FF0700", "#FF0000"],
 ];
 
+const color_palette_labels = [
+  "Very Low",
+  "Low",
+  "Medium Low",
+  "Medium",
+  "Medium High",
+  "High",
+];
+
 const populateColorPallete = () => {
-  for (colorGroup of color_palette) {
+  for (let i = 0; i < color_palette.length; i++) {
     $("#color-palette").append(`
        <div class="pallete-container">
-                    <div style="background-color: ${colorGroup[0]}" class="pallete-item"></div>
-                    <div style="background-color: ${colorGroup[1]}" class="pallete-item"></div>
-                    <div style="background-color: ${colorGroup[2]}" class="pallete-item"></div>
-                    <div style="background-color: ${colorGroup[3]}" class="pallete-item"></div>
-                    <div style="background-color: ${colorGroup[4]}" class="pallete-item"></div>
-                    <div style="background-color: ${colorGroup[5]}" class="pallete-item"></div>
+                    <div style="background-color: ${color_palette[i][0]}" class="pallete-item"></div>
+                    <div style="background-color: ${color_palette[i][1]}" class="pallete-item"></div>
+                    <div style="background-color: ${color_palette[i][2]}" class="pallete-item"></div>
+                    <div style="background-color: ${color_palette[i][3]}" class="pallete-item"></div>
+                    <div style="background-color: ${color_palette[i][4]}" class="pallete-item"></div>
+                    <div style="background-color: ${color_palette[i][5]}" class="pallete-item"></div>
                   </div>
+      `);
+    $("#district-rankings-map-legend").append(`
+              <div class="ranking-map-pallete-row">
+                <div class="ranking-map-pallete-label">${color_palette_labels[i]}</div>
+                  <div class="ranking-map-pallete-container">
+                    <div style="background-color: ${color_palette[i][0]}" class="ranking-map-pallete-item"></div>
+                    <div style="background-color: ${color_palette[i][1]}" class="ranking-map-pallete-item"></div>
+                    <div style="background-color: ${color_palette[i][2]}" class="ranking-map-pallete-item"></div>
+                    <div style="background-color: ${color_palette[i][3]}" class="ranking-map-pallete-item"></div>
+                    <div style="background-color: ${color_palette[i][4]}" class="ranking-map-pallete-item"></div>
+                    <div style="background-color: ${color_palette[i][5]}" class="ranking-map-pallete-item"></div>
+                  </div>
+              </div>
       `);
   }
 
   $("#color-palette").append("<div class='clearfix'></div>");
+  // $("#color-palette").append("<div class='clearfix'></div>");
 };
 
 populateColorPallete();

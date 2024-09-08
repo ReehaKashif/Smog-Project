@@ -16,26 +16,46 @@ $(document).ready(function () {
 
   $("#duration-selector").change(function () {
     handleHistoricalParamsChange();
+    handleForecastDistrictChange();
   });
 });
 
-const getHistoricalData = async (district, duration) => {
-  const response = await fetch(
+const getHistoricalData = (district, duration) => {
+  return fetch(
     `${SERVER_URL}/historical_data?district=${district}&duration=${duration}`
-  );
-  return response.json();
+  )
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      return plotHistoricalGraph(data);
+    })
+    .catch((err) => {
+      console.error("Fetch error:", { err });
+      return null;
+    });
 };
 
-const durations = ["weekly", "biweekly", "2 months"];
+// const durations = ["weekly", "biweekly", "2 months"];
 
-const fetchAllHistoricalData = async (district) => {
-  const promises = durations.map((duration) =>
-    getHistoricalData(district, duration)
-  );
-  const results = await Promise.all(promises);
-  plotHistoricalGraph(results);
-  return;
-};
+// const getHistoricalData = async (district, duration) => {
+//   const response = await fetch(
+//     `${SERVER_URL}/historical_data?district=${district}&duration=${duration}`
+//   );
+//   return response.json();
+// };
+
+// const fetchAllHistoricalData = async (district) => {
+//   const promises = durations.map((duration) =>
+//     getHistoricalData(district, duration)
+//   );
+//   const results = await Promise.all(promises);
+//   plotHistoricalGraph(results);
+//   return;
+// };
 
 const getForecastAqi = (district) => {
   return fetch(`${SERVER_URL}/forecast_data?district=${district}`)
@@ -46,7 +66,7 @@ const getForecastAqi = (district) => {
       return response.json();
     })
     .then((data) => {
-      plotPredictionGraph(data.date, data.aqi);
+      plotPredictionGraph(data);
     })
     .catch((err) => {
       console.error("Fetch error:", err);
@@ -57,9 +77,11 @@ const getForecastAqi = (district) => {
 const handleHistoricalParamsChange = () => {
   // Get the values from the select inputs
   const district = $("#district-selector").val();
+  const duration = $("#duration-selector").val();
   // Call the function with the current values
-  if (district) {
-    fetchAllHistoricalData(district);
+  if (district && duration) {
+    getHistoricalData(district, duration);
+    // fetchAllHistoricalData(district);
   }
 };
 
@@ -71,30 +93,30 @@ const handleForecastDistrictChange = () => {
 };
 
 const plotHistoricalGraph = (data) => {
-  const dataFor7DaysBefore = data[0];
-  const dataFor14DaysBefore = data[1];
-  const dataFor2MonthsBefore = data[2];
+  // const dataFor7DaysBefore = data[0];
+  // const dataFor14DaysBefore = data[1];
+  // const dataFor2MonthsBefore = data[2];
 
-  const datasets = [
-    {
-      label: "Actual",
-      data: dataFor2MonthsBefore.aqi,
-      borderColor: "green",
-      fill: false,
-    },
-    {
-      label: "Prediction Model 1",
-      data: padList(dataFor14DaysBefore.aqi, dataFor2MonthsBefore.aqi.length),
-      borderColor: "yellow",
-      fill: false,
-    },
-    {
-      label: "Prediction Model 2",
-      data: padList(dataFor7DaysBefore.aqi, dataFor2MonthsBefore.aqi.length),
-      borderColor: "red",
-      fill: false,
-    },
-  ];
+  // const datasets = [
+  //   {
+  //     label: "Actual",
+  //     data: dataFor2MonthsBefore.aqi,
+  //     borderColor: "green",
+  //     fill: false,
+  //   },
+  //   {
+  //     label: "Prediction Model 1",
+  //     data: padList(dataFor14DaysBefore.aqi, dataFor2MonthsBefore.aqi.length),
+  //     borderColor: "yellow",
+  //     fill: false,
+  //   },
+  //   {
+  //     label: "Prediction Model 2",
+  //     data: padList(dataFor7DaysBefore.aqi, dataFor2MonthsBefore.aqi.length),
+  //     borderColor: "red",
+  //     fill: false,
+  //   },
+  // ];
 
   if (leftChart) {
     leftChart.destroy();
@@ -103,39 +125,49 @@ const plotHistoricalGraph = (data) => {
   leftChart = new Chart(leftChartCtx, {
     type: "line",
     data: {
-      labels: dataFor2MonthsBefore.date.map(convertDateFormat),
-      datasets,
+      labels: data.date.map(convertDateFormat),
+      datasets: [
+        {
+          label: "Actual",
+          data: data.aqi,
+          borderColor: "green",
+          fill: false,
+        },
+      ],
     },
     options: {
       scales: {
         y: {
           beginAtZero: false,
           min: 0,
-          max: Math.ceil(Math.max(...dataFor2MonthsBefore.aqi)).valueOf(),
+          max: 500,
         },
       },
     },
   });
 };
 
-const plotPredictionGraph = (labels, datasets) => {
-  const { firstSection, secondSection, thirdSection } = divideArray(datasets);
+const plotPredictionGraph = (data) => {
+  const { aqi, aqi_7_days_lag, aqi_14_days_lag, date } = data;
+  // const { firstSection, secondSection, thirdSection } = divideArray(datasets);
+  // console.log({ aqi, aqi_7_days_lag, aqi_14_days_lag, date });
+
   let groupedDatasets = [
     {
       label: "Model 1",
-      data: firstSection,
+      data: aqi,
       borderColor: "green",
       fill: false,
     },
     {
       label: "Model 2",
-      data: secondSection,
+      data: aqi_14_days_lag,
       borderColor: "yellow",
       fill: false,
     },
     {
       label: "Model 3",
-      data: thirdSection,
+      data: aqi_7_days_lag,
       borderColor: "red",
       fill: false,
     },
@@ -148,7 +180,7 @@ const plotPredictionGraph = (labels, datasets) => {
   rightChart = new Chart(rightChartCtx, {
     type: "line",
     data: {
-      labels: labels.map(convertDateFormat),
+      labels: date.map(convertDateFormat),
       datasets: groupedDatasets,
     },
     options: {
@@ -156,7 +188,7 @@ const plotPredictionGraph = (labels, datasets) => {
         y: {
           beginAtZero: false,
           min: 0,
-          max: Math.ceil(Math.max(...datasets)).valueOf(),
+          max: 500,
         },
         x: {
           beginAtZero: false,
@@ -195,22 +227,3 @@ const padList = (list, targetLength) => {
   const padding = Array(targetLength - list.length).fill(null);
   return [...padding, ...list];
 };
-
-// const getHistoricalData = (district, duration) => {
-//   return fetch(
-//     `${SERVER_URL}/historical_data?district=${district}&duration=${duration}`
-//   )
-//     .then((response) => {
-//       if (!response.ok) {
-//         throw new Error("Network response was not ok");
-//       }
-//       return response.json();
-//     })
-//     .then((data) => {
-//       plotHistoricalGraph(data.date, data.aqi);
-//     })
-//     .catch((err) => {
-//       console.error("Fetch error:", err);
-//       return null;
-//     });
-// };
