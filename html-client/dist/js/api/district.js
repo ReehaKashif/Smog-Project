@@ -20,13 +20,13 @@ const districtsHTML = (data) => {
 <div class="col-lg-3 col-xs-6">
   <div class="small-box bg-ash-gray">
     <div class="inner">
-      <p>
-        Best Air Quality
+      <p class="">
+       <span> Best Air Quality </span>
         <a href="#">&#9900; &#9900; &#9900;</a>
       </p>
       <h3>
         ${data.best_district.district}
-        <span>
+        <span class="text-4xl font-bold">
           ${data.best_district.aqi.toFixed(0)}
         </span>
       </h3>
@@ -38,7 +38,7 @@ const districtsHTML = (data) => {
   <div class="small-box bg-ash-gray">
     <div class="inner">
       <p>
-        Worst Air Quality
+       <span> Worst Air Quality </span>
         <a href="#">&#9900; &#9900; &#9900;</a>
       </p>
       <h3>
@@ -55,7 +55,7 @@ const districtsHTML = (data) => {
   <div class="small-box bg-ash-gray">
     <div class="inner">
       <p>
-        Highest Pollutant
+        <span> Highest Pollutant </span>
         <a href="#">&#9900; &#9900; &#9900;</a>
       </p>
       <h3>
@@ -69,7 +69,7 @@ const districtsHTML = (data) => {
   <div class="small-box bg-ash-gray">
     <div class="inner">
       <p>
-        Cause of Pollutant
+        <span> Cause of Pollutant </span>
         <a href="#">&#9900; &#9900; &#9900;</a>
       </p>
       <h3>

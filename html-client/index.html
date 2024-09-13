@@ -53,7 +53,8 @@
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <!-- ShapeFile Lib -->
     <script src="https://unpkg.com/shapefile@0.6.6/dist/shapefile.js"></script>
-
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <!-- Google Font -->
     <link
       rel="stylesheet"
@@ -80,7 +81,7 @@
             </p>
           </a>
 
-          <div class="navbar-custom-menu">
+          <div class="navbar-custom-menu hidden">
             <ul class="nav navbar-nav">
               <!-- Notifications: style can be found in dropdown.less -->
               <li class="dropdown notifications-menu">
@@ -292,9 +293,19 @@
       <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header heading-bg">
-          <h1>
-            <img src="dist/img/banner-icon.svg" alt="User Image" />
-            <p>AQI in Punjab, Pakistan</p>
+          <h1 class="flex items-end justify-between">
+            <div>
+              <img src="dist/img/banner-icon.svg" alt="User Image" />
+              <p class="text-4xl md:text-5xl lg:text-6xl">
+                AQI in Punjab, Pakistan
+              </p>
+            </div>
+            <div>
+              <p class="text-4xl md:text-5xl lg:text-6xl">AQI of Punjab</p>
+            </div>
+            <div>
+              <p id="current-hour" class="text-4xl md:text-5xl lg:text-6xl"></p>
+            </div>
           </h1>
         </section>
 
@@ -363,7 +374,7 @@
                   class="w-100 tab-content no-padding"
                 >
                   <div class="district-aqi-map-legend">
-                    <p class="legend">Legend</p>
+                    <p class="legend hidden">Legend</p>
                     <div class="district-aqi-map-legend-item">
                       <div style="background-color: #00e400">
                         <span>0-50 Good</span>
@@ -376,13 +387,13 @@
                         <div class="legend-arrow"></div>
                       </div>
                     </div>
-                    <div class="district-aqi-map-legend-item">
+                    <div class="district-aqi-map-legend-item double-height">
                       <div style="background-color: #ff7e00">
                         <span>
                           101-150 Unhealthy for <br />Sensitive Groups
                           (USG)</span
                         >
-                        <div class="legend-arrow h-40"></div>
+                        <div class="legend-arrow double-height"></div>
                       </div>
                     </div>
                     <div class="district-aqi-map-legend-item">
@@ -459,7 +470,7 @@
                     id="district-rankings-map-legend"
                     class="district-rankings-map-legend"
                   >
-                    <p class="legend">Legend</p>
+                    <p class="legend hidden">Legend</p>
                   </div>
                 </div>
               </div>
@@ -690,7 +701,7 @@
                     style="height: 350px; position: relative"
                     class="w-100 tab-content no-padding"
                   >
-                    <section class="color-legend-on-map">
+                    <section class="color-legend-on-map hidden">
                       <p class="legend">Legend</p>
                       <div class="legend-1">
                         <p>

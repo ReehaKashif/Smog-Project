@@ -54,8 +54,8 @@ const populateColorPallete = () => {
                   </div>
       `);
     $("#district-rankings-map-legend").append(`
-              <div class="ranking-map-pallete-row">
-                <div class="ranking-map-pallete-label">${color_palette_labels[i]}</div>
+                <div class="ranking-map-pallete-row">
+                  <div class="ranking-map-pallete-label">${color_palette_labels[i]}</div>
                   <div class="ranking-map-pallete-container">
                     <div style="background-color: ${color_palette[i][0]}" class="ranking-map-pallete-item"></div>
                     <div style="background-color: ${color_palette[i][1]}" class="ranking-map-pallete-item"></div>
@@ -64,7 +64,7 @@ const populateColorPallete = () => {
                     <div style="background-color: ${color_palette[i][4]}" class="ranking-map-pallete-item"></div>
                     <div style="background-color: ${color_palette[i][5]}" class="ranking-map-pallete-item"></div>
                   </div>
-              </div>
+                </div>
       `);
   }
 
@@ -105,3 +105,11 @@ const divideArray = (dataArray) => {
     thirdSection,
   };
 };
+// Get current hour and display it
+$(document).ready(function() {
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+    const currentSecond = now.getSeconds();
+    $('#current-hour').text(`${currentHour}:${currentMinute}:${currentSecond}`);
+});

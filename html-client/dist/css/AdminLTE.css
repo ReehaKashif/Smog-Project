@@ -1786,7 +1786,8 @@ a:focus {
   color: #fff;
   background: rgba(0, 0, 0, 0.15);
 }
-.small-box h3 {
+.small-box h3,
+.small-box h3 span {
   font-size: 28px;
   font-weight: 700;
   margin: 0 0 10px 0;
@@ -1794,9 +1795,7 @@ a:focus {
   padding: 0;
 }
 .small-box h3 span {
-  font-size: 14px;
   color: #13a846;
-  font-weight: 400;
   padding-left: 10px;
 }
 .small-box h3 span i {
@@ -1823,6 +1822,10 @@ a:focus {
 .small-box h3,
 .small-box p {
   z-index: 5;
+}
+
+.small-box p span {
+  font-size: 20px;
 }
 .small-box .icon {
   -webkit-transition: all 0.3s linear;
