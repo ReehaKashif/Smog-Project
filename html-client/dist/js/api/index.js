@@ -24,12 +24,12 @@ const getCurrentTime = () => {
 
 // Populate color palletes
 const color_palette = [
-  ["#00FF00", "#19F719", "#32EF32", "#4BE74B", "#64DF64", "#7DD77D"],
-  ["#96CF96", "#AFC7AF", "#C8BFC8", "#E1B7E1", "#FF9FFF", "#FF99E5"],
-  ["#FF92CC", "#FF8CB2", "#FF8699", "#FF7F80", "#FF7966", "#FF734D"],
-  ["#FF6C33", "#FF662A", "#FF6020", "#FF5917", "#FF5313", "#FF4C0F"],
-  ["#FF460B", "#FF4007", "#FF3A03", "#FF3300", "#FF2D00", "#FF2600"],
-  ["#FF2000", "#FF1A00", "#FF1400", "#FF0D00", "#FF0700", "#FF0000"],
+  ["#00ff00", "#33ff00", "#66ff00", "#99ff00", "#ccff00", "#ffff00"],
+  ["#ffcc00", "#ff9900", "#ff6600", "#ff3300", "#ff0000", "#e60000"],
+  ["#cc0000", "#b30000", "#990000", "#800000", "#66ff33", "#99ff33"],
+  ["#ccff33", "#ffff33", "#ffcc33", "#ff9933", "#ff6633", "#ff3333"],
+  ["#e60033", "#cc0033", "#b30033", "#990033", "#80ff66", "#b3ff66"],
+  ["#ccff66", "#ffff66", "#ffcc66", "#ff9966", "#ff6666", "#ff3333"],
 ];
 
 const color_palette_labels = [
@@ -106,10 +106,15 @@ const divideArray = (dataArray) => {
   };
 };
 // Get current hour and display it
-$(document).ready(function() {
+$(document).ready(function () {
+  function updateTime() {
     const now = new Date();
-    const currentHour = now.getHours();
-    const currentMinute = now.getMinutes();
-    const currentSecond = now.getSeconds();
-    $('#current-hour').text(`${currentHour}:${currentMinute}:${currentSecond}`);
+    const currentHour = String(now.getHours()).padStart(2, "0");
+    const currentMinute = String(now.getMinutes()).padStart(2, "0");
+    const currentSecond = String(now.getSeconds()).padStart(2, "0");
+    $("#current-hour").text(`${currentHour}:${currentMinute}:${currentSecond}`);
+  }
+
+  updateTime(); // Initial call to display time immediately
+  setInterval(updateTime, 1000); // Update time every second
 });

@@ -348,19 +348,37 @@
             </section>
             <section class="col-lg-6">
               <!-- Custom tabs (Charts with tabs) -->
-              <!-- <div class="nav-tabs-custom"> -->
-              <!-- Tabs within a box -->
-              <!-- <ul class="nav nav-tabs pull-right no-border mb20">
+              <div class="nav-tabs-custom">
+                <!-- Tabs within a box -->
+                <ul class="nav nav-tabs pull-right no-border mb20">
                   <li class="pull-left header">
                     <h3><span>Colour</span> pallete</h3>
                   </li>
-                </ul> -->
+                </ul>
 
-              <!-- <div id="color-palette"></div> -->
-              <!-- </div> -->
+                <div id="color-palette"></div>
+                <div class="map-disclaimer">
+                  <p style="font-size: medium">
+                    <span style="font-weight: 700; text-decoration: underline"
+                      >Disclaimer:
+                    </span>
+                    The map provides a visual representation of the air quality
+                    levels across various districts in Punjab, Pakistan, using a
+                    color-coded system to rank each district based on its Air
+                    Quality Index (AQI).
+                  </p>
+                </div>
+              </div>
 
               <!-- TODO: -->
               <!-- Custom tabs (Charts with tabs)-->
+
+              <!-- /.nav-tabs-custom -->
+            </section>
+          </div>
+
+          <div class="row">
+            <section class="col-lg-6">
               <div class="nav-tabs-custom">
                 <!-- Tabs within a box -->
                 <ul class="nav nav-tabs pull-right no-border mb20">
@@ -373,7 +391,7 @@
                   style="height: 350px; position: relative"
                   class="w-100 tab-content no-padding"
                 >
-                  <div class="district-aqi-map-legend">
+                  <div class="district-aqi-map-legend hidden">
                     <p class="legend hidden">Legend</p>
                     <div class="district-aqi-map-legend-item">
                       <div style="background-color: #00e400">
@@ -423,34 +441,6 @@
                   </div>
                 </div>
               </div>
-              <!-- /.nav-tabs-custom -->
-            </section>
-          </div>
-
-          <div class="row">
-            <section class="col-lg-6">
-              <div class="nav-tabs-custom">
-                <!-- Tabs within a box -->
-                <ul class="nav nav-tabs pull-right no-border mb20">
-                  <li class="pull-left header">
-                    <h3><span>Colour</span> pallete</h3>
-                  </li>
-                </ul>
-
-                <div id="color-palette"></div>
-                <div class="map-disclaimer">
-                  <p style="font-size: medium">
-                    <span style="font-weight: 700; text-decoration: underline"
-                      >Disclaimer:
-                    </span>
-                    The map provides a visual representation of the air quality
-                    levels across various districts in Punjab, Pakistan, using a
-                    color-coded system to rank each district based on its Air
-                    Quality Index (AQI).
-                  </p>
-                </div>
-              </div>
-              <!-- /.nav-tabs-custom -->
             </section>
             <section class="col-lg-6">
               <!-- Custom tabs (Charts with tabs)-->
@@ -468,7 +458,7 @@
                 >
                   <div
                     id="district-rankings-map-legend"
-                    class="district-rankings-map-legend"
+                    class="district-rankings-map-legend hidden"
                   >
                     <p class="legend hidden">Legend</p>
                   </div>
@@ -478,7 +468,7 @@
             </section>
           </div>
           <!-- Main row -->
-          <div class="row">
+          <div class="row border-2">
             <!-- Left col -->
             <section class="col-lg-6 connectedSortable">
               <!-- Custom tabs (Charts with tabs)-->
@@ -487,7 +477,10 @@
                 <ul class="nav nav-tabs pull-right no-border">
                   <li>
                     <div class="form-group">
-                      <select id="duration-selector" class="form-control">
+                      <select
+                        id="duration-selector"
+                        class="form-control hidden"
+                      >
                         <!-- <option value="">Select Duration</option> -->
                         <option value="weekly">Weekly</option>
                         <option value="biweekly">Bi Weekly</option>
@@ -511,38 +504,27 @@
                   </li>
                 </ul>
                 <div class="tab-content no-padding">
-                  <!-- Chart.Js Demo -->
                   <div
                     class="w-100 chart tab-pane active"
                     style="position: relative; height: 300px"
                   >
                     <canvas id="chartLeftCanva"></canvas>
                   </div>
-
-                  <!-- Morris chart - Sales -->
-                  <!-- <div
-                    class="w-100 chart tab-pane active"
-                    id="district-chart"
-                    style="position: relative; height: 300px"
-                  ></div> -->
                 </div>
               </div>
               <!-- /.nav-tabs-custom -->
             </section>
             <!-- /.Left col -->
-            <!-- right col (We are only adding the ID to make the widgets sortable)-->
+            <!-- right col -->
             <section class="col-lg-6 connectedSortable">
               <div class="nav-tabs-custom">
                 <!-- Tabs within a box -->
                 <ul class="nav nav-tabs pull-right no-border mb20">
                   <li><a href="#">&#9900; &#9900; &#9900;</a></li>
-
                   <li class="pull-left header">
                     <h3>Prediction</h3>
                   </li>
                 </ul>
-                <!-- <div id="world-map" style="height: 300px; width: 100%"></div> -->
-                <!-- Chart.Js Demo -->
                 <div
                   class="w-100 chart tab-pane active"
                   style="position: relative; height: 300px"
