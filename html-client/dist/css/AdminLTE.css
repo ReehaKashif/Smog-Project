@@ -451,7 +451,7 @@ a:focus {
   position: relative;
   /*padding: 15px 15px 0 15px;*/
 }
-.content-header > h1 {
+.content-header > div {
   margin: 0;
   background: url(../img/heading-bg.svg);
   background-position: top;
@@ -461,7 +461,7 @@ a:focus {
   font-size: 28px;
   font-weight: 600;
 }
-.content-header > h1 > small {
+.content-header > div > small {
   font-size: 15px;
   display: inline-block;
   padding-left: 4px;

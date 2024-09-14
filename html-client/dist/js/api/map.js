@@ -129,7 +129,7 @@ const fetchPollutantDistrictsApi = (map) => {
       // Load Shapefiles for each district using the fetched data
       getDistrictAqiColor().then((d) => {
         Promise.all(
-          data.districts.map((district) => {
+          data.districts.map(async (district) => {
             const formattedDistrict = district.replace(/\s+/g, "_");
             const shapefilePath = `./shapefiles/${formattedDistrict}.shp`;
 
@@ -142,7 +142,9 @@ const fetchPollutantDistrictsApi = (map) => {
               color: sources_color[source],
               aqi: currentDistrict["aqi"],
             };
-            return loadShapefile(shapefilePath, districtInfo, map);
+
+            await loadShapefile(shapefilePath, districtInfo, map, source);
+            return;
           })
         ).catch((error) => console.error("Error loading Shapefiles:", error));
       });

@@ -24,12 +24,12 @@ const getCurrentTime = () => {
 
 // Populate color palletes
 const color_palette = [
-  ["#00ff00", "#33ff00", "#66ff00", "#99ff00", "#ccff00", "#ffff00"],
-  ["#ffcc00", "#ff9900", "#ff6600", "#ff3300", "#ff0000", "#e60000"],
-  ["#cc0000", "#b30000", "#990000", "#800000", "#66ff33", "#99ff33"],
-  ["#ccff33", "#ffff33", "#ffcc33", "#ff9933", "#ff6633", "#ff3333"],
-  ["#e60033", "#cc0033", "#b30033", "#990033", "#80ff66", "#b3ff66"],
-  ["#ccff66", "#ffff66", "#ffcc66", "#ff9966", "#ff6666", "#ff3333"],
+  ["#00FF00", "#24FF00", "#48FF00", "#6CFF00", "#90FF00", "#B4FF00"],
+  ["#D8FF00", "#FCFF00", "#FFF500", "#FFEB00", "#FFE100", "#FFD700"],
+  ["#FFCC00", "#FFC200", "#FFB800", "#FFAD00", "#FFA300", "#FF9900"],
+  ["#FF8E00", "#FF8400", "#FF7A00", "#FF6F00", "#FF6500", "#FF5B00"],
+  ["#FF5100", "#FF4600", "#FF3C00", "#FF3200", "#FF2800", "#FF1D00"],
+  ["#FF1300", "#FF0900", "#FF0000", "#F50000", "#EB0000", "#E10000"],
 ];
 
 const color_palette_labels = [
@@ -118,3 +118,24 @@ $(document).ready(function () {
   updateTime(); // Initial call to display time immediately
   setInterval(updateTime, 1000); // Update time every second
 });
+
+const setLocalStorage = (key, value) => {
+  localStorage.setItem(key, JSON.stringify(value));
+};
+
+const getLocalStorage = (key) => {
+  const value = localStorage.getItem(key);
+  if (value) {
+    return JSON.parse(value);
+  }
+  return null;
+};
+
+  // const color_palette = [
+  //   ["#00ff00", "#33ff00", "#66ff00", "#99ff00", "#ccff00", "#ffff00"],
+  //   ["#ffcc00", "#ff9900", "#ff6600", "#ff3300", "#ff0000", "#e60000"],
+  //   ["#cc0000", "#b30000", "#990000", "#800000", "#66ff33", "#99ff33"],
+  //   ["#ccff33", "#ffff33", "#ffcc33", "#ff9933", "#ff6633", "#ff3333"],
+  //   ["#e60033", "#cc0033", "#b30033", "#990033", "#80ff66", "#b3ff66"],
+  //   ["#ccff66", "#ffff66", "#ffcc66", "#ff9966", "#ff6666", "#ff3333"],
+  // ];

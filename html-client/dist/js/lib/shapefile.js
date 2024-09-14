@@ -1,4 +1,13 @@
-const loadShapefile = (shapefilePath, district, map) => {
+const loadShapefile = (shapefilePath, district, map, pollutant = null) => {
+  let content = "";
+  if (pollutant) {
+    content = `${district.district} <br /> ${pollutant} <br /> AQI: ${Math.round(
+      district.aqi
+    )}`;
+  } else {
+    content = `${district.district} <br /> AQI: ${Math.round(district.aqi)}`;
+  }
+
   return fetch(shapefilePath)
     .then((response) => response.arrayBuffer())
     .then((arrayBuffer) => {
@@ -23,7 +32,7 @@ const loadShapefile = (shapefilePath, district, map) => {
             },
           })
             .bindPopup(function (layer) {
-              return `District name: ${district.district} <br /> AQI: ${district.aqi}`;
+              return content;
             })
             .addTo(map);
 

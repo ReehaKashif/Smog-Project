@@ -293,7 +293,9 @@
       <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header heading-bg">
-          <h1 class="flex items-end justify-between">
+          <div
+            class="flex flex-col items-start md:flex-row md:items-end gap-8 justify-between"
+          >
             <div>
               <img src="dist/img/banner-icon.svg" alt="User Image" />
               <p class="text-4xl md:text-5xl lg:text-6xl">
@@ -301,63 +303,69 @@
               </p>
             </div>
             <div>
-              <p class="text-4xl md:text-5xl lg:text-6xl">AQI of Punjab</p>
+              <p id="aqi-average" class="text-4xl md:text-5xl lg:text-6xl">
+                - - -
+              </p>
             </div>
             <div>
               <p id="current-hour" class="text-4xl md:text-5xl lg:text-6xl"></p>
             </div>
-          </h1>
+          </div>
         </section>
 
         <!-- Main content -->
-        <section class="content">
-          <!-- Small boxes (Stat box) -->
+        <section class="content space-y-8 px-4 md:px-8">
+          <!-- AQI DISTRICTS -->
           <div id="aqi-status" class="row"></div>
-          <!-- /.row -->
-          <div class="row">
-            <section class="col-lg-6">
+
+          <!-- AQI METER & COLOUR PALLETE -->
+          <div class="row lg:h-[450px]">
+            <section class="h-full col-lg-6">
               <!-- Custom tabs (Charts with tabs)-->
-              <div class="nav-tabs-custom">
+              <div class="h-full nav-tabs-custom">
                 <!-- Tabs within a box -->
-                <ul class="nav nav-tabs pull-right no-border mb20">
+                <ul class="nav nav-tabs pull-right no-border h-[25px]">
                   <li class="pull-left header">
                     <h3><span>AQI</span> in Punjab, Pakistan</h3>
                   </li>
                 </ul>
-                <div class="tab-content no-padding">
+                <div class="tab-content no-padding h-[calc(100%-65px)] py-8">
                   <img
                     src="dist/img/meter.svg"
-                    class="user-image"
-                    alt="User Image"
+                    class="user-image mx-auto"
+                    alt="User Image "
                   />
-                  <div class="map-disclaimer">
-                    <p style="font-size: medium">
-                      <span
-                        style="font-weight: 700; text-decoration: underline"
-                      >
-                        Disclaimer:
-                      </span>
-                      The map represents AQI levels in Punjab, Pakistan, using
-                      color-coded ranges to indicate the quality of air in
-                      different districts.
-                    </p>
-                  </div>
+                </div>
+                <div class="map-disclaimer h-[50px]">
+                  <p style="font-size: medium">
+                    <span style="font-weight: 700; text-decoration: underline">
+                      Disclaimer:
+                    </span>
+                    The map represents AQI levels in Punjab, Pakistan, using
+                    color-coded ranges to indicate the quality of air in
+                    different districts.
+                  </p>
                 </div>
               </div>
-              <!-- /.nav-tabs-custom -->
             </section>
-            <section class="col-lg-6">
+            <!--  -->
+            <section class="h-full col-lg-6">
               <!-- Custom tabs (Charts with tabs) -->
-              <div class="nav-tabs-custom">
+              <div class="h-full nav-tabs-custom">
                 <!-- Tabs within a box -->
-                <ul class="nav nav-tabs pull-right no-border mb20">
+                <ul class="nav nav-tabs pull-right no-border h-[25px]">
                   <li class="pull-left header">
                     <h3><span>Colour</span> pallete</h3>
                   </li>
                 </ul>
 
-                <div id="color-palette"></div>
-                <div class="map-disclaimer">
+                <!-- <div class="h-full items-start flex-col justify-between"> -->
+                <div
+                  id="color-palette"
+                  class="w-full h-[calc(100%-65px)] py-8"
+                ></div>
+
+                <div class="map-disclaimer h-[50px]">
                   <p style="font-size: medium">
                     <span style="font-weight: 700; text-decoration: underline"
                       >Disclaimer:
@@ -369,11 +377,6 @@
                   </p>
                 </div>
               </div>
-
-              <!-- TODO: -->
-              <!-- Custom tabs (Charts with tabs)-->
-
-              <!-- /.nav-tabs-custom -->
             </section>
           </div>
 
@@ -388,55 +391,52 @@
                 </ul>
                 <div
                   id="map1"
-                  style="height: 350px; position: relative"
-                  class="w-100 tab-content no-padding"
+                  class="relative w-full h-[600px] tab-content no-padding"
                 >
-                  <div class="district-aqi-map-legend hidden">
-                    <p class="legend hidden">Legend</p>
-                    <div class="district-aqi-map-legend-item">
-                      <div style="background-color: #00e400">
-                        <span>0-50 Good</span>
-                        <span>Low AQI</span>
-                      </div>
+                  <div class="district-aqi-map-legend hidden>
+                  <p class="legend hidden">Legend</p>
+                  <div class="district-aqi-map-legend-item">
+                    <div style="background-color: #00e400">
+                      <span>0-50 Good</span>
+                      <span>Low AQI</span>
                     </div>
-                    <div class="district-aqi-map-legend-item">
-                      <div style="background-color: #ffff00">
-                        <span> 51-100 Moderate</span>
-                        <div class="legend-arrow"></div>
-                      </div>
+                  </div>
+                  <div class="district-aqi-map-legend-item">
+                    <div style="background-color: #ffff00">
+                      <span> 51-100 Moderate</span>
+                      <div class="legend-arrow"></div>
                     </div>
-                    <div class="district-aqi-map-legend-item double-height">
-                      <div style="background-color: #ff7e00">
-                        <span>
-                          101-150 Unhealthy for <br />Sensitive Groups
-                          (USG)</span
-                        >
-                        <div class="legend-arrow double-height"></div>
-                      </div>
+                  </div>
+                  <div class="district-aqi-map-legend-item double-height">
+                    <div style="background-color: #ff7e00">
+                      <span>
+                        101-150 Unhealthy for <br />Sensitive Groups (USG)</span
+                      >
+                      <div class="legend-arrow double-height"></div>
                     </div>
-                    <div class="district-aqi-map-legend-item">
-                      <div style="background-color: #ff0000">
-                        <span> 151-200 Unhealthy</span>
-                        <div class="legend-arrow"></div>
-                      </div>
+                  </div>
+                  <div class="district-aqi-map-legend-item">
+                    <div style="background-color: #ff0000">
+                      <span> 151-200 Unhealthy</span>
+                      <div class="legend-arrow"></div>
                     </div>
-                    <div class="district-aqi-map-legend-item">
-                      <div style="background-color: #8f3f97">
-                        <span> 201-300 Very Unhealthy</span>
-                        <div class="legend-arrow"></div>
-                      </div>
+                  </div>
+                  <div class="district-aqi-map-legend-item">
+                    <div style="background-color: #8f3f97">
+                      <span> 201-300 Very Unhealthy</span>
+                      <div class="legend-arrow"></div>
                     </div>
-                    <div class="district-aqi-map-legend-item">
-                      <div style="background-color: #7e0023">
-                        <span> 301-500 Hazardous</span>
-                        <div class="legend-arrow legend-arrow-head"></div>
-                      </div>
+                  </div>
+                  <div class="district-aqi-map-legend-item">
+                    <div style="background-color: #7e0023">
+                      <span> 301-500 Hazardous</span>
+                      <div class="legend-arrow legend-arrow-head"></div>
                     </div>
-                    <div class="district-aqi-map-legend-item">
-                      <div style="background-color: #767171">
-                        <span> >501 Very Hazardous</span>
-                        <span>High AQI</span>
-                      </div>
+                  </div>
+                  <div class="district-aqi-map-legend-item">
+                    <div style="background-color: #767171">
+                      <span> >501 Very Hazardous</span>
+                      <span>High AQI</span>
                     </div>
                   </div>
                 </div>
@@ -453,8 +453,7 @@
                 </ul>
                 <div
                   id="map2"
-                  style="height: 350px; position: relative"
-                  class="w-100 tab-content no-padding"
+                  class="relative w-full h-[600px] tab-content no-padding"
                 >
                   <div
                     id="district-rankings-map-legend"
@@ -468,146 +467,55 @@
             </section>
           </div>
           <!-- Main row -->
-          <div class="row border-2">
+          <div class="row border-2 rounded-xl shadow-sm">
             <!-- Left col -->
-            <section class="col-lg-6 connectedSortable">
-              <!-- Custom tabs (Charts with tabs)-->
-              <div class="nav-tabs-custom">
+            <section class="col-lg-6">
+              <div class="nav-tabs-custom border-0 shadow-none">
                 <!-- Tabs within a box -->
-                <ul class="nav nav-tabs pull-right no-border">
+                <ul class="flex items-center justify-between border-0 h-[45px]">
                   <li>
-                    <div class="form-group">
-                      <select
-                        id="duration-selector"
-                        class="form-control hidden"
-                      >
-                        <!-- <option value="">Select Duration</option> -->
-                        <option value="weekly">Weekly</option>
-                        <option value="biweekly">Bi Weekly</option>
-                        <option value="monthly">Monthly</option>
-                        <option value="2 months">2 Months</option>
-                      </select>
-                    </div>
+                    <h3 class="text-black font-bold text-3xl">
+                      Actual vs Prediction
+                    </h3>
                   </li>
                   <li>
-                    <select id="district-selector" class="form-control">
-                      <!-- <option>Select District</option>
-                      <option>option 2</option>
-                      <option>option 3</option>
-                      <option>option 4</option>
-                      <option>option 5</option> -->
-                    </select>
-                  </li>
-
-                  <li class="pull-left header">
-                    <h3>Actual vs Prediction</h3>
+                    <select
+                      id="district-selector"
+                      class="form-control"
+                    ></select>
                   </li>
                 </ul>
-                <div class="tab-content no-padding">
-                  <div
-                    class="w-100 chart tab-pane active"
-                    style="position: relative; height: 300px"
-                  >
-                    <canvas id="chartLeftCanva"></canvas>
-                  </div>
-                </div>
-              </div>
-              <!-- /.nav-tabs-custom -->
-            </section>
-            <!-- /.Left col -->
-            <!-- right col -->
-            <section class="col-lg-6 connectedSortable">
-              <div class="nav-tabs-custom">
-                <!-- Tabs within a box -->
-                <ul class="nav nav-tabs pull-right no-border mb20">
-                  <li><a href="#">&#9900; &#9900; &#9900;</a></li>
-                  <li class="pull-left header">
-                    <h3>Prediction</h3>
-                  </li>
-                </ul>
-                <div
-                  class="w-100 chart tab-pane active"
-                  style="position: relative; height: 300px"
-                >
-                  <canvas id="chartRightCanva"></canvas>
+                <!-- chartRightCanva -->
+                <div class="relative w-full chart tab-pane">
+                  <canvas id="chartLeftCanva" class="w-full h-[400px]"></canvas>
                 </div>
               </div>
             </section>
             <!-- right col -->
+            <section class="col-lg-6">
+              <div class="nav-tabs-custom border-0 shadow-none">
+                <!-- Tabs within a box -->
+                <ul class="flex items-center justify-between border-0 h-[45px]">
+                  <li>
+                    <h3 class="text-black font-bold text-3xl">Prediction</h3>
+                  </li>
+                  <li class="text-black">
+                    <a href="#">&#9900; &#9900; &#9900;</a>
+                  </li>
+                </ul>
+                <!-- chartRightCanva -->
+                <div class="relative w-full chart tab-pane">
+                  <canvas
+                    id="chartRightCanval"
+                    class="w-full h-[400px]"
+                  ></canvas>
+                </div>
+              </div>
+            </section>
           </div>
-          <div class="row" style="height: 550px">
-            <div class="col-lg-6" style="height: 100%">
-              <div class="nav-tabs-custom legend-colour-code">
-                <!-- Tabs within a box -->
-                <ul class="nav nav-tabs pull-right no-border mb20">
-                  <li class="pull-left header">
-                    <h3><span>Legend</span> colour code</h3>
-                  </li>
-                </ul>
-                <div class="row mb20">
-                  <section class="col-lg-12">
-                    <div class="legend-1">
-                      <p>
-                        <img
-                          src="dist/img/icon1.svg"
-                          class="user-image"
-                          alt="User Image"
-                        />
-                        Vehicle
-                      </p>
-                      <div></div>
-                    </div>
-                    <div class="legend-1">
-                      <p>
-                        <img
-                          src="dist/img/icon2.svg"
-                          class="user-image"
-                          alt="User Image"
-                        />
-                        Industry
-                      </p>
-                      <div class="two"></div>
-                    </div>
-                    <div class="legend-1">
-                      <p>
-                        <img
-                          src="dist/img/icon3.svg"
-                          class="user-image"
-                          alt="User Image"
-                        />
-                        Construction
-                      </p>
-                      <div class="three"></div>
-                    </div>
-                    <div class="legend-1">
-                      <p>
-                        <img
-                          src="dist/img/icon4.svg"
-                          class="user-image"
-                          alt="User Image"
-                        />
-                        Agriculture
-                      </p>
-                      <div class="four"></div>
-                    </div>
-                    <div class="legend-1">
-                      <p>
-                        <img
-                          src="dist/img/icon5.svg"
-                          class="user-image"
-                          alt="User Image"
-                        />
-                        General Wasting
-                      </p>
-                      <div class="five"></div>
-                    </div>
-                  </section>
-                </div>
-              </div>
-              <!-- /.nav-tabs-custom -->
-            </div>
 
-            <div class="col-lg-6" style="height: 100%">
+          <div class="row">
+            <div class="h-full">
               <div class="nav-tabs-custom legend-source-option">
                 <!-- Tabs within a box -->
                 <ul class="nav nav-tabs pull-right no-border mb20">
@@ -631,7 +539,7 @@
                     >
                       Sources:
                     </p>
-                    <div class="industry-1 btn-flat">
+                    <div class="industry-1 btn-flat flex items-center gap-4">
                       <img
                         src="dist/img/icon1.svg"
                         class="user-image"
@@ -639,7 +547,7 @@
                       />
                       Vehicle
                     </div>
-                    <div class="industry-2 btn-flat">
+                    <div class="industry-2 btn-flat flex item">
                       <img
                         src="dist/img/icon2.svg"
                         class="user-image"
@@ -647,7 +555,7 @@
                       />
                       Industry
                     </div>
-                    <div class="industry-3 btn-flat">
+                    <div class="industry-3 btn-flat flex item">
                       <img
                         src="dist/img/icon3.svg"
                         class="user-image"
@@ -656,7 +564,7 @@
                       Construction
                     </div>
                     <div
-                      class="industry-4 btn-flat"
+                      class="industry-4 btn-flat flex item"
                       style="background-color: #36454f50; border-color: #36454f"
                     >
                       <img
@@ -666,7 +574,7 @@
                       />
                       Agriculture
                     </div>
-                    <div class="industry-5 btn-flat">
+                    <div class="industry-5 btn-flat flex item">
                       <img
                         src="dist/img/icon5.svg"
                         class="user-image"
@@ -680,13 +588,13 @@
                 <div>
                   <div
                     id="forecastMap"
-                    style="height: 350px; position: relative"
-                    class="w-100 tab-content no-padding"
+                    style="height: 600px; position: relative"
+                    class="w-full tab-content no-padding"
                   >
                     <section class="color-legend-on-map hidden">
                       <p class="legend">Legend</p>
                       <div class="legend-1">
-                        <p>
+                        <p class="flex">
                           <img
                             src="dist/img/icon1.svg"
                             class="user-image"
@@ -697,7 +605,7 @@
                         <div style="height: 20px"></div>
                       </div>
                       <div class="legend-1">
-                        <p>
+                        <p class="flex">
                           <img
                             src="dist/img/icon2.svg"
                             class="user-image"
@@ -708,7 +616,7 @@
                         <div style="height: 20px" class="two"></div>
                       </div>
                       <div class="legend-1">
-                        <p>
+                        <p class="flex">
                           <img
                             src="dist/img/icon3.svg"
                             class="user-image"
@@ -719,7 +627,7 @@
                         <div style="height: 20px" class="three"></div>
                       </div>
                       <div class="legend-1">
-                        <p>
+                        <p class="flex items-center gap-4">
                           <img
                             src="dist/img/icon4.svg"
                             class="user-image"
@@ -730,7 +638,7 @@
                         <div style="height: 20px" class="four"></div>
                       </div>
                       <div class="legend-1">
-                        <p>
+                        <p class="flex">
                           <img
                             src="dist/img/icon5.svg"
                             class="user-image"
@@ -745,6 +653,77 @@
                 </div>
               </div>
             </div>
+
+            <div class="h-full">
+              <div class="nav-tabs-custom legend-colour-code">
+                <!-- Tabs within a box -->
+                <ul class="nav nav-tabs pull-right no-border mb20">
+                  <li class="pull-left header">
+                    <h3><span>Legend</span> colour code</h3>
+                  </li>
+                </ul>
+                <div class="row mb20">
+                  <section class="col-lg-12">
+                    <div class="legend-1">
+                      <p class="flex">
+                        <img
+                          src="dist/img/icon1.svg"
+                          class="user-image"
+                          alt="User Image"
+                        />
+                        Vehicle
+                      </p>
+                      <div></div>
+                    </div>
+                    <div class="legend-1">
+                      <p class="flex">
+                        <img
+                          src="dist/img/icon2.svg"
+                          class="user-image"
+                          alt="User Image"
+                        />
+                        Industry
+                      </p>
+                      <div class="two"></div>
+                    </div>
+                    <div class="legend-1">
+                      <p class="flex">
+                        <img
+                          src="dist/img/icon3.svg"
+                          class="user-image"
+                          alt="User Image"
+                        />
+                        Construction
+                      </p>
+                      <div class="three"></div>
+                    </div>
+                    <div class="legend-1">
+                      <p class="flex">
+                        <img
+                          src="dist/img/icon4.svg"
+                          class="user-image"
+                          alt="User Image"
+                        />
+                        Agriculture
+                      </p>
+                      <div class="four"></div>
+                    </div>
+                    <div class="legend-1">
+                      <p class="flex">
+                        <img
+                          src="dist/img/icon5.svg"
+                          class="user-image"
+                          alt="User Image"
+                        />
+                        General Wasting
+                      </p>
+                      <div class="five"></div>
+                    </div>
+                  </section>
+                </div>
+              </div>
+              <!-- /.nav-tabs-custom -->
+            </div>
           </div>
           <!-- /.row (main row) -->
         </section>
@@ -753,7 +732,7 @@
       <!-- /.content-wrapper -->
       <footer class="main-footer">
         <strong>
-          Copyright &copy; 2023-2024 <a href="#">Powered By Punjab IT Board</a>
+          Copyright &copy; 2024-2025 <a href="#">Powered By Punjab IT Board</a>
         </strong>
       </footer>
     </div>
@@ -807,48 +786,3 @@
     <script src="dist/js/api/map.js"></script>
   </body>
 </html>
-
-<!-- 
-                  <div class="color-palette-set col-md-2">
-                    <div
-                      class="bg-light-blue disabled color-palette pd10 mb20"
-                    ></div>
-                    <div class="bg-light-blue color-palette pd10 mb20"></div>
-                    <div
-                      class="bg-light-blue-active color-palette pd10 mb20"
-                    ></div>
-                  </div>
-                  <div class="color-palette-set col-md-2">
-                    <div
-                      class="bg-green disabled color-palette pd10 mb20"
-                    ></div>
-                    <div class="bg-green color-palette pd10 mb20"></div>
-                    <div class="bg-green-active color-palette pd10 mb20"></div>
-                  </div>
-                  <div class="color-palette-set col-md-2">
-                    <div
-                      class="bg-yellow disabled color-palette pd10 mb20"
-                    ></div>
-                    <div class="bg-yellow color-palette pd10 mb20"></div>
-                    <div class="bg-yellow-active color-palette pd10 mb20"></div>
-                  </div>
-                  <div class="color-palette-set col-md-2">
-                    <div class="bg-red disabled color-palette pd10 mb20"></div>
-                    <div class="bg-red color-palette pd10 mb20"></div>
-                    <div class="bg-red-active color-palette pd10 mb20"></div>
-                  </div>
-                  <div class="color-palette-set col-md-2">
-                    <div
-                      class="bg-purple disabled color-palette pd10 mb20"
-                    ></div>
-                    <div class="bg-purple color-palette pd10 mb20"></div>
-                    <div class="bg-purple-active color-palette pd10 mb20"></div>
-                  </div>
-                  <div class="color-palette-set col-md-2">
-                    <div
-                      class="bg-maroon disabled color-palette pd10 mb20"
-                    ></div>
-                    <div class="bg-maroon color-palette pd10 mb20"></div>
-                    <div class="bg-maroon-active color-palette pd10 mb20"></div>
-                  </div>
--->

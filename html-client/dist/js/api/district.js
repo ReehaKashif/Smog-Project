@@ -4,15 +4,11 @@ const CACHE_DURATION = 30 * 60 * 1000; // Cache duration in milliseconds (5 minu
 
 document.addEventListener("DOMContentLoaded", () => {
   getAqiStatus();
-  const now = new Date().getTime();
+  getDistrictAqiColor();
 
-  if (cachedData && now - cacheTime < CACHE_DURATION) {
-    // Use cached data if still valid
-    processAndCacheData(cachedData);
-  } else {
-    // Fetch new data if cache is expired or not available
+  setInterval(() => {
     getDistrictAqiColor();
-  }
+  }, 1 * 60 * 60 * 1000); // 1 hour
 });
 
 const districtsHTML = (data) => {
@@ -106,21 +102,17 @@ const getAqiStatus = () => {
 
 // Function to get district AQI color
 const getDistrictAqiColor = () => {
-  return getCurrentTime()
-    .then((time) => {
-      if (!time) return null;
-
-      return fetch(`${SERVER_URL}/districts_aqi_color?time=${time}`)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          return response.json();
-        })
-        .then((data) => {
-          processAndCacheData(data.districts_aqi_color);
-          return data;
-        });
+  return fetch(`${SERVER_URL}/districts_aqi_color`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      processAndCacheData(data.districts_aqi_color);
+      renderAverageAQI(data.districts_aqi_color);
+      return data;
     })
     .catch((err) => {
       console.error("Fetch error:", err);
@@ -130,19 +122,21 @@ const getDistrictAqiColor = () => {
 
 const processAndCacheData = (data) => {
   if (!data) return;
-
-  // Extract district field and store in an array
   const districts = data.map((item) => item.district);
-
-  // Sort districts alphabetically
   districts.sort((a, b) => a.localeCompare(b));
-
-  // Update the cached data and cache time
-  cachedData = data;
-  cacheTime = new Date().getTime();
-
   districts.forEach((district) => {
     $("#district-selector").append(`<option>${district}</option>`);
   });
   $("#district-selector").val(districts[0]).trigger("change");
+};
+
+const calculateAverageAQI = (data) => {
+  const aqiValues = data.map((item) => item.aqi);
+  const sum = aqiValues.reduce((acc, curr) => acc + curr, 0);
+  return Math.round(sum / aqiValues.length);
+};
+
+const renderAverageAQI = (data) => {
+  const aqiAverage = calculateAverageAQI(data);
+  $("#aqi-average").text(`Average AQI: ${aqiAverage}`);
 };
