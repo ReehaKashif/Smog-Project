@@ -1,5 +1,5 @@
-var leftChartCtx = document.getElementById("chartLeftCanva").getContext("2d");
-var rightChartCtx = document.getElementById("chartRightCanva").getContext("2d");
+let leftChartCtx = document.getElementById("chartLeftCanva").getContext("2d");
+let rightChartCtx = document.getElementById("chartRightCanva").getContext("2d");
 
 let leftChart, rightChart;
 
@@ -75,10 +75,9 @@ const getForecastAqi = (district) => {
 const handleHistoricalParamsChange = () => {
   // Get the values from the select inputs
   const district = $("#district-selector").val();
-  const duration = $("#duration-selector").val();
   // Call the function with the current values
-  if (district && duration) {
-    getHistoricalData(district, duration);
+  if (district) {
+    getHistoricalData(district);
     // fetchAllHistoricalData(district);
   }
 };
@@ -99,19 +98,19 @@ const plotHistoricalGraph = (data) => {
   const datasets = [
     {
       label: "Actual",
-      data: dataFor2MonthsBefore.aqi,
+      data: roundNullableData(dataFor2MonthsBefore.aqi),
       borderColor: "blue",
       fill: false,
     },
     {
       label: "14 days",
-      data: padList(dataFor14DaysBefore, totalLength),
+      data: roundNullableData(padList(dataFor14DaysBefore, totalLength)),
       borderColor: "yellow",
       fill: false,
     },
     {
       label: "7 days",
-      data: padList(dataFor7DaysBefore, totalLength),
+      data: roundNullableData(padList(dataFor7DaysBefore, totalLength)),
       borderColor: "green",
       fill: false,
     },
@@ -126,14 +125,6 @@ const plotHistoricalGraph = (data) => {
     data: {
       labels: dataFor2MonthsBefore.date.map(convertDateFormat),
       datasets,
-      // [
-      //   {
-      //     label: "Actual",
-      //     data: data.aqi,
-      //     borderColor: "green",
-      //     fill: false,
-      //   },
-      // ],
     },
     options: {
       responsive: true,
@@ -150,25 +141,24 @@ const plotHistoricalGraph = (data) => {
 
 const plotPredictionGraph = (data) => {
   const { firstSection, secondSection, thirdSection } = divideArray(data.aqi);
-  // const { aqi, aqi_7_days_lag, aqi_14_days_lag, date } = data;
 
   let groupedDatasets = [
     {
       label: "Model 1",
-      data: firstSection,
+      data: roundNullableData(firstSection),
       borderColor: "green",
       fill: false,
     },
     {
       label: "",
-      data: secondSection,
+      data: roundNullableData(secondSection),
       backgroundColor: "transparent",
       borderColor: "yellow",
       fill: false,
     },
     {
       label: "",
-      data: thirdSection,
+      data: roundNullableData(thirdSection),
       backgroundColor: "transparent",
       borderColor: "red",
       fill: false,
@@ -238,4 +228,11 @@ const convertDateFormat = (dateStr) => {
 const padList = (list, targetLength) => {
   const padding = Array(targetLength - list.length).fill(null);
   return [...padding, ...list];
+};
+
+const roundNullableData = (data) => {
+  return data.map((d) => {
+    if (!d) return d;
+    else return Math.round(d);
+  });
 };

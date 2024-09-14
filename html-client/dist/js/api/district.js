@@ -138,5 +138,5 @@ const calculateAverageAQI = (data) => {
 
 const renderAverageAQI = (data) => {
   const aqiAverage = calculateAverageAQI(data);
-  $("#aqi-average").text(`Average AQI: ${aqiAverage}`);
+  $("#aqi-average").text(`${aqiAverage}`);
 };

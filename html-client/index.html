@@ -294,21 +294,22 @@
         <!-- Content Header (Page header) -->
         <section class="content-header heading-bg">
           <div
-            class="flex flex-col items-start md:flex-row md:items-end gap-8 justify-between"
+            class="flex flex-col items-start md:flex-row md:items-end gap-8 justify-between relative"
           >
             <div>
               <img src="dist/img/banner-icon.svg" alt="User Image" />
-              <p class="text-4xl md:text-5xl lg:text-6xl">
+              <p class="text-4xl lg:text-6xl font-bold">
                 AQI in Punjab, Pakistan
               </p>
             </div>
-            <div>
-              <p id="aqi-average" class="text-4xl md:text-5xl lg:text-6xl">
+            <div class="md:absolute md:right-1/2 md:translate-x-1/2">
+              <p id="aqi-average" class="text-4xl lg:text-6xl font-bold">
                 - - -
               </p>
             </div>
             <div>
-              <p id="current-hour" class="text-4xl md:text-5xl lg:text-6xl"></p>
+              <p class="text-xl md:text-3xl">Current Time</p>
+              <p id="current-hour" class="text-4xl lg:text-6xl font-bold"></p>
             </div>
           </div>
         </section>
@@ -359,22 +360,22 @@
                   </li>
                 </ul>
 
-                <!-- <div class="h-full items-start flex-col justify-between"> -->
                 <div
-                  id="color-palette"
-                  class="w-full h-[calc(100%-65px)] py-8"
-                ></div>
+                  class="h-[calc(100%-25px)] flex items-start flex-col justify-between"
+                >
+                  <div id="color-palette" class="w-full py-8"></div>
 
-                <div class="map-disclaimer h-[50px]">
-                  <p style="font-size: medium">
-                    <span style="font-weight: 700; text-decoration: underline"
-                      >Disclaimer:
-                    </span>
-                    The map provides a visual representation of the air quality
-                    levels across various districts in Punjab, Pakistan, using a
-                    color-coded system to rank each district based on its Air
-                    Quality Index (AQI).
-                  </p>
+                  <div class="map-disclaimer">
+                    <p style="font-size: medium">
+                      <span style="font-weight: 700; text-decoration: underline"
+                        >Disclaimer:
+                      </span>
+                      The map provides a visual representation of the air
+                      quality levels across various districts in Punjab,
+                      Pakistan, using a color-coded system to rank each district
+                      based on its Air Quality Index (AQI).
+                    </p>
+                  </div>
                 </div>
               </div>
             </section>
@@ -391,12 +392,12 @@
                 </ul>
                 <div
                   id="map1"
-                  class="relative w-full h-[600px] tab-content no-padding"
+                  class="relative w-full h-[700px] tab-content no-padding"
                 >
-                  <div class="district-aqi-map-legend hidden>
-                  <p class="legend hidden">Legend</p>
-                  <div class="district-aqi-map-legend-item">
-                    <div style="background-color: #00e400">
+                  <div class="district-aqi-map-legend hidden">
+                    <p class="legend hidden">Legend</p>
+                    <div class="district-aqi-map-legend-item">
+                      <div style="background-color: #00e400">
                       <span>0-50 Good</span>
                       <span>Low AQI</span>
                     </div>
@@ -453,7 +454,7 @@
                 </ul>
                 <div
                   id="map2"
-                  class="relative w-full h-[600px] tab-content no-padding"
+                  class="relative w-full h-[700px] tab-content no-padding"
                 >
                   <div
                     id="district-rankings-map-legend"
@@ -506,7 +507,7 @@
                 <!-- chartRightCanva -->
                 <div class="relative w-full chart tab-pane">
                   <canvas
-                    id="chartRightCanval"
+                    id="chartRightCanva"
                     class="w-full h-[400px]"
                   ></canvas>
                 </div>
@@ -588,7 +589,7 @@
                 <div>
                   <div
                     id="forecastMap"
-                    style="height: 600px; position: relative"
+                    style="height: 750px; position: relative"
                     class="w-full tab-content no-padding"
                   >
                     <section class="color-legend-on-map hidden">
