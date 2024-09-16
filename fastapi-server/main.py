@@ -67,13 +67,13 @@ def get_AQI_color(aqi):
 
 
 # Assuming the color palette provided corresponds to these hex codes
-color_palette = [
-    "#00FF00", "#19F719", "#32EF32", "#4BE74B", "#64DF64", "#7DD77D",
-    "#96CF96", "#AFC7AF", "#C8BFC8", "#E1B7E1", "#FF9FFF", "#FF99E5",
-    "#FF92CC", "#FF8CB2", "#FF8699", "#FF7F80", "#FF7966", "#FF734D",
-    "#FF6C33", "#FF662A", "#FF6020", "#FF5917", "#FF5313", "#FF4C0F",
-    "#FF460B", "#FF4007", "#FF3A03", "#FF3300", "#FF2D00", "#FF2600",
-    "#FF2000", "#FF1A00", "#FF1400", "#FF0D00", "#FF0700", "#FF0000"
+color_palette =[
+  ["#00FF00", "#24FF00", "#48FF00", "#6CFF00", "#90FF00", "#B4FF00"],
+  ["#D8FF00", "#FCFF00", "#FFF500", "#FFEB00", "#FFE100", "#FFD700"],
+  ["#FFCC00", "#FFC200", "#FFB800", "#FFAD00", "#FFA300", "#FF9900"],
+  ["#FF8E00", "#FF8400", "#FF7A00", "#FF6F00", "#FF6500", "#FF5B00"],
+  ["#FF5100", "#FF4600", "#FF3C00", "#FF3200", "#FF2800", "#FF1D00"],
+  ["#FF1300", "#FF0900", "#FF0000", "#F50000", "#EB0000", "#E10000"],
 ]
 
 # Define the pollutant to districts mapping
