@@ -33,19 +33,19 @@ const color_palette = [
 ];
 
 const color_palette_labels = [
-  "Very Low",
+  "Lowest",
   "Low",
   "Medium Low",
   "Medium",
   "Medium High",
-  "High",
+  "Highest",
 ];
 
 const populateColorPallete = () => {
   for (let i = 0; i < color_palette.length; i++) {
     $("#color-palette").append(`
        <div class="pallete-container">
-                    <div style="background-color: ${color_palette[i][0]}" class="pallete-item"></div>
+                    <div style="background-color: ${color_palette[i][0]}" class="pallete-item"><span class="pl-4">${color_palette_labels[i]}</span></div>
                     <div style="background-color: ${color_palette[i][1]}" class="pallete-item"></div>
                     <div style="background-color: ${color_palette[i][2]}" class="pallete-item"></div>
                     <div style="background-color: ${color_palette[i][3]}" class="pallete-item"></div>
@@ -131,11 +131,11 @@ const getLocalStorage = (key) => {
   return null;
 };
 
-  // const color_palette = [
-  //   ["#00ff00", "#33ff00", "#66ff00", "#99ff00", "#ccff00", "#ffff00"],
-  //   ["#ffcc00", "#ff9900", "#ff6600", "#ff3300", "#ff0000", "#e60000"],
-  //   ["#cc0000", "#b30000", "#990000", "#800000", "#66ff33", "#99ff33"],
-  //   ["#ccff33", "#ffff33", "#ffcc33", "#ff9933", "#ff6633", "#ff3333"],
-  //   ["#e60033", "#cc0033", "#b30033", "#990033", "#80ff66", "#b3ff66"],
-  //   ["#ccff66", "#ffff66", "#ffcc66", "#ff9966", "#ff6666", "#ff3333"],
-  // ];
+// const color_palette = [
+//   ["#00ff00", "#33ff00", "#66ff00", "#99ff00", "#ccff00", "#ffff00"],
+//   ["#ffcc00", "#ff9900", "#ff6600", "#ff3300", "#ff0000", "#e60000"],
+//   ["#cc0000", "#b30000", "#990000", "#800000", "#66ff33", "#99ff33"],
+//   ["#ccff33", "#ffff33", "#ffcc33", "#ff9933", "#ff6633", "#ff3333"],
+//   ["#e60033", "#cc0033", "#b30033", "#990033", "#80ff66", "#b3ff66"],
+//   ["#ccff66", "#ffff66", "#ffcc66", "#ff9966", "#ff6666", "#ff3333"],
+// ];

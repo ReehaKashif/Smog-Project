@@ -1,11 +1,13 @@
+let pollutantDistrictsMap = null;
+let districtMap = null;
+let rankingMap = null;
+
 $(document).ready(function () {
-  // Initial function call when the page loads
-  const map = L.map("forecastMap").setView([30.5, 72.5], 7);
-  fetchPollutantDistrictsApi(map);
+  fetchPollutantDistrictsApi();
 
   // Attach event listeners to select inputs
   $("#pollutant-source-selector").change(function () {
-    fetchPollutantDistrictsApi(map);
+    fetchPollutantDistrictsApi();
   });
 });
 
@@ -27,13 +29,16 @@ const getMapAqi = () => {
 getMapAqi()
   .then((districtData) => {
     // Initialize the map
-    var map = L.map("map1").setView([30.5, 72.5], 7);
+    if (districtMap) {
+      districtMap.remove();
+    }
+    districtMap = L.map("map1").setView([30.5, 72.5], 7);
 
     // Add Google Maps layer
     L.tileLayer("http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", {
       maxZoom: 20,
       subdomains: ["mt0", "mt1", "mt2", "mt3"],
-    }).addTo(map);
+    }).addTo(districtMap);
 
     // Load Shapefiles for each district using the fetched data
     const districts = [
@@ -49,7 +54,7 @@ getMapAqi()
       districts.map((districtInfo) => {
         const formattedDistrict = districtInfo.district.replace(/\s+/g, "_");
         const shapefilePath = `./shapefiles/${formattedDistrict}.shp`;
-        return loadShapefile(shapefilePath, districtInfo, map);
+        return loadShapefile(shapefilePath, districtInfo, districtMap);
       })
     )
       .then(() => {
@@ -76,14 +81,17 @@ const getMapRanking = () => {
 
 getMapRanking()
   .then((districtData) => {
+    if (rankingMap) {
+      rankingMap.remove();
+    }
     // Initialize the map
-    var map = L.map("map2").setView([30.5, 72.5], 7);
+    rankingMap = L.map("map2").setView([30.5, 72.5], 7);
 
     // Add Google Maps layer
     L.tileLayer("http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", {
       maxZoom: 20,
       subdomains: ["mt0", "mt1", "mt2", "mt3"],
-    }).addTo(map);
+    }).addTo(rankingMap);
 
     // Load Shapefiles for each district using the fetched data
     const mapRankingData = [
@@ -95,7 +103,7 @@ getMapRanking()
         const formattedDistrict = districtInfo.district.replace(/\s+/g, "_"); // Replace spaces with underscores
         // .replace(/_/g, " ") // Replace underscores with spaces
         const shapefilePath = `./shapefiles/${formattedDistrict}.shp`;
-        return loadShapefile(shapefilePath, districtInfo, map);
+        return loadShapefile(shapefilePath, districtInfo, rankingMap);
       })
     )
       .then(() => {
@@ -127,16 +135,21 @@ const sources_color = {
   "General Wasting": "#7a288a",
 };
 
-const fetchPollutantDistrictsApi = (map) => {
+const fetchPollutantDistrictsApi = () => {
   const source = $("#pollutant-source-selector").val();
   // Fetch district data
   getPollutantDistricts(source)
     .then((data) => {
+      if (pollutantDistrictsMap) {
+        pollutantDistrictsMap.remove();
+      }
+      // Initial function call when the page loads
+      pollutantDistrictsMap = L.map("forecastMap").setView([30.5, 72.5], 7);
       // Add Google Maps layer
       L.tileLayer("http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", {
         maxZoom: 20,
         subdomains: ["mt0", "mt1", "mt2", "mt3"],
-      }).addTo(map);
+      }).addTo(pollutantDistrictsMap);
 
       // Load Shapefiles for each district using the fetched data
       getDistrictAqiColor().then((d) => {
@@ -162,7 +175,7 @@ const fetchPollutantDistrictsApi = (map) => {
             return await loadShapefile(
               shapefilePath,
               districtInfo,
-              map,
+              pollutantDistrictsMap,
               source
             );
           })
