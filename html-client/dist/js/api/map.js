@@ -93,6 +93,8 @@ getMapRanking()
       subdomains: ["mt0", "mt1", "mt2", "mt3"],
     }).addTo(rankingMap);
 
+    console.log({districtData})
+
     // Load Shapefiles for each district using the fetched data
     const mapRankingData = [
       { district: "aoi_punjab", color: "#000000", aqi: 0 },

@@ -1,5 +1,5 @@
-const SERVER_URL = "https://smop-api.onrender.com/api";
-// const SERVER_URL = "http://localhost:8000/api";
+// const SERVER_URL = "https://smop-api.onrender.com/api";
+const SERVER_URL = "http://localhost:8000/api";
 
 const getCurrentTime = () => {
   return fetch(SERVER_URL + "/pakistan_time", {
@@ -45,12 +45,12 @@ const populateColorPallete = () => {
   for (let i = 0; i < color_palette.length; i++) {
     $("#color-palette").append(`
        <div class="pallete-container">
-                    <div style="background-color: ${color_palette[i][0]}" class="pallete-item"><span class="pl-4">${color_palette_labels[i]}</span></div>
-                    <div style="background-color: ${color_palette[i][1]}" class="pallete-item"></div>
-                    <div style="background-color: ${color_palette[i][2]}" class="pallete-item"></div>
-                    <div style="background-color: ${color_palette[i][3]}" class="pallete-item"></div>
-                    <div style="background-color: ${color_palette[i][4]}" class="pallete-item"></div>
-                    <div style="background-color: ${color_palette[i][5]}" class="pallete-item"></div>
+                    <div style="background-color: ${color_palette[i][0]}" class="pallete-item h-8 lg:h-10"><span class="pl-4">${color_palette_labels[i]}</span></div>
+                    <div style="background-color: ${color_palette[i][1]}" class="pallete-item h-8 lg:h-10"></div>
+                    <div style="background-color: ${color_palette[i][2]}" class="pallete-item h-8 lg:h-10"></div>
+                    <div style="background-color: ${color_palette[i][3]}" class="pallete-item h-8 lg:h-10"></div>
+                    <div style="background-color: ${color_palette[i][4]}" class="pallete-item h-8 lg:h-10"></div>
+                    <div style="background-color: ${color_palette[i][5]}" class="pallete-item h-8 lg:h-10"></div>
                   </div>
       `);
     $("#district-rankings-map-legend").append(`

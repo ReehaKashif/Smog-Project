@@ -90,7 +90,8 @@ const getAqiStatus = () => {
         })
         .then((data) => {
           // Update the content container with the new HTML
-          const html = districtsHTML(data);
+          // const html = districtsHTML(data);
+          renderDistrictData(data);
           $("#aqi-status").html(html);
         });
     })
@@ -141,4 +142,13 @@ const renderAverageAQI = (data) => {
   $("#aqi-average").text(`${aqiAverage}`);
   $("#aqi-average-meter").text(`${aqiAverage}`);
   $("#aqi-average-meter-neddle").css("--score", aqiAverage);
+};
+
+const renderDistrictData = (data) => {
+  $("#best-district-aqi").text(data.best_district.aqi.toFixed(0));
+  $("#worst-district-aqi").text(data.worst_district.aqi.toFixed(0));
+  $("#best-district-name").text(data.best_district.district);
+  $("#worst-district-name").text(data.worst_district.district);
+  $("#highest-pollutant-district").text(data.highest_pollutant);
+  $("#cause-of-pollutant").text(data.cause_of_pollutant);
 };

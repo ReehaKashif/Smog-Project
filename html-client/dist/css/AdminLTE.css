@@ -1767,6 +1767,7 @@ a:focus {
   position: relative;
   display: block;
   margin-bottom: 20px;
+  background-color: rgba(204, 204, 204, 0.15);
 }
 .small-box > .inner {
   padding: 15px;
@@ -1794,25 +1795,36 @@ a:focus {
   white-space: nowrap;
   padding: 0;
 }
-.small-box h3 span {
+
+@media screen and (max-width: 575px) {
+  .small-box > .inner {
+    padding: 12px;
+  }
+  .small-box h3,
+  .small-box h3 span {
+    font-size: 18px;
+  }
+}
+
+/* .small-box h3 span {
   color: #13a846;
   padding-left: 10px;
-}
+} */
 .small-box h3 span i {
   font-size: 12px;
 }
-.small-box p {
+/* .small-box p {
   font-size: 15px;
   display: block;
-}
-.small-box p a {
+} */
+/* .small-box p a {
   display: block;
   position: absolute;
   font-size: 11px;
   color: #333333;
   top: 20px;
   right: 25px;
-}
+} */
 .small-box p > small {
   display: block;
   color: #f9f9f9;

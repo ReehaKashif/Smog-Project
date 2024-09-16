@@ -11,7 +11,8 @@
   width: 100%;
   display: grid;
   grid-template-columns: repeat(1, 1fr);
-  gap: 2rem;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 
 .ranking-map-pallete-container {
@@ -152,7 +153,8 @@ p.legend {
     width: 100%;
     display: grid;
     grid-template-columns: repeat(6, 1fr);
-    margin-bottom: 1.5rem;
+    gap: 2rem;
+    margin-bottom: 2rem;
   }
   .pallete-item {
     height: 24px;

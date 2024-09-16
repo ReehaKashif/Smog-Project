@@ -303,7 +303,10 @@
               </p>
             </div>
             <div class="md:absolute md:right-1/2 md:translate-x-1/2">
-              <p id="aqi-average" class="text-[80px] md:text-[100px] leading-[80px] md:leading-[100px] font-bold">
+              <p
+                id="aqi-average"
+                class="text-[80px] md:text-[100px] leading-[80px] md:leading-[100px] font-bold"
+              >
                 -
               </p>
             </div>
@@ -317,8 +320,88 @@
         <!-- Main content -->
         <section class="content space-y-8 px-4 md:px-8">
           <!-- AQI DISTRICTS -->
-          <div id="aqi-status" class="row"></div>
-
+          <div id="aqi-status" class="row">
+            <!-- BEST DISTRICT -->
+            <div class="col-lg-3 col-xs-6">
+              <div class="small-box">
+                <div class="inner space-y-4">
+                  <p class="flex items-center justify-between">
+                    <span> Best Air Quality </span>
+                    <a href="#">&#9900; &#9900; &#9900;</a>
+                  </p>
+                  <h3 class="flex items-center gap-4">
+                    <span
+                      id="best-district-name"
+                      class="text-left !text-3xl md:!text-5xl"
+                      >-</span
+                    >
+                    <span
+                      id="best-district-aqi"
+                      class="text-sm font-bold text-green-500 !text-3xl md:!text-5xl"
+                      >-</span
+                    >
+                  </h3>
+                </div>
+              </div>
+            </div>
+            <!-- WORST DISTRICT -->
+            <div class="col-lg-3 col-xs-6">
+              <div class="small-box">
+                <div class="inner space-y-4">
+                  <p class="flex items-center justify-between">
+                    <span> Worst Air Quality </span>
+                    <a href="#">&#9900; &#9900; &#9900;</a>
+                  </p>
+                  <h3 class="flex items-center gap-4">
+                    <span
+                      id="worst-district-name"
+                      class="text-left !text-3xl md:!text-5xl"
+                      >-</span
+                    >
+                    <span
+                      id="worst-district-aqi"
+                      class="text-sm font-bold text-red-500 !text-3xl md:!text-5xl"
+                      >-</span
+                    >
+                  </h3>
+                </div>
+              </div>
+            </div>
+            <!-- HIGHEST POLLUTANT DISTRICT -->
+            <div class="col-lg-3 col-xs-6">
+              <div class="small-box">
+                <div class="inner space-y-4">
+                  <p class="flex items-center justify-between">
+                    <span> Highest Pollutant </span>
+                    <a href="#">&#9900; &#9900; &#9900;</a>
+                  </p>
+                  <h3
+                    id="highest-pollutant-district"
+                    class="text-left !text-3xl md:!text-5xl"
+                  >
+                    -
+                  </h3>
+                </div>
+              </div>
+            </div>
+            <!-- CAUSE OF POLLUTANT -->
+            <div class="col-lg-3 col-xs-6">
+              <div class="small-box">
+                <div class="inner space-y-4">
+                  <p class="flex items-center justify-between">
+                    <span> Cause of Pollutant </span>
+                    <a href="#">&#9900; &#9900; &#9900;</a>
+                  </p>
+                  <h3
+                    id="cause-of-pollutant"
+                    class="text-left !text-3xl md:!text-5xl"
+                  >
+                    -
+                  </h3>
+                </div>
+              </div>
+            </div>
+          </div>
           <!-- AQI METER & COLOUR PALLETE -->
           <div
             class="w-full flex flex-col lg:flex-row gap-12 lg:h-[450px] lg:max-h-[450px]"
@@ -327,12 +410,12 @@
               <!-- Custom tabs (Charts with tabs)-->
               <div class="h-full nav-tabs-custom overflow-hidden">
                 <!-- Tabs within a box -->
-                <ul class="nav nav-tabs pull-right no-border h-[25px]">
+                <ul class="nav nav-tabs pull-right no-border lg:h-[25px]">
                   <li class="pull-left header">
                     <h3><span>AQI</span> in Punjab, Pakistan</h3>
                   </li>
                 </ul>
-                <div class="tab-content no-padding h-[calc(100%-65px)] py-8">
+                <div class="tab-content no-padding lg:h-[calc(100%-65px)] py-8">
                   <img
                     src="dist/img/meter.svg"
                     class="user-image mx-auto hidden"
@@ -351,7 +434,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="map-disclaimer h-[50px] relative">
+                <div class="map-disclaimer lg:h-[50px] relative">
                   <p style="font-size: medium">
                     <span style="font-weight: 700; text-decoration: underline">
                       Disclaimer:
@@ -368,14 +451,14 @@
               <!-- Custom tabs (Charts with tabs) -->
               <div class="h-full nav-tabs-custom">
                 <!-- Tabs within a box -->
-                <ul class="nav nav-tabs pull-right no-border h-[25px]">
+                <ul class="nav nav-tabs pull-right no-border lg:h-[25px]">
                   <li class="pull-left header">
                     <h3><span>Colour</span> pallete</h3>
                   </li>
                 </ul>
 
                 <div
-                  class="h-[calc(100%-25px)] flex items-start flex-col justify-between"
+                  class="lg:h-[calc(100%-25px)] flex items-start flex-col justify-between"
                 >
                   <div id="color-palette" class="w-full py-8"></div>
 
