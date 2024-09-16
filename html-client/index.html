@@ -303,8 +303,8 @@
               </p>
             </div>
             <div class="md:absolute md:right-1/2 md:translate-x-1/2">
-              <p id="aqi-average" class="text-4xl lg:text-6xl font-bold">
-                - - -
+              <p id="aqi-average" class="text-6xl md:text-7xl font-bold">
+                -
               </p>
             </div>
             <div>
@@ -320,10 +320,12 @@
           <div id="aqi-status" class="row"></div>
 
           <!-- AQI METER & COLOUR PALLETE -->
-          <div class="row lg:h-[450px]">
-            <section class="h-full col-lg-6">
+          <div
+            class="w-full flex flex-col lg:flex-row gap-12 lg:h-[450px] lg:max-h-[450px]"
+          >
+            <section class="h-full w-full lg:w-1/2">
               <!-- Custom tabs (Charts with tabs)-->
-              <div class="h-full nav-tabs-custom">
+              <div class="h-full nav-tabs-custom overflow-hidden">
                 <!-- Tabs within a box -->
                 <ul class="nav nav-tabs pull-right no-border h-[25px]">
                   <li class="pull-left header">
@@ -333,11 +335,23 @@
                 <div class="tab-content no-padding h-[calc(100%-65px)] py-8">
                   <img
                     src="dist/img/meter.svg"
-                    class="user-image mx-auto"
+                    class="user-image mx-auto hidden"
                     alt="User Image "
                   />
+                  <div class="speedometer translate-y-20">
+                    <div
+                      id="aqi-average-meter-neddle"
+                      class="needle"
+                      style="--score: 0"
+                    >
+                      <span
+                        id="aqi-average-meter"
+                        class="aqi-average font-bold text-white text-3xl md:text-4xl pointer-events-none select-none"
+                      ></span>
+                    </div>
+                  </div>
                 </div>
-                <div class="map-disclaimer h-[50px]">
+                <div class="map-disclaimer h-[50px] relative">
                   <p style="font-size: medium">
                     <span style="font-weight: 700; text-decoration: underline">
                       Disclaimer:
@@ -350,7 +364,7 @@
               </div>
             </section>
             <!--  -->
-            <section class="h-full col-lg-6">
+            <section class="h-full w-full lg:w-1/2">
               <!-- Custom tabs (Charts with tabs) -->
               <div class="h-full nav-tabs-custom">
                 <!-- Tabs within a box -->
@@ -398,46 +412,48 @@
                     <p class="legend hidden">Legend</p>
                     <div class="district-aqi-map-legend-item">
                       <div style="background-color: #00e400">
-                      <span>0-50 Good</span>
-                      <span>Low AQI</span>
+                        <span>0-50 Good</span>
+                        <span>Low AQI</span>
+                      </div>
                     </div>
-                  </div>
-                  <div class="district-aqi-map-legend-item">
-                    <div style="background-color: #ffff00">
-                      <span> 51-100 Moderate</span>
-                      <div class="legend-arrow"></div>
+                    <div class="district-aqi-map-legend-item">
+                      <div style="background-color: #ffff00">
+                        <span> 51-100 Moderate</span>
+                        <div class="legend-arrow"></div>
+                      </div>
                     </div>
-                  </div>
-                  <div class="district-aqi-map-legend-item double-height">
-                    <div style="background-color: #ff7e00">
-                      <span>
-                        101-150 Unhealthy for <br />Sensitive Groups (USG)</span
-                      >
-                      <div class="legend-arrow double-height"></div>
+                    <div class="district-aqi-map-legend-item double-height">
+                      <div style="background-color: #ff7e00">
+                        <span>
+                          101-150 Unhealthy for <br />Sensitive Groups
+                          (USG)</span
+                        >
+                        <div class="legend-arrow double-height"></div>
+                      </div>
                     </div>
-                  </div>
-                  <div class="district-aqi-map-legend-item">
-                    <div style="background-color: #ff0000">
-                      <span> 151-200 Unhealthy</span>
-                      <div class="legend-arrow"></div>
+                    <div class="district-aqi-map-legend-item">
+                      <div style="background-color: #ff0000">
+                        <span> 151-200 Unhealthy</span>
+                        <div class="legend-arrow"></div>
+                      </div>
                     </div>
-                  </div>
-                  <div class="district-aqi-map-legend-item">
-                    <div style="background-color: #8f3f97">
-                      <span> 201-300 Very Unhealthy</span>
-                      <div class="legend-arrow"></div>
+                    <div class="district-aqi-map-legend-item">
+                      <div style="background-color: #8f3f97">
+                        <span> 201-300 Very Unhealthy</span>
+                        <div class="legend-arrow"></div>
+                      </div>
                     </div>
-                  </div>
-                  <div class="district-aqi-map-legend-item">
-                    <div style="background-color: #7e0023">
-                      <span> 301-500 Hazardous</span>
-                      <div class="legend-arrow legend-arrow-head"></div>
+                    <div class="district-aqi-map-legend-item">
+                      <div style="background-color: #7e0023">
+                        <span> 301-500 Hazardous</span>
+                        <div class="legend-arrow legend-arrow-head"></div>
+                      </div>
                     </div>
-                  </div>
-                  <div class="district-aqi-map-legend-item">
-                    <div style="background-color: #767171">
-                      <span> >501 Very Hazardous</span>
-                      <span>High AQI</span>
+                    <div class="district-aqi-map-legend-item">
+                      <div style="background-color: #767171">
+                        <span> >501 Very Hazardous</span>
+                        <span>High AQI</span>
+                      </div>
                     </div>
                   </div>
                 </div>

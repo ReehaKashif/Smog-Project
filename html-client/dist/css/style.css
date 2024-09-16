@@ -1,3 +1,12 @@
+* {
+  --c1: #b4ff00;
+  --c2: #ffd700;
+  --c3: #ff9900;
+  --c4: #ff5b00;
+  --c5: #ff1d00;
+  --c6: #e10000;
+}
+
 .pallete-container {
   width: 100%;
   display: grid;
@@ -150,19 +159,50 @@ p.legend {
   }
 }
 
-/* Legends */
+/* SPEEDOMETER */
+.speedometer {
+  position: relative;
+  margin: 0 auto;
+  width: 400px;
+  height: 400px;
+  padding: 100px;
+  border-radius: 50%;
+  background: radial-gradient(#ffffff 0 0) content-box,
+    conic-gradient(
+      from -90deg,
+      var(--c1) 30deg,
+      var(--c2) 0 60deg,
+      var(--c3) 0 90deg,
+      var(--c4) 0 120deg,
+      var(--c5) 0 150deg,
+      var(--c6) 0 180deg,
+      #ffffff 0
+    );
 
-/* .legend-1 {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  .needle {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    padding: 120px;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+    border-radius: 50%;
+    background: conic-gradient(
+          from 175deg at 50% 55%,
+          #ccc 2deg,
+          #1f1f1f 3deg 7deg,
+          #ccc 8deg 10deg,
+          #00000000 0
+        )
+        0 -170px no-repeat,
+      radial-gradient(#1f1f1f 0 50%, #ccc 51%) content-box;
+    /* rotate: calc((var(--score) / 500) * 180deg); */
+    rotate: calc(cos(var(--score) * 180deg / 500) * -90deg);
+    /* rotate: calc(cos(var(--score) * 180deg / 500) * -90deg); */
+    transition: rotate 0.75s ease-in-out;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
-
-.legend-1 p {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 8px;
-  flex-basis: 1;
-  width: 150px;
-}  */

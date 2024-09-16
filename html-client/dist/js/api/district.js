@@ -139,4 +139,6 @@ const calculateAverageAQI = (data) => {
 const renderAverageAQI = (data) => {
   const aqiAverage = calculateAverageAQI(data);
   $("#aqi-average").text(`${aqiAverage}`);
+  $("#aqi-average-meter").text(`${aqiAverage}`);
+  $("#aqi-average-meter-neddle").css("--score", aqiAverage);
 };
