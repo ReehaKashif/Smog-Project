@@ -4,6 +4,7 @@ import pandas as pd
 from typing import Optional
 from pytz import timezone
 from datetime import datetime, timedelta
+import random  # Add this import at the top of your file
 
 app = FastAPI()
 
@@ -362,8 +363,15 @@ def get_forecast_data(
         # return two array, one for date and one for aqi
         date_array = filtered_df['date'].tolist()
         aqi_array = filtered_df['Aqi'].tolist()
+        
+        # Randomly multiply the AQI values (except the first one)
+        aqi_array = [aqi_array[0]] + [aqi * random.randint(2, 4) for aqi in aqi_array[1:]]
+        
         aqi_array_7_days_lag = filtered_df_7_days_lag['Aqi'].tolist()
+        aqi_array_7_days_lag = [aqi_array_7_days_lag[0]] + [aqi * random.randint(2, 4) for aqi in aqi_array_7_days_lag[1:]]
+        
         aqi_array_14_days_lag = filtered_df_14_days_lag['Aqi'].tolist()
+        aqi_array_14_days_lag = [aqi_array_14_days_lag[0]] + [aqi * random.randint(2, 4) for aqi in aqi_array_14_days_lag[1:]]
 
         # Return the filtered data as a JSON response
         return {"date": date_array, "aqi": aqi_array, "aqi_7_days_lag": aqi_array_7_days_lag, "aqi_14_days_lag": aqi_array_14_days_lag}
@@ -374,15 +382,22 @@ def get_forecast_data(
 @app.get("/api/pollutant_districts")
 def get_districts_by_pollutant(pollutant_name: str):
     """
-    Endpoint to get the districts for a given pollutant.
+    Endpoint to get the districts for a given pollutant or all districts if 'All' is requested.
     """
     try:
+        if pollutant_name == "All":
+            # Return all unique districts from the pollutant_districts dictionary
+            all_districts = set()
+            for districts in pollutant_districts.values():
+                all_districts.update(districts)
+            return {"districts": list(all_districts)}
+        
         if pollutant_name not in pollutant_districts:
             raise HTTPException(status_code=404, detail="Pollutant not found.")
+        
         districts = pollutant_districts[pollutant_name]
         # removing the duplicate districts
         districts = list(set(districts))
-        # print(districts)
         return {"districts": districts}
     
     except Exception as e:
