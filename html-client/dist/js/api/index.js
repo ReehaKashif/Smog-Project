@@ -33,25 +33,28 @@ const color_palette = [
 ];
 
 const color_palette_labels = [
-  "Lowest",
   "Low",
   "Medium Low",
   "Medium",
   "Medium High",
-  "Highest",
+  "High",
+  "Very High",
 ];
 
 const populateColorPallete = () => {
   for (let i = 0; i < color_palette.length; i++) {
     $("#color-palette").append(`
-       <div class="pallete-container">
-                    <div style="background-color: ${color_palette[i][0]}" class="pallete-item"><span class="pl-4">${color_palette_labels[i]}</span></div>
-                    <div style="background-color: ${color_palette[i][1]}" class="pallete-item"></div>
-                    <div style="background-color: ${color_palette[i][2]}" class="pallete-item"></div>
-                    <div style="background-color: ${color_palette[i][3]}" class="pallete-item"></div>
-                    <div style="background-color: ${color_palette[i][4]}" class="pallete-item"></div>
-                    <div style="background-color: ${color_palette[i][5]}" class="pallete-item"></div>
-                  </div>
+        <div>
+          <div class="">${color_palette_labels[i]}</div>
+          <div class="pallete-container">
+            <div style="background-color: ${color_palette[i][0]}" class="pallete-item h-8 lg:h-10"><span class="pl-4">${i===0 ? "Lowest" : ""}</span></div>
+            <div style="background-color: ${color_palette[i][1]}" class="pallete-item h-8 lg:h-10"></div>
+            <div style="background-color: ${color_palette[i][2]}" class="pallete-item h-8 lg:h-10"></div>
+            <div style="background-color: ${color_palette[i][3]}" class="pallete-item h-8 lg:h-10"></div>
+            <div style="background-color: ${color_palette[i][4]}" class="pallete-item h-8 lg:h-10"></div>
+            <div style="background-color: ${color_palette[i][5]}" class="pallete-item h-8 lg:h-10"><span class="pl-4">${i===color_palette.length-1 ? "Highest" : ""}</span></div>
+          </div>
+        </div>
       `);
     $("#district-rankings-map-legend").append(`
                 <div class="ranking-map-pallete-row">
