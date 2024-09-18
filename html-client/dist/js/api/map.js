@@ -130,6 +130,7 @@ const getPollutantDistricts = (source) => {
 };
 
 const sources_color = {
+  All: "#0f0",
   Vehicle: "#ffa500",
   Industry: "#f2af2a",
   Construction: "#ff2600",
