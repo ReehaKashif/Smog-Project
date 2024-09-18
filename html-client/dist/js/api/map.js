@@ -93,7 +93,7 @@ getMapRanking()
       subdomains: ["mt0", "mt1", "mt2", "mt3"],
     }).addTo(rankingMap);
 
-    console.log({districtData})
+    console.log({ districtData });
 
     // Load Shapefiles for each district using the fetched data
     const mapRankingData = [
@@ -135,7 +135,7 @@ const sources_color = {
   Industry: "#f2af2a",
   Construction: "#ff2600",
   Agriculture: "#36454f",
-  "General Wasting": "#7a288a",
+  Deforestation: "#7a288a",
 };
 
 const fetchPollutantDistrictsApi = () => {
