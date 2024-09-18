@@ -79,33 +79,26 @@ color_palette =[
 # Define the pollutant to districts mapping
 pollutant_districts = {
     "Vehicle": [
-        "Bahawalpur", "Rahim Yar Khan", "Gujranwala", "Gujrat", "Hafizabad", "Mandi Bahuddin",
-        "Narowal", "Sialkot", "Dera Ghazi Khan", "Layyah", "Muzaffargarh", "Rajanpur", "Lahore",
-        "Kasur", "Nankana Sahib", "Sheikhupura", "Faisalabad", "Chiniot", "Toba Tek Singh", "Jhang",
-        "Multan", "Lodhran", "Khanewal", "Vehari"
+        "Attock", "Faisalabad", "Lahore", "Gujranwala", "Rawalpindi", 
+        "Sialkot", "Khanewal", "Narowal"
     ],
     "Industry": [
-        "Bahawalpur", "Bahawalnagar", "Rahim Yar Khan", "Gujranwala", "Gujrat", "Hafizabad",
-        "Mandi Bahuddin", "Narowal", "Sialkot", "Dera Ghazi Khan", "Layyah", "Muzaffargarh",
-        "Rajanpur", "Lahore", "Kasur", "Nankana Sahib", "Sheikhupura", "Faisalabad", "Chiniot",
-        "Toba Tek Singh", "Jhang", "Multan", "Lodhran", "Khanewal", "Vehari"
+        "Faisalabad", "Gujranwala", "Sialkot", "Lahore", "Sheikhupura", 
+        "Multan", "Jhang", "Mandi Bahauddin", "Nankana Sahib", "Chiniot"
     ],
     "Agriculture": [
-        "Bahawalpur", "Bahawalnagar", "Rahim Yar Khan", "Dera Ghazi Khan", "Layyah", "Muzaffargarh",
-        "Rajanpur", "Kasur", "Nankana Sahib", "Sheikhupura", "Faisalabad", "Chiniot", "Toba Tek Singh",
-        "Jhang", "Multan", "Lodhran", "Khanewal", "Vehari"
+        "Bahawalpur", "Rahim Yar Khan", "Lodhran", "Kasur", "Okara", 
+        "Pakpattan", "Vehari", "Sahiwal", "Dera Ghazi Khan", "Muzaffargarh", 
+        "Bhakkar", "Chakwal", "Bahawalnagar", "Layyah", "Khushab", 
+        "Hafizabad", "Toba Tek Singh"
     ],
     "Construction": [
-        "Bahawalpur", "Bahawalnagar", "Rahim Yar Khan", "Gujranwala", "Gujrat", "Hafizabad",
-        "Mandi Bahuddin", "Narowal", "Sialkot", "Dera Ghazi Khan", "Layyah", "Muzaffargarh",
-        "Rajanpur", "Lahore", "Kasur", "Nankana Sahib", "Sheikhupura", "Faisalabad", "Chiniot",
-        "Toba Tek Singh", "Jhang", "Multan", "Lodhran", "Khanewal", "Vehari"
+        "Gujranwala", "Gujrat", "Lahore", "Sialkot", "Rawalpindi", 
+        "Faisalabad", "Sargodha", "Sahiwal", "Mianwali", "Jhelum"
     ],
-    "General Wasting": [
-        "Bahawalpur", "Bahawalnagar", "Rahim Yar Khan", "Gujranwala", "Gujrat", "Hafizabad",
-        "Mandi Bahuddin", "Narowal", "Sialkot", "Dera Ghazi Khan", "Layyah", "Muzaffargarh",
-        "Rajanpur", "Lahore", "Kasur", "Nankana Sahib", "Sheikhupura", "Faisalabad", "Chiniot",
-        "Toba Tek Singh", "Jhang", "Multan", "Lodhran", "Khanewal", "Vehari"
+    "Deforestation": [
+        "Dera Ghazi Khan", "Rahim Yar Khan", "Bahawalpur", "Muzaffargarh", 
+        "Rajanpur", "Layyah", "Mianwali", "Swat", "Bhakkar", "Lodhran"
     ]
 }
 
@@ -115,114 +108,7 @@ def get_pakistan_time_endpoint():
     Endpoint to get the current time in Pakistan.
     """
     return {"pakistan_time": get_pakistan_time()}
-
-# @app.get("/api/aggregate_pollutants/last_year")
-# def last_year_aggregate_pollutants(initial_time: str, district: str):
-#     forecasted_df = last_year_pollutant_df.copy()
     
-#     # Rename and process columns
-#     # remove the unnamed column
-#     forecasted_df = forecasted_df.drop(columns=['Unnamed: 0'])
-#     forecasted_df = forecasted_df.set_index('Date')
-#     forecasted_df.index = pd.to_datetime(forecasted_df.index)
-#     # print(forecasted_df)
-    
-#     # Convert initial time to last year
-#     initial_time = pd.to_datetime(initial_time)
-#     initial_time = initial_time - pd.Timedelta(days=366)
-#     final_time = initial_time + pd.Timedelta(days=60)
-
-#     # Filter DataFrame
-#     filtered_df = forecasted_df[(forecasted_df.index >= initial_time) & 
-#                                 (forecasted_df.index <= final_time) & 
-#                                 (forecasted_df['District'] == district)]
-#     # print(filtered_df)
-#     # Aggregate pollutants
-#     numeric_columns = filtered_df.select_dtypes(include=['float64', 'int64']).columns
-#     aggregated_df = filtered_df[numeric_columns].resample('h').mean()
-    
-#     return aggregated_df.to_dict(orient="index")
-
-
-# @app.get("/api/aggregate_pollutants/daily")
-# def daily_aggregate_pollutants(initial_time: str, district: str):
-#     forecasted_df = forecasted_pollutant_df.copy()
-#     # counting the unique districts
-#     print(forecasted_df['District'].nunique())
-    
-#     # Rename and process columns
-#     # forecasted_df = forecasted_df.drop(columns=['Unnamed: 0'])
-#     forecasted_df = forecasted_df.set_index('date')
-#     forecasted_df.index = pd.to_datetime(forecasted_df.index)
-    
-#     # Process initial time
-#     initial_time = pd.to_datetime(initial_time)
-#     final_time = initial_time + pd.Timedelta(days=14)
-
-#     # Filter DataFrame
-#     filtered_df = forecasted_df[(forecasted_df.index >= initial_time) & 
-#                                 (forecasted_df.index <= final_time) & 
-#                                 (forecasted_df['District'] == district)]
-    
-#     # Aggregate pollutants
-#     numeric_columns = filtered_df.select_dtypes(include=['float64', 'int64']).columns
-#     aggregated_df = filtered_df[numeric_columns].resample('D').mean()
-    
-#     return aggregated_df.to_dict(orient="index")
-
-
-# @app.get("/api/forecast_aqi")
-# def forecast_aqi(district_name: str, date: str, forecast_period: Optional[str] = "60 days"):
-#     district_data = aqi_forecast_df[aqi_forecast_df['district'] == district_name].copy()
-#     # removing the unnamed column
-#     district_data = district_data.drop(columns=['Unnamed: 0'])
-#     district_data['date'] = pd.to_datetime(district_data['date'])
-    
-#     if forecast_period == "7 days":
-#         start_date = pd.to_datetime(date).normalize()
-#         end_date = start_date + pd.Timedelta(days=7)
-#     elif forecast_period == "14 days":
-#         start_date = pd.to_datetime(date).normalize()
-#         end_date = start_date + pd.Timedelta(days=14)
-#     else:
-#         start_date = pd.to_datetime(date).normalize()
-#         end_date = start_date + pd.Timedelta(days=60)
-    
-#     # Filter the data
-#     forecast_data = district_data[(district_data['date'] >= start_date) & 
-#                                   (district_data['date'] <= end_date)]
-    
-#     return forecast_data.to_dict(orient="index")
-
-
-# @app.get("/api/best_districts_aqi")
-# def get_best_districts_aqi():
-#     """
-#     Endpoint to get the four districts with the best (lowest) AQI at a specific time.
-#     """
-#     try:
-#         time = get_pakistan_time()
-#         # Filter the DataFrame by the given time
-#         filtered_df = forecasted_pollutant_df[forecasted_pollutant_df['date'] == time]
-        
-#         if filtered_df.empty:
-#             raise HTTPException(status_code=404, detail="No data found for the specified time.")
-        
-#         # Sort by AQI in ascending order and get the top 4
-#         sorted_df = filtered_df.sort_values(by='Aqi')
-#         # getting the unique top 4 districts
-#         sorted_df = sorted_df.drop_duplicates(subset=['District']).head(4)
-        
-#         # Prepare the response
-#         response = [{"district": row["District"], "aqi": row["Aqi"]} for index, row in sorted_df.iterrows()]
-        
-#         return {"best_districts": response}
-    
-#     except Exception as e:
-#         raise HTTPException(status_code=500, detail=str(e))
-    
-    
-
 
 @app.get("/api/districts_aqi_color")
 def get_districts_aqi_color():
