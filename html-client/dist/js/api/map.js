@@ -206,7 +206,7 @@ const plotAllPollutantDistricts = (data) => {
     pollutantDistrictsMap.remove();
   }
   // Initial function call when the page loads
-  pollutantDistrictsMap = L.map("forecastMap").setView([30.5, 72.5], 7);
+  pollutantDistrictsMap = L.map("forecastMap").setView([31, 72.5], 7.45);
   // Add Google Maps layer
   L.tileLayer("http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", {
     maxZoom: 20,
