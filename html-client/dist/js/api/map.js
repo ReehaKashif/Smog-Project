@@ -93,8 +93,6 @@ getMapRanking()
       subdomains: ["mt0", "mt1", "mt2", "mt3"],
     }).addTo(rankingMap);
 
-    console.log({ districtData });
-
     // Load Shapefiles for each district using the fetched data
     const mapRankingData = [
       { district: "aoi_punjab", color: "#000000", aqi: 0 },
@@ -129,8 +127,32 @@ const getPollutantDistricts = (source) => {
     });
 };
 
+const fetchAllPollutantDistricts = () => {
+  const sources = [
+    "Vehicle",
+    "Industry",
+    "Construction",
+    "Agriculture",
+    "Deforestation",
+  ];
+  return Promise.all(sources.map((source) => getPollutantDistricts(source)))
+    .then((results) => {
+      return {
+        Vehicle: results[0],
+        Industry: results[1],
+        Construction: results[2],
+        Agriculture: results[3],
+        Deforestation: results[4],
+      };
+    })
+    .catch((err) => {
+      console.error("Error fetching pollutant districts:", err);
+      return null;
+    });
+};
+
 const sources_color = {
-  All: "#0f0",
+  All: "#ee00fe",
   Vehicle: "#ffa500",
   Industry: "#f2af2a",
   Construction: "#ff2600",
@@ -140,50 +162,136 @@ const sources_color = {
 
 const fetchPollutantDistrictsApi = () => {
   const source = $("#pollutant-source-selector").val();
-  // Fetch district data
-  getPollutantDistricts(source)
-    .then((data) => {
-      if (pollutantDistrictsMap) {
-        pollutantDistrictsMap.remove();
-      }
-      // Initial function call when the page loads
-      pollutantDistrictsMap = L.map("forecastMap").setView([30.5, 72.5], 7);
-      // Add Google Maps layer
-      L.tileLayer("http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", {
-        maxZoom: 20,
-        subdomains: ["mt0", "mt1", "mt2", "mt3"],
-      }).addTo(pollutantDistrictsMap);
 
-      // Load Shapefiles for each district using the fetched data
-      getDistrictAqiColor().then((d) => {
-        const districts = ["aoi_punjab", ...data.districts];
-        Promise.all(
-          districts.map(async (district) => {
-            const formattedDistrict = district.replace(/\s+/g, "_");
-            const shapefilePath = `./shapefiles/${formattedDistrict}.shp`;
+  if (source === "All") {
+    fetchAllPollutantDistricts().then((allDistricts) => {
+      const districts = [
+        ...allDistricts.Vehicle.districts.map((district) => ({
+          district,
+          source: "Vehicle",
+        })),
 
-            const currentDistrict = d.districts_aqi_color.filter(
-              (data) => data.district === district
-            )[0];
+        ...allDistricts.Industry.districts.map((district) => ({
+          district,
+          source: "Industry",
+        })),
 
-            let districtInfo = {
-              district:
-                district === "aoi_punjab"
-                  ? "Punjab"
-                  : currentDistrict["district"],
-              color: sources_color[source],
-              aqi: district === "aoi_punjab" ? 0 : currentDistrict["aqi"],
-            };
+        ...allDistricts.Construction.districts.map((district) => ({
+          district,
+          source: "Construction",
+        })),
 
-            return await loadShapefile(
-              shapefilePath,
-              districtInfo,
-              pollutantDistrictsMap,
-              source
-            );
-          })
-        ).catch((error) => console.error("Error loading Shapefiles:", error));
-      });
+        ...allDistricts.Agriculture.districts.map((district) => ({
+          district,
+          source: "Agriculture",
+        })),
+
+        ...allDistricts.Deforestation.districts.map((district) => ({
+          district,
+          source: "Deforestation",
+        })),
+      ];
+
+      plotAllPollutantDistricts(districts);
+    });
+  } else {
+    getPollutantDistricts(source).then((districtData) => {
+      plotPollutantDistricts(districtData, source);
+    });
+  }
+};
+
+const plotAllPollutantDistricts = (data) => {
+  if (pollutantDistrictsMap) {
+    pollutantDistrictsMap.remove();
+  }
+  // Initial function call when the page loads
+  pollutantDistrictsMap = L.map("forecastMap").setView([30.5, 72.5], 7);
+  // Add Google Maps layer
+  L.tileLayer("http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", {
+    maxZoom: 20,
+    subdomains: ["mt0", "mt1", "mt2", "mt3"],
+  }).addTo(pollutantDistrictsMap);
+
+  // Load Shapefiles for each district using the fetched data
+  getDistrictAqiColor()
+    .then((d) => {
+      const districts = [{ district: "aoi_punjab", source: null }, ...data];
+      Promise.all(
+        districts.map(async ({ district, source }) => {
+          const formattedDistrict = district.replace(/\s+/g, "_");
+          const shapefilePath = `./shapefiles/${formattedDistrict}.shp`;
+
+          const currentDistrict = d.districts_aqi_color.filter(
+            (data) => data.district === district
+          )[0];
+
+          let districtInfo = {
+            district:
+              district === "aoi_punjab"
+                ? "Punjab"
+                : currentDistrict["district"],
+            color:
+              district === "aoi_punjab" ? "#000000" : sources_color[source],
+            aqi: district === "aoi_punjab" ? 0 : currentDistrict["aqi"],
+          };
+
+          return await loadShapefile(
+            shapefilePath,
+            districtInfo,
+            pollutantDistrictsMap,
+            source
+          );
+        })
+      ).catch((error) => console.error("Error loading Shapefiles:", error));
+    })
+    .catch((error) => console.error("Error fetching district data:", error));
+};
+
+const plotPollutantDistricts = (data, source) => {
+  if (pollutantDistrictsMap) {
+    pollutantDistrictsMap.remove();
+  }
+  // Initial function call when the page loads
+  pollutantDistrictsMap = L.map("forecastMap").setView([30.5, 72.5], 7);
+  // Add Google Maps layer
+  L.tileLayer("http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", {
+    maxZoom: 20,
+    subdomains: ["mt0", "mt1", "mt2", "mt3"],
+  }).addTo(pollutantDistrictsMap);
+
+  // Load Shapefiles for each district using the fetched data
+  getDistrictAqiColor()
+    .then((d) => {
+      const districts = ["aoi_punjab", ...data.districts];
+      Promise.all(
+        districts.map(async (district) => {
+          const formattedDistrict = district.replace(/\s+/g, "_");
+          const shapefilePath = `./shapefiles/${formattedDistrict}.shp`;
+
+          const currentDistrict = d.districts_aqi_color.filter(
+            (data) => data.district === district
+          )[0];
+
+          console.log({ currentDistrict, district });
+
+          let districtInfo = {
+            district:
+              district === "aoi_punjab"
+                ? "Punjab"
+                : currentDistrict["district"],
+            color: sources_color[source], // TODO: change this
+            aqi: district === "aoi_punjab" ? 0 : currentDistrict["aqi"],
+          };
+
+          return await loadShapefile(
+            shapefilePath,
+            districtInfo,
+            pollutantDistrictsMap,
+            source
+          );
+        })
+      ).catch((error) => console.error("Error loading Shapefiles:", error));
     })
     .catch((error) => console.error("Error fetching district data:", error));
 };
