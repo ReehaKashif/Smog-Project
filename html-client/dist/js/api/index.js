@@ -1,4 +1,5 @@
-const SERVER_URL = "https://smop-api.onrender.com/api";
+const SERVER_URL = "https://smop-app-xeco.onrender.com/api";
+// const OLD_SERVER_URL = "https://smop-api.onrender.com/api";
 // const SERVER_URL = "http://localhost:8000/api";
 
 const getCurrentTime = () => {
@@ -47,12 +48,28 @@ const populateColorPallete = () => {
         <div>
           <div class="">${color_palette_labels[i]}</div>
           <div class="pallete-container">
-            <div style="background-color: ${color_palette[i][0]}" class="pallete-item h-8 lg:h-10"><span class="pl-4">${i===0 ? "Lowest" : ""}</span></div>
-            <div style="background-color: ${color_palette[i][1]}" class="pallete-item h-8 lg:h-10"></div>
-            <div style="background-color: ${color_palette[i][2]}" class="pallete-item h-8 lg:h-10"></div>
-            <div style="background-color: ${color_palette[i][3]}" class="pallete-item h-8 lg:h-10"></div>
-            <div style="background-color: ${color_palette[i][4]}" class="pallete-item h-8 lg:h-10"></div>
-            <div style="background-color: ${color_palette[i][5]}" class="pallete-item h-8 lg:h-10"><span class="pl-4">${i===color_palette.length-1 ? "Highest" : ""}</span></div>
+            <div style="background-color: ${
+              color_palette[i][0]
+            }" class="pallete-item h-8 lg:h-10"><span class="pl-4">${
+      i === 0 ? "Lowest" : ""
+    }</span></div>
+            <div style="background-color: ${
+              color_palette[i][1]
+            }" class="pallete-item h-8 lg:h-10"></div>
+            <div style="background-color: ${
+              color_palette[i][2]
+            }" class="pallete-item h-8 lg:h-10"></div>
+            <div style="background-color: ${
+              color_palette[i][3]
+            }" class="pallete-item h-8 lg:h-10"></div>
+            <div style="background-color: ${
+              color_palette[i][4]
+            }" class="pallete-item h-8 lg:h-10"></div>
+            <div style="background-color: ${
+              color_palette[i][5]
+            }" class="pallete-item h-8 lg:h-10"><span class="pl-4">${
+      i === color_palette.length - 1 ? "Highest" : ""
+    }</span></div>
           </div>
         </div>
       `);
