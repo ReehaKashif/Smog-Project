@@ -1,0 +1,2 @@
+2024-09-28 03:53:52.296 | INFO     | model_finetune:<module>:20 - Device selected: cuda
+2024-09-28 03:53:52.322 | INFO     | model_forecast:<module>:19 - Device selected: cuda
