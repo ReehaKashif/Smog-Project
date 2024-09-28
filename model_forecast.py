@@ -13,7 +13,7 @@ from smog_models import (
 from loguru import logger
 
 # Set up logging with a file size limit of 50MB
-logger.add("forecasting.log", rotation="50 MB", level="INFO")
+logger.add("logs/forecasting.log", rotation="50 MB", level="INFO")
 # Device configuration
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 logger.info(f"Device selected: {device}")

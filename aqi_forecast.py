@@ -3,7 +3,7 @@ from loguru import logger
 from model_forecast import forecast_all_pollutants
 
 # Set up logging with a file size limit of 50MB
-logger.add("aqi_forecast.log", rotation="50 MB", level="INFO")
+logger.add("logs/aqi_forecast.log", rotation="50 MB", level="INFO")
 
 def forecast_page():
     st.title("Air Quality Forecasting")

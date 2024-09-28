@@ -5,7 +5,7 @@ from model_finetune import fine_tune_all_pollutants
 from loguru import logger
 
 # Configure logger
-logger.add("streamlit_finetune.log", rotation="50 MB")
+logger.add("logs/streamlit_finetune.log", rotation="50 MB")
 
 def fine_tune_app():
     # Introduction

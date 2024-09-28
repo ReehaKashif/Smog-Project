@@ -13,7 +13,7 @@ from smog_models import (
 from loguru import logger
 
 # Configure logger
-logger.add("model_finetuning.log", rotation="50 MB")
+logger.add("logs/model_finetuning.log", rotation="50 MB")
 
 # Device configuration
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

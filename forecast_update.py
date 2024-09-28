@@ -2,7 +2,7 @@ import pandas as pd
 from loguru import logger
 
 # Set up logging
-logger.add("forecast_update.log", rotation="50 MB", level="INFO")
+logger.add("logs/forecast_update.log", rotation="50 MB", level="INFO")
 
 # Task 1: Update forecast data by merging with district info and saving the result
 def update_forecast_data(forecast_file, output_file):

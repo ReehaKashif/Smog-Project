@@ -5,7 +5,7 @@ from data_update import recent_data_update as get_data
 from loguru import logger
 
 # Configure logger
-logger.add("data_update.log", rotation="50 MB")  # Log to a file with a size limit for rotation
+logger.add("logs/data_update.log", rotation="50 MB")  # Log to a file with a size limit for rotation
 
 def check_data_store():
     logger.info("Checking if 'data_store' folder exists.")

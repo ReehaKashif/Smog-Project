@@ -4,7 +4,7 @@ import os
 from loguru import logger
 
 # Configure logging
-logger.add("data_preprocessing.log", rotation="50 MB")
+logger.add("logs/data_preprocessing.log", rotation="50 MB")
 
 # reading files in the data_store folder
 data_folder = "./data_store"

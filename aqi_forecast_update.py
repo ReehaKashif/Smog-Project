@@ -3,7 +3,7 @@ from forecast_update import run_all_forecast_updates  # Assuming the functions a
 from loguru import logger
 
 # Set up logging for Streamlit
-logger.add("streamlit_forecast_update.log", rotation="50 MB", level="INFO")
+logger.add("logs/streamlit_forecast_update.log", rotation="50 MB", level="INFO")
 
 # Streamlit app layout
 def forecast_update_app():

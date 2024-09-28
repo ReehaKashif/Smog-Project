@@ -4,7 +4,7 @@ from loguru import logger
 import pandas as pd
 
 # Configure logger
-logger.add("data_preprocessing_streamlit.log", rotation="50 MB")
+logger.add("logs/data_preprocessing_streamlit.log", rotation="50 MB")
 
 def data_preprocessing_page():
     st.title("Data Preprocessing for Model Fine-tuning")
