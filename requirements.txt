@@ -10,3 +10,4 @@ requests-cache
 retry-requests
 nbformat>=4.2.0
 notebook
+loguru
