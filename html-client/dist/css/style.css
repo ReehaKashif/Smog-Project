@@ -208,3 +208,11 @@ p.legend {
     align-items: center;
   }
 }
+
+
+/*  */
+#header-district-selector > option {
+  width: 100%;
+  background-color: black;
+  color: white;
+}

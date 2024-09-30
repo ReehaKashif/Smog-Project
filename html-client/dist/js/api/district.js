@@ -92,7 +92,7 @@ const getAqiStatus = () => {
           // Update the content container with the new HTML
           // const html = districtsHTML(data);
           renderDistrictData(data);
-          $("#aqi-status").html(html);
+          // $("#aqi-status").html(html);
         });
     })
     .catch((err) => {
@@ -112,7 +112,8 @@ const getDistrictAqiColor = () => {
     })
     .then((data) => {
       processAndCacheData(data.districts_aqi_color);
-      renderAverageAQI(data.districts_aqi_color);
+      const aqiAverage = calculateAverageAQI(data.districts_aqi_color);
+      renderAverageAQI(aqiAverage);
       return data;
     })
     .catch((err) => {
@@ -123,12 +124,20 @@ const getDistrictAqiColor = () => {
 
 const processAndCacheData = (data) => {
   if (!data) return;
+
+  // Cache the data
   const districts = data.map((item) => item.district);
   districts.sort((a, b) => a.localeCompare(b));
+
+  setLocalStorage("districtsData", data);
+
+  // Render districts to the dropdowns
   districts.forEach((district) => {
     $("#district-selector").append(`<option>${district}</option>`);
+    $("#header-district-selector").append(`<option>${district}</option>`);
   });
   $("#district-selector").val(districts[0]).trigger("change");
+  $("#header-district-selector").val(districts[0]).trigger("change");
 };
 
 const calculateAverageAQI = (data) => {
@@ -137,8 +146,7 @@ const calculateAverageAQI = (data) => {
   return Math.round(sum / aqiValues.length);
 };
 
-const renderAverageAQI = (data) => {
-  const aqiAverage = calculateAverageAQI(data);
+const renderAverageAQI = (aqiAverage) => {
   $("#aqi-average").text(`${aqiAverage}`);
   $("#aqi-average-meter").text(`${aqiAverage}`);
   $("#aqi-average-meter-neddle").css("--score", aqiAverage);
@@ -152,3 +160,18 @@ const renderDistrictData = (data) => {
   $("#highest-pollutant-district").text(data.highest_pollutant);
   $("#cause-of-pollutant").text(data.cause_of_pollutant);
 };
+
+const handleHeaderDistrictChange = () => {
+  const district = $("#header-district-selector").val();
+  const cachedData = getLocalStorage("districtsData");
+  if (cachedData) {
+    const districtData = cachedData.filter(
+      (item) => item.district === district
+    )[0];
+    renderAverageAQI(Math.round(districtData.aqi));
+  }
+};
+
+$("#header-district-selector").change(function () {
+  handleHeaderDistrictChange();
+});

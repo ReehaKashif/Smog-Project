@@ -294,23 +294,45 @@
         <!-- Content Header (Page header) -->
         <section class="content-header heading-bg">
           <div
-            class="flex flex-col items-start md:flex-row md:items-end gap-8 justify-between relative"
+            class="flex flex-col items-start lg:flex-row lg:items-end gap-8 justify-between relative"
           >
             <div>
               <img src="dist/img/banner-icon.svg" alt="User Image" />
-              <p class="text-4xl lg:text-6xl font-bold">
-                AQI in Punjab, Pakistan
-              </p>
+
+              <div class="flex items-center gap-4">
+                <p class="text-4xl lg:text-6xl font-bold">AQI in</p>
+                <p class="text-4xl lg:text-6xl font-bold">
+                  <select
+                    id="header-district-selector"
+                    class="w-fit bg-transparent border-2 border-red-500"
+                  ></select>
+                </p>
+                <p class="text-4xl lg:text-6xl font-bold">Pakistan</p>
+              </div>
             </div>
-            <div class="md:absolute md:right-1/2 md:translate-x-1/2">
-              <p
+            <div
+              class="w-full relative -bottom-[230px] lg:-bottom-[200px] lg:absolute lg:right-1/2 lg:translate-x-1/2 order-2 lg:order-1"
+            >
+              <div class="speedometer">
+                <div
+                  id="aqi-average-meter-neddle"
+                  class="needle"
+                  style="--score: 0"
+                >
+                  <span
+                    id="aqi-average-meter"
+                    class="aqi-average font-bold text-white text-3xl md:text-4xl pointer-events-none select-none"
+                  ></span>
+                </div>
+              </div>
+              <!-- <p
                 id="aqi-average"
-                class="text-[80px] md:text-[100px] leading-[80px] md:leading-[100px] font-bold"
+                class="hidden text-[80px] md:text-[100px] leading-[80px] md:leading-[100px] font-bold"
               >
                 -
-              </p>
+              </p> -->
             </div>
-            <div>
+            <div class="order-1 lg:order-2">
               <p class="text-xl md:text-3xl">Current Time</p>
               <p id="current-hour" class="text-4xl lg:text-6xl font-bold"></p>
             </div>
@@ -318,7 +340,7 @@
         </section>
 
         <!-- Main content -->
-        <section class="content space-y-8 px-4 md:px-8">
+        <section class="mt-12 content space-y-8 px-4 md:px-8">
           <!-- AQI DISTRICTS -->
           <div id="aqi-status" class="row">
             <!-- BEST DISTRICT -->
@@ -404,7 +426,7 @@
           </div>
           <!-- AQI METER & COLOUR PALLETE -->
           <div
-            class="w-full flex flex-col lg:flex-row gap-12 lg:h-[450px] lg:max-h-[450px]"
+            class="hidden w-full flex flex-col lg:flex-row gap-12 lg:h-[450px] lg:max-h-[450px]"
           >
             <section class="h-full w-full lg:w-1/2">
               <!-- Custom tabs (Charts with tabs)-->
