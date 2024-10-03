@@ -137,7 +137,12 @@ const processAndCacheData = (data) => {
     $("#header-district-selector").append(`<option>${district}</option>`);
   });
   $("#district-selector").val(districts[0]).trigger("change");
-  $("#header-district-selector").val(districts[0]).trigger("change");
+  const lahoreDistrictIndex = districts.findIndex(
+    (district) => district.toLowerCase() === "lahore"
+  );
+  $("#header-district-selector")
+    .val(districts[lahoreDistrictIndex])
+    .trigger("change");
 };
 
 const calculateAverageAQI = (data) => {
