@@ -107,7 +107,7 @@ pollutant_districts = {
         "Gujranwala", "Gujrat", "Lahore", "Sialkot", "Rawalpindi", 
         "Faisalabad", "Sargodha", "Sahiwal", "Mianwali", "Jhelum"
     ],
-    "Deforestation": [
+    "Miscellaneous": [
         "Dera Ghazi Khan", "Rahim Yar Khan", "Bahawalpur", "Muzaffargarh", 
         "Rajanpur", "Layyah", "Mianwali", "Swat", "Bhakkar", "Lodhran"
     ]

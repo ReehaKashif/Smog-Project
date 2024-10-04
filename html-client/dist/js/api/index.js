@@ -132,6 +132,14 @@ $(document).ready(function () {
     const currentHour = String(now.getHours()).padStart(2, "0");
     const currentMinute = String(now.getMinutes()).padStart(2, "0");
     const currentSecond = String(now.getSeconds()).padStart(2, "0");
+
+    const currentDate = now.toLocaleDateString("en-US", {
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+    $("#current-date").text(currentDate);
     $("#current-hour").text(`${currentHour}:${currentMinute}:${currentSecond}`);
   }
 

@@ -81,6 +81,7 @@ const getMapRanking = () => {
 
 getMapRanking()
   .then((districtData) => {
+    console.log({ districtData });
     if (rankingMap) {
       rankingMap.remove();
     }
@@ -93,17 +94,26 @@ getMapRanking()
       subdomains: ["mt0", "mt1", "mt2", "mt3"],
     }).addTo(rankingMap);
 
+    const districts = districtData.map_ranking.map((data) => {
+      const districtRank = color_palette.flat().indexOf(data.color);
+
+      return {
+        ...data,
+        rank: districtRank + 1,
+      };
+    });
+
     // Load Shapefiles for each district using the fetched data
     const mapRankingData = [
       { district: "aoi_punjab", color: "#000000", aqi: 0 },
-      ...districtData.map_ranking,
+      ...districts,
     ];
     Promise.all(
       mapRankingData.map((districtInfo) => {
         const formattedDistrict = districtInfo.district.replace(/\s+/g, "_"); // Replace spaces with underscores
         // .replace(/_/g, " ") // Replace underscores with spaces
         const shapefilePath = `./shapefiles/${formattedDistrict}.shp`;
-        return loadShapefile(shapefilePath, districtInfo, rankingMap);
+        return loadShapefile(shapefilePath, districtInfo, rankingMap, null, "rankingMap");
       })
     )
       .then(() => {
@@ -133,7 +143,7 @@ const fetchAllPollutantDistricts = () => {
     "Industry",
     "Construction",
     "Agriculture",
-    "Deforestation",
+    "Miscellaneous",
   ];
   return Promise.all(sources.map((source) => getPollutantDistricts(source)))
     .then((results) => {
@@ -142,7 +152,7 @@ const fetchAllPollutantDistricts = () => {
         Industry: results[1],
         Construction: results[2],
         Agriculture: results[3],
-        Deforestation: results[4],
+        Miscellaneous: results[4],
       };
     })
     .catch((err) => {
@@ -157,7 +167,7 @@ const sources_color = {
   Industry: "#f2af2a",
   Construction: "#ff2600",
   Agriculture: "#36454f",
-  Deforestation: "#7a288a",
+  Miscellaneous: "#7a288a",
 };
 
 const fetchPollutantDistrictsApi = () => {
@@ -186,9 +196,9 @@ const fetchPollutantDistrictsApi = () => {
           source: "Agriculture",
         })),
 
-        ...allDistricts.Deforestation.districts.map((district) => ({
+        ...allDistricts.Miscellaneous.districts.map((district) => ({
           district,
-          source: "Deforestation",
+          source: "Miscellaneous",
         })),
       ];
 
@@ -219,12 +229,16 @@ const plotAllPollutantDistricts = (data) => {
       const districts = [{ district: "aoi_punjab", source: null }, ...data];
       Promise.all(
         districts.map(async ({ district, source }) => {
+          console.log("🔥🔥🔥", { d });
+          console.log("🚀🚀🚀", { district });
           const formattedDistrict = district.replace(/\s+/g, "_");
           const shapefilePath = `./shapefiles/${formattedDistrict}.shp`;
 
           const currentDistrict = d.districts_aqi_color.filter(
             (data) => data.district === district
           )[0];
+
+          // console.log({ currentDistrict });
 
           let districtInfo = {
             district:

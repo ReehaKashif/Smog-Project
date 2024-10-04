@@ -1,9 +1,20 @@
-const loadShapefile = (shapefilePath, district, map, pollutant = null) => {
+const loadShapefile = (
+  shapefilePath,
+  district,
+  map,
+  pollutant = null,
+  mapType = "pollutantMap"
+) => {
   let content = "";
-  if (pollutant) {
+
+  if (mapType === "pollutantMap") {
     content = `${
       district.district
     } <br /> ${pollutant} <br /> AQI: ${Math.round(district.aqi)}`;
+  } else if (mapType === "rankingMap") {
+    content = `${district.district} <br /> AQI: ${Math.round(
+      district.aqi
+    )} <br /> Rank: ${district.rank}`;
   } else {
     content = `${district.district} <br /> AQI: ${Math.round(district.aqi)}`;
   }
