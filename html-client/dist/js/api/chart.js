@@ -65,6 +65,7 @@ const getForecastAqi = (district) => {
     })
     .then((data) => {
       plotPredictionGraph(data);
+      return;
     })
     .catch((err) => {
       console.error("Fetch error:", err);
@@ -95,48 +96,56 @@ const plotHistoricalGraph = (data) => {
   const dataFor2MonthsBefore = data.historical;
   const totalLength = dataFor2MonthsBefore.aqi.length;
 
-  const datasets = [
-    {
-      label: "Actual",
-      data: roundNullableData(dataFor2MonthsBefore.aqi),
-      borderColor: "blue",
-      fill: false,
-    },
-    {
-      label: "14 days",
-      data: roundNullableData(padList(dataFor14DaysBefore, totalLength)),
-      borderColor: "yellow",
-      fill: false,
-    },
-    {
-      label: "7 days",
-      data: roundNullableData(padList(dataFor7DaysBefore, totalLength)),
-      borderColor: "green",
-      fill: false,
-    },
-  ];
+  // const paddedDataFor14DaysBefore = padList(dataFor14DaysBefore, totalLength);
+  // const paddedDataFor7DaysBefore = padList(dataFor7DaysBefore, totalLength);
+  // console.log({ paddedDataFor14DaysBefore, paddedDataFor7DaysBefore });
 
-  if (leftChart) {
-    leftChart.destroy();
-  }
+  try {
+    const datasets = [
+      {
+        label: "Actual",
+        data: roundNullableData(dataFor2MonthsBefore.aqi),
+        borderColor: "blue",
+        fill: false,
+      },
+      {
+        label: "14 days",
+        data: roundNullableData(padList([...dataFor14DaysBefore], totalLength)),
+        borderColor: "yellow",
+        fill: false,
+      },
+      {
+        label: "7 days",
+        data: roundNullableData(padList([...dataFor7DaysBefore], totalLength)),
+        borderColor: "green",
+        fill: false,
+      },
+    ];
 
-  leftChart = new Chart(leftChartCtx, {
-    type: "line",
-    data: {
-      labels: dataFor2MonthsBefore.date.map(convertDateFormat),
-      datasets,
-    },
-    options: {
-      responsive: true,
-      scales: {
-        y: {
-          beginAtZero: false,
-          min: 0,
-          max: 500,
+    if (leftChart) {
+      leftChart.destroy();
+    }
+
+    leftChart = new Chart(leftChartCtx, {
+      type: "line",
+      data: {
+        labels: dataFor2MonthsBefore.date.map(convertDateFormat),
+        datasets,
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: false,
+            min: 0,
+            max: 500,
+          },
         },
       },
-    },
-  });
+    });
+  } catch (error) {
+    console.log({ error });
+  }
 };
 
 const plotPredictionGraph = (data) => {
@@ -226,7 +235,10 @@ const convertDateFormat = (dateStr) => {
 };
 
 const padList = (list, targetLength) => {
-  const padding = Array(targetLength - list.length).fill(null);
+  if (list.length >= targetLength) {
+    return list;
+  }
+  const padding = new Array(targetLength - list.length).fill(null);
   return [...padding, ...list];
 };
 
