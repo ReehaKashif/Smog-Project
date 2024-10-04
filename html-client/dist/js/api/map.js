@@ -238,8 +238,6 @@ const plotAllPollutantDistricts = (data) => {
       const districts = [{ district: "aoi_punjab", source: null }, ...data];
       Promise.all(
         districts.map(async ({ district, source }) => {
-          console.log("🔥🔥🔥", { d });
-          console.log("🚀🚀🚀", { district });
           const formattedDistrict = district.replace(/\s+/g, "_");
           const shapefilePath = `./shapefiles/${formattedDistrict}.shp`;
 

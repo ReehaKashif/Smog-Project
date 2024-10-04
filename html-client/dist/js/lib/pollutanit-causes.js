@@ -254,10 +254,20 @@ const getAndRenderPollutantCauses = (districtName, districtAqi) => {
 
   return `
   ${districtName} current AQI is ${Math.round(districtAqi)}	<br />
-  Construction-Intensive: ${polluantCause["Construction-Intensive"]}% Value: ${polluantCause["Construction-Intensive"]}	<br />
-  Vehicle-Intensive: ${polluantCause["Vehicle-Intensive"]}%      Value: ${polluantCause["Construction-Intensive"]}	<br />
-  Industrial: ${polluantCause["Industrial"]}%             Value: ${polluantCause["Construction-Intensive"]}	<br />
-  Agricultural: ${polluantCause["Agricultural"]}%            Value: ${polluantCause["Construction-Intensive"]}	<br />
-  Miscellaneous: ${polluantCause["Miscellaneous"]}%  Value: ${polluantCause["Construction-Intensive"]}
+  Construction-Intensive: ${polluantCause["Construction-Intensive"]}% Value: ${
+    polluantCause["Construction-Intensive"]
+  }	<br />
+  Vehicle-Intensive: ${polluantCause["Vehicle-Intensive"]}%      Value: ${
+    polluantCause["Vehicle-Intensive"]
+  }	<br />
+  Industrial: ${polluantCause["Industrial"]}%             Value: ${
+    polluantCause["Industrial"]
+  }	<br />
+  Agricultural: ${polluantCause["Agricultural"]}%            Value: ${
+    polluantCause["Agricultural"]
+  }	<br />
+  Miscellaneous: ${polluantCause["Miscellaneous"]}%  Value: ${
+    polluantCause["Miscellaneous"]
+  }
   `;
 };
