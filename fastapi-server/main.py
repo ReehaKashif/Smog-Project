@@ -95,7 +95,7 @@ pollutant_districts = {
     ],
     "Industry": [
         "Faisalabad", "Gujranwala", "Sialkot", "Lahore", "Sheikhupura", 
-        "Multan", "Jhang", "Mandi Bahauddin", "Nankana Sahib", "Chiniot"
+        "Multan", "Jhang", "Mandi Bahuddin", "Nankana Sahib", "Chiniot"
     ],
     "Agriculture": [
         "Bahawalpur", "Rahim Yar Khan", "Lodhran", "Kasur", "Okara", 

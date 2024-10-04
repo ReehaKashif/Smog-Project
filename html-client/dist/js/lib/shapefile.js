@@ -2,19 +2,18 @@ const loadShapefile = (
   shapefilePath,
   district,
   map,
-  pollutant = null,
   mapType = "pollutantMap"
 ) => {
   let content = "";
 
   if (mapType === "pollutantMap") {
-    content = `${
-      district.district
-    } <br /> ${pollutant} <br /> AQI: ${Math.round(district.aqi)}`;
+    content = getAndRenderPollutantCauses(district.district, district.aqi);
   } else if (mapType === "rankingMap") {
     content = `${district.district} <br /> AQI: ${Math.round(
       district.aqi
     )} <br /> Rank: ${district.rank}`;
+  } else if (mapType === "districtAqi") {
+    content = `${district.district} <br /> AQI: ${Math.round(district.aqi)}`;
   } else {
     content = `${district.district} <br /> AQI: ${Math.round(district.aqi)}`;
   }

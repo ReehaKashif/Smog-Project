@@ -54,7 +54,12 @@ getMapAqi()
       districts.map((districtInfo) => {
         const formattedDistrict = districtInfo.district.replace(/\s+/g, "_");
         const shapefilePath = `./shapefiles/${formattedDistrict}.shp`;
-        return loadShapefile(shapefilePath, districtInfo, districtMap);
+        return loadShapefile(
+          shapefilePath,
+          districtInfo,
+          districtMap,
+          "districtAqi"
+        );
       })
     )
       .then(() => {
@@ -81,7 +86,6 @@ const getMapRanking = () => {
 
 getMapRanking()
   .then((districtData) => {
-    console.log({ districtData });
     if (rankingMap) {
       rankingMap.remove();
     }
@@ -113,7 +117,12 @@ getMapRanking()
         const formattedDistrict = districtInfo.district.replace(/\s+/g, "_"); // Replace spaces with underscores
         // .replace(/_/g, " ") // Replace underscores with spaces
         const shapefilePath = `./shapefiles/${formattedDistrict}.shp`;
-        return loadShapefile(shapefilePath, districtInfo, rankingMap, null, "rankingMap");
+        return loadShapefile(
+          shapefilePath,
+          districtInfo,
+          rankingMap,
+          "rankingMap"
+        );
       })
     )
       .then(() => {
@@ -229,8 +238,6 @@ const plotAllPollutantDistricts = (data) => {
       const districts = [{ district: "aoi_punjab", source: null }, ...data];
       Promise.all(
         districts.map(async ({ district, source }) => {
-          console.log("🔥🔥🔥", { d });
-          console.log("🚀🚀🚀", { district });
           const formattedDistrict = district.replace(/\s+/g, "_");
           const shapefilePath = `./shapefiles/${formattedDistrict}.shp`;
 
@@ -254,7 +261,7 @@ const plotAllPollutantDistricts = (data) => {
             shapefilePath,
             districtInfo,
             pollutantDistrictsMap,
-            source
+            "pollutantMap"
           );
         })
       ).catch((error) => console.error("Error loading Shapefiles:", error));
@@ -287,7 +294,7 @@ const plotPollutantDistricts = (data, source) => {
             (data) => data.district === district
           )[0];
 
-          console.log({ currentDistrict, district });
+          // console.log({ currentDistrict, district });
 
           let districtInfo = {
             district:
@@ -302,7 +309,7 @@ const plotPollutantDistricts = (data, source) => {
             shapefilePath,
             districtInfo,
             pollutantDistrictsMap,
-            source
+            "districtAqi"
           );
         })
       ).catch((error) => console.error("Error loading Shapefiles:", error));
