@@ -262,25 +262,25 @@ const getAndRenderPollutantCauses = (districtName, districtAqi) => {
   )}	<br />
   Vehicle-Intensive: ${
     polluantCause["Vehicle-Intensive"]
-  }%     ${calculatePollutantCauseValue(
+  }%    Value: ${calculatePollutantCauseValue(
     districtAqi,
     polluantCause["Vehicle-Intensive"]
   )}	<br />
   Industrial: ${
     polluantCause["Industrial"]
-  }%             ${calculatePollutantCauseValue(
+  }%       Value:      ${calculatePollutantCauseValue(
     districtAqi,
     polluantCause["Industrial"]
   )}	<br />
   Agricultural: ${
     polluantCause["Agricultural"]
-  }%            ${calculatePollutantCauseValue(
+  }%         Value:   ${calculatePollutantCauseValue(
     districtAqi,
     polluantCause["Agricultural"]
   )}	<br />
   Miscellaneous: ${
     polluantCause["Miscellaneous"]
-  }%  ${calculatePollutantCauseValue(
+  }%  Value: ${calculatePollutantCauseValue(
     districtAqi,
     polluantCause["Miscellaneous"]
   )}
