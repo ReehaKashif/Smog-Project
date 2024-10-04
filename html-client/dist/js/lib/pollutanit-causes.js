@@ -254,20 +254,39 @@ const getAndRenderPollutantCauses = (districtName, districtAqi) => {
 
   return `
   ${districtName} current AQI is ${Math.round(districtAqi)}	<br />
-  Construction-Intensive: ${polluantCause["Construction-Intensive"]}% Value: ${
+  Construction-Intensive: ${
     polluantCause["Construction-Intensive"]
-  }	<br />
-  Vehicle-Intensive: ${polluantCause["Vehicle-Intensive"]}%      Value: ${
+  }% Value: ${calculatePollutantCauseValue(
+    districtAqi,
+    polluantCause["Construction-Intensive"]
+  )}	<br />
+  Vehicle-Intensive: ${
     polluantCause["Vehicle-Intensive"]
-  }	<br />
-  Industrial: ${polluantCause["Industrial"]}%             Value: ${
+  }%     ${calculatePollutantCauseValue(
+    districtAqi,
+    polluantCause["Vehicle-Intensive"]
+  )}	<br />
+  Industrial: ${
     polluantCause["Industrial"]
-  }	<br />
-  Agricultural: ${polluantCause["Agricultural"]}%            Value: ${
+  }%             ${calculatePollutantCauseValue(
+    districtAqi,
+    polluantCause["Industrial"]
+  )}	<br />
+  Agricultural: ${
     polluantCause["Agricultural"]
-  }	<br />
-  Miscellaneous: ${polluantCause["Miscellaneous"]}%  Value: ${
+  }%            ${calculatePollutantCauseValue(
+    districtAqi,
+    polluantCause["Agricultural"]
+  )}	<br />
+  Miscellaneous: ${
     polluantCause["Miscellaneous"]
-  }
+  }%  ${calculatePollutantCauseValue(
+    districtAqi,
+    polluantCause["Miscellaneous"]
+  )}
   `;
+};
+
+const calculatePollutantCauseValue = (districtAqi, causePercentage) => {
+  return Math.round((districtAqi * causePercentage) / 100);
 };
