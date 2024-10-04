@@ -95,6 +95,8 @@ const plotHistoricalGraph = (data) => {
   const dataFor2MonthsBefore = data.historical;
   const totalLength = dataFor2MonthsBefore.aqi.length;
 
+  console.log({ data, totalLength });
+
   const datasets = [
     {
       label: "Actual",

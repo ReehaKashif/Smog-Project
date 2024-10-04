@@ -95,7 +95,7 @@ pollutant_districts = {
     ],
     "Industry": [
         "Faisalabad", "Gujranwala", "Sialkot", "Lahore", "Sheikhupura", 
-        "Multan", "Jhang", "Mandi Buhauddin", "Nankana Sahib", "Chiniot"
+        "Multan", "Jhang", "Mandi Buhuddin", "Nankana Sahib", "Chiniot"
     ],
     "Agriculture": [
         "Bahawalpur", "Rahim Yar Khan", "Lodhran", "Kasur", "Okara", 
@@ -107,7 +107,7 @@ pollutant_districts = {
         "Gujranwala", "Gujrat", "Lahore", "Sialkot", "Rawalpindi", 
         "Faisalabad", "Sargodha", "Sahiwal", "Mianwali", "Jhelum"
     ],
-    "Miscellaneous": [
+    "Deforestation": [
         "Dera Ghazi Khan", "Rahim Yar Khan", "Bahawalpur", "Muzaffargarh", 
         "Rajanpur", "Layyah", "Mianwali", "Swat", "Bhakkar", "Lodhran"
     ]
