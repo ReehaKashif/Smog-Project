@@ -1,6 +1,6 @@
 // const OLD_SERVER_URL = "https://smop-api.onrender.com/api";
-const SERVER_URL = "http://localhost:8000/api";
-// const SERVER_URL = "https://smop-app-xeco.onrender.com/api";
+// const SERVER_URL = "http://localhost:8000/api";
+const SERVER_URL = "https://smop-app-xeco.onrender.com/api";
 
 const getCurrentTime = () => {
   return fetch(SERVER_URL + "/pakistan_time", {
