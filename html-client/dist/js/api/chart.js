@@ -153,23 +153,23 @@ const plotPredictionGraph = (data) => {
 
   let groupedDatasets = [
     {
-      label: "Model 1",
+      label: "7 days",
       data: roundNullableData(firstSection),
-      borderColor: "green",
+      borderColor: "#06402b",
       fill: false,
     },
     {
-      label: "",
+      label: "Next 7 days",
       data: roundNullableData(secondSection),
       backgroundColor: "transparent",
-      borderColor: "yellow",
+      borderColor: "#008000",
       fill: false,
     },
     {
-      label: "",
+      label: "Next 45 days",
       data: roundNullableData(thirdSection),
       backgroundColor: "transparent",
-      borderColor: "red",
+      borderColor: "#90EE90",
       fill: false,
     },
   ];
@@ -186,15 +186,15 @@ const plotPredictionGraph = (data) => {
     },
     options: {
       responsive: true,
-      plugins: {
-        title: {
-          display: true,
-          text: (ctx) => "Prediction Data",
-        },
-        legend: {
-          display: false,
-        },
-      },
+      // plugins: {
+      // title: {
+      //   display: true,
+      //   text: (ctx) => "Prediction Data",
+      // },
+      // legend: {
+      //   display: false,
+      // },
+      // },
       scales: {
         y: {
           beginAtZero: false,

@@ -7,7 +7,10 @@ const loadShapefile = (
   let content = "";
 
   if (mapType === "pollutantMap") {
-    content = getAndRenderPollutantCauses(district.district, district.aqi);
+    // content = getAndRenderPollutantCauses(district.district, district.aqi);
+    // FIXME: Re-calculate the contribution for each district
+    const html = calculateSourceContribution("all");
+    content = html;
   } else if (mapType === "rankingMap") {
     content = `${district.district} <br /> AQI: ${Math.round(
       district.aqi

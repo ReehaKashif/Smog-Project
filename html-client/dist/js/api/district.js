@@ -1,7 +1,7 @@
 let cachedData = null;
 let cacheTime = null;
 const CACHE_DURATION = 30 * 60 * 1000; // Cache duration in milliseconds (5 minutes)
-
+let proccessedData = false;
 document.addEventListener("DOMContentLoaded", () => {
   getAqiStatus();
   getDistrictAqiColor();
@@ -123,26 +123,29 @@ const getDistrictAqiColor = () => {
 };
 
 const processAndCacheData = (data) => {
+  if (proccessedData) return;
   if (!data) return;
 
-  // Cache the data
   const districts = data.map((item) => item.district);
   districts.sort((a, b) => a.localeCompare(b));
 
   setLocalStorage("districtsData", data);
+
+  const lahoreDistrictIndex = districts.findIndex(
+    (district) => district.toLowerCase() === "lahore"
+  );
 
   // Render districts to the dropdowns
   districts.forEach((district) => {
     $("#district-selector").append(`<option>${district}</option>`);
     $("#header-district-selector").append(`<option>${district}</option>`);
   });
-  $("#district-selector").val(districts[0]).trigger("change");
-  const lahoreDistrictIndex = districts.findIndex(
-    (district) => district.toLowerCase() === "lahore"
-  );
+  $("#district-selector").val(districts[lahoreDistrictIndex]).trigger("change");
   $("#header-district-selector")
     .val(districts[lahoreDistrictIndex])
     .trigger("change");
+
+  proccessedData = true;
 };
 
 const calculateAverageAQI = (data) => {

@@ -236,6 +236,7 @@ const plotAllPollutantDistricts = (data) => {
   getDistrictAqiColor()
     .then((d) => {
       const districts = [{ district: "aoi_punjab", source: null }, ...data];
+      console.log({ districts });
       Promise.all(
         districts.map(async ({ district, source }) => {
           const formattedDistrict = district.replace(/\s+/g, "_");
