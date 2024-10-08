@@ -180,6 +180,91 @@ p.legend {
       var(--c6) 0 180deg,
       #ffffff 0
     );
+}
+
+/* Style for the numbers around the speedometer */
+.numbers span,
+.labels span {
+  position: absolute;
+  z-index: 1000;
+  color: #1f1f1f;
+  font-size: 1em !important;
+}
+
+.labels span {
+  border: 2px solid red;
+  width: 75px;
+  height: 75px;
+  font-size: 18px !important;
+}
+
+/* .numbers span:nth-child(4) {
+  top: -30px;
+  left: 50%;
+  transform: translate(-50%, 0);
+} */
+
+/* .labels span {
+  font-size: 1.25rem;
+  color: #000000;
+  transform: translate(-50%, -150px);
+} */
+/* transform: translate(-50%, -100%) rotate(calc(var(--rotation) * -1deg)); */
+/* .numbers span {
+  font-size: 1.2rem;
+  transform: translate(-50%, -240px) rotateZ(45deg);
+  font-size: 2.25rem !important;
+}
+
+.labels span {
+  font-size: 1.25rem;
+  color: #000000;
+  transform: translate(-50%, -150px);
+} */
+
+.needle {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  padding: 120px;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: conic-gradient(
+        from 175deg at 50% 55%,
+        #ccc 2deg,
+        #1f1f1f 3deg 7deg,
+        #ccc 8deg 10deg,
+        #00000000 0
+      )
+      0 -170px no-repeat,
+    radial-gradient(#1f1f1f 0 50%, #ccc 51%) content-box;
+  rotate: calc(cos(var(--score) * 180deg / 500) * -90deg);
+  transition: rotate 0.75s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.speedometer-1 {
+  position: relative;
+  margin: 0 auto;
+  width: 400px;
+  height: 400px;
+  padding: 100px;
+  border-radius: 50%;
+  background: radial-gradient(#ffffff 0 0) content-box,
+    conic-gradient(
+      from -90deg,
+      var(--c1) 30deg,
+      var(--c2) 0 60deg,
+      var(--c3) 0 90deg,
+      var(--c4) 0 120deg,
+      var(--c5) 0 150deg,
+      var(--c6) 0 180deg,
+      #ffffff 0
+    );
 
   .needle {
     position: absolute;
@@ -208,7 +293,6 @@ p.legend {
     align-items: center;
   }
 }
-
 
 /*  */
 #header-district-selector > option {

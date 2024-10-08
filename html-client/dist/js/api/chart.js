@@ -1,5 +1,6 @@
 let leftChartCtx = document.getElementById("chartLeftCanva").getContext("2d");
 let rightChartCtx = document.getElementById("chartRightCanva").getContext("2d");
+let predictionChartCtx = document.getElementById("predictionChart").getContext("2d");
 
 let leftChart, rightChart;
 

@@ -314,6 +314,56 @@
               class="w-full lg:w-fit relative -bottom-[230px] lg:-bottom-[200px] lg:absolute lg:right-1/2 lg:translate-x-1/2 order-2 lg:order-1"
             >
               <div class="speedometer">
+                <!-- Numbers -->
+                <div class="numbers">
+                  <span class="top-1/2 -left-10 -translate-y-[75%]">0</span>
+                  <span class="-top-[10px] left-[calc(50%/3)] translate-x-1/2"
+                    >50</span
+                  >
+                  <span
+                    class="top-1/4 left-0 -translate-x-1/2 -translate-y-[75%]"
+                    >100</span
+                  >
+                  <span class="-top-[40px] left-1/2 -translate-x-1/2">150</span>
+                  <span class="-top-[10px] right-[80px] translate-x-1/2"
+                    >200</span
+                  >
+                  <span
+                    class="top-1/4 right-0 translate-x-1/2 -translate-y-[75%]"
+                    >300</span
+                  >
+                  <span
+                    class="top-1/2 -right-10 translate-x-1/2 -translate-y-[75%]"
+                    >500</span
+                  >
+                </div>
+
+                <!-- Color Labels -->
+                <div class="labels hidden">
+                  <span class="top-1/2 -left-10 -translate-y-[75%]">Good</span>
+                  <span class="-top-[10px] left-[calc(50%/3)] translate-x-1/2"
+                    >Moderate</span
+                  >
+                  <span
+                    class="top-1/4 left-0 -translate-x-1/2 -translate-y-[75%]"
+                    >Unhealthy for Sensitive Groups</span
+                  >
+                  <span class="-top-[40px] left-1/2 -translate-x-1/2"
+                    >Unhealthy</span
+                  >
+                  <span class="-top-[10px] right-[80px] translate-x-1/2"
+                    >Very Unhealthy</span
+                  >
+                  <span
+                    class="top-1/4 right-0 translate-x-1/2 -translate-y-[75%]"
+                    >Hazardous</span
+                  >
+                  <span
+                    class="top-1/2 -right-10 translate-x-1/2 -translate-y-[75%]"
+                    >Very Hazardous</span
+                  >
+                </div>
+                <!-- AQI METER -->
                 <div
                   id="aqi-average-meter-neddle"
                   class="needle"
@@ -590,6 +640,30 @@
             </section>
           </div>
           <!-- Main row -->
+          <div class="row border-2 rounded-xl shadow-sm">
+            <!-- Prediction Chart -->
+            <section class="hidden">
+              <div class="nav-tabs-custom border-0 shadow-none">
+                <!-- Tabs within a box -->
+                <ul class="flex items-center justify-between border-0 h-[45px]">
+                  <li>
+                    <h3 class="text-black font-bold text-3xl">Prediction</h3>
+                  </li>
+                  <li class="text-black">
+                    <a href="#">&#9900; &#9900; &#9900;</a>
+                  </li>
+                </ul>
+                <!-- chartRightCanva -->
+                <div class="relative w-full chart tab-pane">
+                  <canvas
+                    id="predictionChart"
+                    class="w-full h-[400px]"
+                  ></canvas>
+                </div>
+              </div>
+            </section>
+          </div>
+
           <div class="row border-2 rounded-xl shadow-sm">
             <!-- Left col -->
             <section class="col-lg-6">
