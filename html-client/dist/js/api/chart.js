@@ -223,7 +223,7 @@ const plotPredictionGraph = (data) => {
 const plotSmogCausesChart = (data) => {
   const next_two_months = data["last_year_data"]["next_two_months"];
   const past_two_months = data["last_year_data"]["past_two_months"];
-  
+
   let groupedDatasets = [
     {
       label: "Past 2 months",
@@ -233,7 +233,12 @@ const plotSmogCausesChart = (data) => {
     },
     {
       label: "Next 2 months",
-      data: roundNullableData(next_two_months.aqi),
+      data: roundNullableData(
+        padList(
+          next_two_months.aqi,
+          past_two_months.aqi.length + next_two_months.aqi.length - 1
+        )
+      ),
       borderColor: "#008000",
       fill: false,
     },
