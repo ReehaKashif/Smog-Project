@@ -1,10 +1,10 @@
 * {
-  --c1: #b4ff00;
-  --c2: #ffd700;
-  --c3: #ff9900;
-  --c4: #ff5b00;
-  --c5: #ff1d00;
-  --c6: #e10000;
+  --c1: #01cc01;
+  --c2: #ffc000;
+  --c3: #ff6501;
+  --c4: #fe0000;
+  --c5: #9a35ff;
+  --c6: #930537;
 }
 
 .pallete-container {
@@ -240,7 +240,7 @@ p.legend {
       )
       0 -170px no-repeat,
     radial-gradient(#1f1f1f 0 50%, #ccc 51%) content-box;
-  rotate: calc(cos(var(--score) * 180deg / 500) * -90deg);
+  /* rotate: calc(cos(0 * 180deg / 500) * -90deg); */
   transition: rotate 0.75s ease-in-out;
   display: flex;
   justify-content: center;

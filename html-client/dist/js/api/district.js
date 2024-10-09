@@ -157,7 +157,11 @@ const calculateAverageAQI = (data) => {
 const renderAverageAQI = (aqiAverage) => {
   $("#aqi-average").text(`${aqiAverage}`);
   $("#aqi-average-meter").text(`${aqiAverage}`);
-  $("#aqi-average-meter-neddle").css("--score", aqiAverage);
+  $("#aqi-average-meter-neddle").css(
+    "rotate",
+    `calc(cos(${aqiAverage} * 180deg / 500) * -90deg)`
+  );
+  // $("#aqi-average-meter-neddle").css("--score", aqiAverage);
 };
 
 const renderDistrictData = (data) => {
