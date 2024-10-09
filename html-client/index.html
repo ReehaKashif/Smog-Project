@@ -75,10 +75,10 @@
               src="dist/img/logo.png"
               class="logo-image w-[100px] h-[80px] rounded-full"
             />
-            <p>
-              ENVIRONMENT PROTECTION & CLIMATE
+            <p class="uppercase">
+              Punjab Information
               <br />
-              CHANGE DEPARTMENT
+              Technology Board
               <br />
               <span>GOVERNMENT OF THE PUNJAB</span>
             </p>
@@ -233,7 +233,6 @@
                   <li class="footer"><a href="#">See All Messages</a></li>
                 </ul>
               </li>
-
               <!-- User Account: style can be found in dropdown.less -->
               <li class="dropdown user user-menu">
                 <a
@@ -643,15 +642,18 @@
           <!-- Main row -->
           <div class="row border-2 rounded-xl shadow-sm">
             <!-- Prediction Chart -->
-            <section class="hidden">
+            <section class="">
               <div class="nav-tabs-custom border-0 shadow-none">
                 <!-- Tabs within a box -->
                 <ul class="flex items-center justify-between border-0 h-[45px]">
                   <li>
                     <h3 class="text-black font-bold text-3xl">Prediction</h3>
                   </li>
-                  <li class="text-black">
-                    <a href="#">&#9900; &#9900; &#9900;</a>
+                  <li>
+                    <select
+                      id="predition-district-selector"
+                      class="form-control"
+                    ></select>
                   </li>
                 </ul>
                 <!-- chartRightCanva -->
@@ -718,7 +720,7 @@
                 <!-- Tabs within a box -->
                 <ul class="nav nav-tabs pull-right no-border mb20">
                   <li class="pull-left header">
-                    <h3><span>Select</span> a Cause</h3>
+                    <h3><span>Major Causes of Smog</span></h3>
                   </li>
                 </ul>
                 <div class="row mb20">
