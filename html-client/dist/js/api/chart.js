@@ -63,16 +63,19 @@ const getForecastAqi = (district) => {
     });
 };
 
-const getSmogCauses = (district) => {
-  return fetch(`${SERVER_URL}/last_year?district=${district}`)
-    .then((response) => {
-      if (!response.ok) {
+const getPredictionData = (district) => {
+  const lastYearPromise = fetch(`${SERVER_URL}/last_year?district=${district}`);
+  const thisYearPromise = fetch(`${SERVER_URL}/this_year?district=${district}`);
+
+  return Promise.all([lastYearPromise, thisYearPromise])
+    .then(([lastYearResponse, thisYearResponse]) => {
+      if (!lastYearResponse.ok || !thisYearResponse.ok) {
         throw new Error("Network response was not ok");
       }
-      return response.json();
+      return Promise.all([lastYearResponse.json(), thisYearResponse.json()]);
     })
-    .then((data) => {
-      plotSmogCausesChart(data);
+    .then(([lastYearData, thisYearData]) => {
+      plotSmogCausesChart({ ...lastYearData, ...thisYearData });
       return;
     })
     .catch((err) => {
@@ -101,7 +104,7 @@ const handleForecastDistrictChange = () => {
 const handleSmogCausesDistrictChange = () => {
   const district = $("#predition-district-selector").val();
   if (district) {
-    getSmogCauses(district);
+    getPredictionData(district);
   }
 };
 
@@ -221,25 +224,87 @@ const plotPredictionGraph = (data) => {
 };
 
 const plotSmogCausesChart = (data) => {
-  const next_two_months = data["last_year_data"]["next_two_months"];
-  const past_two_months = data["last_year_data"]["past_two_months"];
+  const last_year_next_two_months = data["last_year_data"]["next_two_months"];
+  const last_year_past_two_months = data["last_year_data"]["past_two_months"];
 
-  let groupedDatasets = [
+  const this_year_next_two_months = data["this_year_data"]["next_two_months"];
+  const this_year_past_two_months = data["this_year_data"]["past_two_months"];
+
+  // console.log({
+  //   last_year_next_two_months,
+  //   last_year_past_two_months,
+  //   this_year_next_two_months,
+  //   this_year_past_two_months,
+  // });
+
+  let labels = [
+    ...last_year_past_two_months.date,
+    ...last_year_next_two_months.date,
+    ...this_year_past_two_months.date,
+    ...this_year_next_two_months.date,
+  ].map((dateStr) => convertDateFormat(dateStr, false));
+
+  let datasets = [
     {
-      label: "Past 2 months",
-      data: roundNullableData(past_two_months.aqi),
-      borderColor: "#06402b",
+      label: "Last year",
+      data: roundNullableData([
+        ...last_year_past_two_months.aqi,
+        ...last_year_next_two_months.aqi,
+      ]),
+      borderColor: "#808080",
       fill: false,
     },
     {
-      label: "Next 2 months",
+      label: "Current year last 2 months",
       data: roundNullableData(
-        padList(
-          next_two_months.aqi,
-          past_two_months.aqi.length + next_two_months.aqi.length - 1
+        padListWithNull(
+          this_year_past_two_months.aqi,
+          last_year_past_two_months.date.length +
+            last_year_next_two_months.date.length
         )
       ),
-      borderColor: "#008000",
+      borderColor: "#000000",
+      fill: false,
+    },
+    {
+      label: "Current year future 7 days",
+      data: roundNullableData(
+        padListWithNull(
+          this_year_next_two_months.aqi.slice(0, 7),
+          last_year_past_two_months.date.length +
+            last_year_next_two_months.date.length +
+            this_year_past_two_months.date.length
+        )
+      ),
+      borderColor: "#8B0000",
+      fill: false,
+    },
+    {
+      label: "Current year next 7 days",
+      data: roundNullableData(
+        padListWithNull(
+          this_year_next_two_months.aqi.slice(7, 14),
+          last_year_past_two_months.date.length +
+            last_year_next_two_months.date.length +
+            this_year_past_two_months.date.length +
+            7
+        )
+      ),
+      borderColor: "#ff0000",
+      fill: false,
+    },
+    {
+      label: "Current year next 45 days",
+      data: roundNullableData(
+        padListWithNull(
+          this_year_next_two_months.aqi.slice(14),
+          last_year_past_two_months.date.length +
+            last_year_next_two_months.date.length +
+            this_year_past_two_months.date.length +
+            14
+        )
+      ),
+      borderColor: "#FF7F7F",
       fill: false,
     },
   ];
@@ -251,10 +316,8 @@ const plotSmogCausesChart = (data) => {
   predictionChart = new Chart(predictionChartCtx, {
     type: "line",
     data: {
-      labels: [...past_two_months.date, ...next_two_months.date].map(
-        convertDateFormat
-      ),
-      datasets: groupedDatasets,
+      labels,
+      datasets,
     },
     options: {
       responsive: true,
@@ -272,11 +335,11 @@ const plotSmogCausesChart = (data) => {
   });
 };
 
-const convertDateFormat = (dateStr) => {
+const convertDateFormat = (dateStr, shouldIncludeYear = true) => {
   const date = new Date(dateStr);
 
   const day = date.getDate();
-  const year = date.getFullYear().toString().slice(-2);
+  const year = shouldIncludeYear ? date.getFullYear().toString().slice(-2) : "";
 
   const monthNames = [
     "Jan",
@@ -294,7 +357,7 @@ const convertDateFormat = (dateStr) => {
   ];
   const month = monthNames[date.getMonth()];
 
-  return `${day}-${month}-${year}`;
+  return `${day}-${month}${year ? `-${year}` : ""}`;
 };
 
 const padList = (list, targetLength) => {
@@ -302,6 +365,11 @@ const padList = (list, targetLength) => {
     return list;
   }
   const padding = new Array(targetLength - list.length).fill(null);
+  return [...padding, ...list];
+};
+
+const padListWithNull = (list, paddingLength) => {
+  const padding = new Array(paddingLength).fill(null);
   return [...padding, ...list];
 };
 
