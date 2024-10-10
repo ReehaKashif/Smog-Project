@@ -139,12 +139,15 @@ const processAndCacheData = (data) => {
   districts.forEach((district) => {
     $("#district-selector").append(`<option>${district}</option>`);
     $("#header-district-selector").append(`<option>${district}</option>`);
+    $("#predition-district-selector").append(`<option>${district}</option>`);
   });
   $("#district-selector").val(districts[lahoreDistrictIndex]).trigger("change");
   $("#header-district-selector")
     .val(districts[lahoreDistrictIndex])
     .trigger("change");
-
+  $("#predition-district-selector")
+    .val(districts[lahoreDistrictIndex])
+    .trigger("change");
   proccessedData = true;
 };
 

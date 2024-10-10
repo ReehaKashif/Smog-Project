@@ -1,13 +1,16 @@
 let leftChartCtx = document.getElementById("chartLeftCanva").getContext("2d");
 let rightChartCtx = document.getElementById("chartRightCanva").getContext("2d");
-let predictionChartCtx = document.getElementById("predictionChart").getContext("2d");
+let predictionChartCtx = document
+  .getElementById("predictionChart")
+  .getContext("2d");
 
-let leftChart, rightChart;
+let leftChart, rightChart, predictionChart;
 
 $(document).ready(function () {
   // Initial function call when the page loads
   handleHistoricalParamsChange();
   handleForecastDistrictChange();
+  handleSmogCausesDistrictChange();
 
   // Attach event listeners to select inputs
   $("#district-selector").change(function () {
@@ -18,6 +21,10 @@ $(document).ready(function () {
   $("#duration-selector").change(function () {
     handleHistoricalParamsChange();
     handleForecastDistrictChange();
+  });
+
+  $("#predition-district-selector").change(function () {
+    handleSmogCausesDistrictChange();
   });
 });
 
@@ -38,24 +45,6 @@ const getHistoricalData = (district) => {
     });
 };
 
-// const durations = ["weekly", "biweekly", "2 months"];
-
-// const getHistoricalData = async (district, duration) => {
-//   const response = await fetch(
-//     `${SERVER_URL}/historical_data?district=${district}&duration=${duration}`
-//   );
-//   return response.json();
-// };
-
-// const fetchAllHistoricalData = async (district) => {
-//   const promises = durations.map((duration) =>
-//     getHistoricalData(district, duration)
-//   );
-//   const results = await Promise.all(promises);
-//   plotHistoricalGraph(results);
-//   return;
-// };
-
 const getForecastAqi = (district) => {
   return fetch(`${SERVER_URL}/forecast_data?district=${district}`)
     .then((response) => {
@@ -66,6 +55,24 @@ const getForecastAqi = (district) => {
     })
     .then((data) => {
       plotPredictionGraph(data);
+      return;
+    })
+    .catch((err) => {
+      console.error("Fetch error:", err);
+      return null;
+    });
+};
+
+const getSmogCauses = (district) => {
+  return fetch(`${SERVER_URL}/last_year?district=${district}`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      plotSmogCausesChart(data);
       return;
     })
     .catch((err) => {
@@ -91,15 +98,18 @@ const handleForecastDistrictChange = () => {
   }
 };
 
+const handleSmogCausesDistrictChange = () => {
+  const district = $("#predition-district-selector").val();
+  if (district) {
+    getSmogCauses(district);
+  }
+};
+
 const plotHistoricalGraph = (data) => {
   const dataFor7DaysBefore = data.forecast_7d.aqi;
   const dataFor14DaysBefore = data.forecast_14d.aqi;
   const dataFor2MonthsBefore = data.historical;
   const totalLength = dataFor2MonthsBefore.aqi.length;
-
-  // const paddedDataFor14DaysBefore = padList(dataFor14DaysBefore, totalLength);
-  // const paddedDataFor7DaysBefore = padList(dataFor7DaysBefore, totalLength);
-  // console.log({ paddedDataFor14DaysBefore, paddedDataFor7DaysBefore });
 
   try {
     const datasets = [
@@ -196,6 +206,58 @@ const plotPredictionGraph = (data) => {
       //   display: false,
       // },
       // },
+      scales: {
+        y: {
+          beginAtZero: false,
+          min: 0,
+          max: 500,
+        },
+        x: {
+          beginAtZero: false,
+        },
+      },
+    },
+  });
+};
+
+const plotSmogCausesChart = (data) => {
+  const next_two_months = data["last_year_data"]["next_two_months"];
+  const past_two_months = data["last_year_data"]["past_two_months"];
+
+  let groupedDatasets = [
+    {
+      label: "Past 2 months",
+      data: roundNullableData(past_two_months.aqi),
+      borderColor: "#06402b",
+      fill: false,
+    },
+    {
+      label: "Next 2 months",
+      data: roundNullableData(
+        padList(
+          next_two_months.aqi,
+          past_two_months.aqi.length + next_two_months.aqi.length - 1
+        )
+      ),
+      borderColor: "#008000",
+      fill: false,
+    },
+  ];
+
+  if (predictionChart) {
+    predictionChart.destroy();
+  }
+
+  predictionChart = new Chart(predictionChartCtx, {
+    type: "line",
+    data: {
+      labels: [...past_two_months.date, ...next_two_months.date].map(
+        convertDateFormat
+      ),
+      datasets: groupedDatasets,
+    },
+    options: {
+      responsive: true,
       scales: {
         y: {
           beginAtZero: false,
