@@ -483,6 +483,62 @@ def get_current_pollutants(
         "pollutants": pollutant_values
     }
 
+@app.get("/api/this_year")
+def get_this_year_data(
+    district: str = Query(..., description="District name")
+):
+    """
+    Endpoint to get this year's AQI data for a given district for the last 2 months
+    and the next 2 months from the current date.
+    """
+    # Get current date
+    current_date = datetime.now(timezone('Asia/Karachi')).date()
+    
+    # Calculate date range
+    two_months_ago = current_date - timedelta(days=60)
+    two_months_ahead = current_date + timedelta(days=60)
+    
+    # Prepare historical data (last 2 months)
+    historical_df = last_year_data[
+        (last_year_data['District'] == district) &
+        (pd.to_datetime(last_year_data['Date']).dt.date >= two_months_ago) &
+        (pd.to_datetime(last_year_data['Date']).dt.date < current_date)
+    ].copy()
+    
+    # Rename 'Final_AQI' to 'Final_aqi' in historical data
+    historical_df = historical_df.rename(columns={'Final_AQI': 'Final_aqi'})
+    
+    # Prepare forecast data (next 2 months)
+    forecast_df = daily_forecast[
+        (daily_forecast['District'] == district) &
+        (pd.to_datetime(daily_forecast['Date']).dt.date >= current_date) &
+        (pd.to_datetime(daily_forecast['Date']).dt.date <= two_months_ahead)
+    ]
+
+    if historical_df.empty and forecast_df.empty:
+        raise HTTPException(status_code=404, detail="No data found for the specified parameters.")
+    
+    # Prepare response data
+    historical_dates = pd.to_datetime(historical_df['Date']).dt.strftime('%Y-%m-%d').tolist()
+    historical_aqi_values = historical_df['Final_aqi'].tolist()
+    
+    forecast_dates = pd.to_datetime(forecast_df['Date']).dt.strftime('%Y-%m-%d').tolist()
+    forecast_aqi_values = forecast_df['Final_aqi'].tolist()
+
+    # Return the data as a JSON response
+    return {
+        "this_year_data": {
+            "past_two_months": {
+                "date": historical_dates,
+                "aqi": historical_aqi_values
+            },
+            "next_two_months": {
+                "date": forecast_dates,
+                "aqi": forecast_aqi_values
+            }
+        }
+    }
+
 # Example of how to run the FastAPI server with Uvicorn
 if __name__ == "__main__":
     import uvicorn
