@@ -160,11 +160,41 @@ const calculateAverageAQI = (data) => {
 const renderAverageAQI = (aqiAverage) => {
   $("#aqi-average").text(`${aqiAverage}`);
   $("#aqi-average-meter").text(`${aqiAverage}`);
+
+  // $("#aqi-average-meter-neddle").css(
+  //   "rotate",
+  //   `calc(cos(${aqiAverage} * 180deg / 500) * -90deg)`
+  // );
+
+  // Declare variables for angle and rotation value
+  //aqiAverage = 300;
+  let angle;
+  let rotationValue;
+
+  // Calculate the rotation angle for the needle based on AQI ranges
+  if (aqiAverage < 200) {
+    // AQI less than 200: divide by 1.6, rotationValue is -90 + angle
+    angle = aqiAverage / 1.6;
+    rotationValue = -91 + angle;
+  } else if (aqiAverage >= 201 && aqiAverage <= 300) {
+    // AQI between 200 and 300: divide by 3.3, rotationValue is -30 + angle
+    angle = aqiAverage / 3.3;
+    rotationValue = -29 + angle;
+  } else if (aqiAverage >= 301 && aqiAverage <= 500) {
+    // AQI between 300 and 500: divide by 3.3, rotationValue is -15 + angle
+    angle = aqiAverage / 6.6;
+    rotationValue = +14 + angle;
+  } else {
+    // For AQI > 500, cap the rotation to 500 equivalent
+    angle = 500 / 6.6;
+    rotationValue = +14 + angle;
+  }
+
+  // Apply rotation to the needle
   $("#aqi-average-meter-neddle").css(
-    "rotate",
-    `calc(cos(${aqiAverage} * 180deg / 500) * -90deg)`
+    "transform",
+    `rotate(${rotationValue}deg)`
   );
-  // $("#aqi-average-meter-neddle").css("--score", aqiAverage);
 };
 
 const renderDistrictData = (data) => {
