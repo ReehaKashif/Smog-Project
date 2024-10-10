@@ -2,15 +2,13 @@ const loadShapefile = (
   shapefilePath,
   district,
   map,
-  mapType = "pollutantMap"
+  mapType = "pollutantMap",
+  popupContent = ""
 ) => {
   let content = "";
 
   if (mapType === "pollutantMap") {
-    // content = getAndRenderPollutantCauses(district.district, district.aqi);
-    // FIXME: Re-calculate the contribution for each district
-    const html = calculateSourceContribution("all");
-    content = html;
+    content = popupContent;
   } else if (mapType === "rankingMap") {
     content = `${district.district} <br /> AQI: ${Math.round(
       district.aqi

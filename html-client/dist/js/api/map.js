@@ -247,6 +247,12 @@ const plotAllPollutantDistricts = (data) => {
           )[0];
 
           // console.log({ currentDistrict });
+          const html = `<div class="flex gap-8"><span><strong class="font-bold">District:</strong> ${district}</span><span><strong class="font-bold">AQI:</strong> ${Math.round(
+            currentDistrict["aqi"]
+          )}</span></div>
+          <div class="flex gap-8"><span><strong class="font-bold">Temp:</strong> ---</span><span><strong class="font-bold">Windspeed:</strong> ---</span></div>
+         <hr class="my-2" />
+          <div>${calculateSourceContribution()}</div>`;
 
           let districtInfo = {
             district:
@@ -262,7 +268,8 @@ const plotAllPollutantDistricts = (data) => {
             shapefilePath,
             districtInfo,
             pollutantDistrictsMap,
-            "pollutantMap"
+            "pollutantMap",
+            html
           );
         })
       ).catch((error) => console.error("Error loading Shapefiles:", error));
@@ -297,6 +304,13 @@ const plotPollutantDistricts = (data, source) => {
 
           // console.log({ currentDistrict, district });
 
+          const html = `<div class="flex gap-8"><span><strong>District:</strong> ${district}</span><span><strong>AQI:</strong> ${Math.round(
+            currentDistrict["aqi"]
+          )}</span></div>
+          <div class="flex gap-8"><span><strong>Temp:</strong> ---</span><span><strong>Windspeed:</strong> ---</span></div>
+         <hr />
+          <div>${calculateSourceContribution()}</div>`;
+
           let districtInfo = {
             district:
               district === "aoi_punjab"
@@ -310,7 +324,8 @@ const plotPollutantDistricts = (data, source) => {
             shapefilePath,
             districtInfo,
             pollutantDistrictsMap,
-            "districtAqi"
+            "pollutantMap",
+            html
           );
         })
       ).catch((error) => console.error("Error loading Shapefiles:", error));

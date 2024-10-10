@@ -57,15 +57,16 @@ const renderPollutantDataInTable = (
 ) => {
   let tableData = [];
   let tableHtml =
-    '<table class="pollutant-table"><thead><tr><th>Source</th><th>Value</th><th>Percentage</th></tr></thead><tbody>';
+    '<table class="pollutant-table w-[300px]"><thead class="p-2"><tr class="p-2"><th>Source</th><th>Value</th><th>%</th></tr></thead><tbody>';
   for (const source of pollutantsSources) {
+    let sourceName = source === "Miscellaneous" ? "Misc" : source;
     tableData.push({
-      source,
+      source: sourceName,
       value: Math.round(totalSourcesContributionValues[source]),
       "%": Math.round(totalSourcesContributionPercentages[source]) + "%",
     });
 
-    tableHtml += `<tr>
+    tableHtml += `<tr class="p-2">
       <td>${source}</td>
       <td>${Math.round(totalSourcesContributionValues[source])}</td>
       <td>${Math.round(totalSourcesContributionPercentages[source])}%</td>
