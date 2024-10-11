@@ -8,6 +8,12 @@ from pytz import timezone
 from datetime import datetime, timedelta
 
 
+# Load CSV files
+try:
+    locations = 'location_smog.csv'
+except FileNotFoundError as e:
+    locations = 'fastapi-server/location_smog.csv'
+
 def get_pakistan_time():
     # Get the current date and time in Pakistan
     pakistan_timezone = timezone('Asia/Karachi')
@@ -15,12 +21,12 @@ def get_pakistan_time():
     formatted_time = now.strftime('%Y-%m-%d %H:%M:%S')
     return formatted_time
 
-def get_average_weather(csv_path):
+def get_average_weather(csv_path=locations):
     # Load CSV data
     location_data = pd.read_csv(csv_path)
 
     # Setup the Open-Meteo API client with cache and retry on error
-    cache_session = requests_cache.CachedSession('.cache', expire_after=3600)
+    cache_session = requests_cache.CachedSession('.cache', expire_after=86400)
     retry_session = retry(cache_session, retries=5, backoff_factor=0.2)
 
     # Get the current date and time in Pakistan

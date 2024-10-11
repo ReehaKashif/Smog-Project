@@ -544,8 +544,8 @@ def get_this_year_data(
     
 @app.get("/api/weather_data/")
 def wweather_data():
-    locations = 'fastapi-server/location_smog.csv'
-    data = get_average_weather(locations)
+    
+    data = get_average_weather()
     'District', 'Time', 'Temperature_2m', 'Wind_speed_10m'
     result = {
         'District': data['District'].values.tolist(),
