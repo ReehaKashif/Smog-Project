@@ -2,22 +2,21 @@ const loadShapefile = (
   shapefilePath,
   district,
   map,
-  mapType = "pollutantMap",
   popupContent = ""
 ) => {
-  let content = "";
+  // let content = "";
 
-  if (mapType === "pollutantMap") {
-    content = popupContent;
-  } else if (mapType === "rankingMap") {
-    content = `${district.district} <br /> AQI: ${Math.round(
-      district.aqi
-    )} <br /> Rank: ${district.rank}`;
-  } else if (mapType === "districtAqi") {
-    content = `${district.district} <br /> AQI: ${Math.round(district.aqi)}`;
-  } else {
-    content = `${district.district} <br /> AQI: ${Math.round(district.aqi)}`;
-  }
+  // if (mapType === "pollutantMap") {
+  //   content = popupContent;
+  // } else if (mapType === "rankingMap") {
+  //   content = `${district.district} <br /> AQI: ${Math.round(
+  //     district.aqi
+  //   )} <br /> Rank: ${district.rank}`;
+  // } else if (mapType === "districtAqi") {
+  //   content = `${district.district} <br /> AQI: ${Math.round(district.aqi)}`;
+  // } else {
+  //   content = `${district.district} <br /> AQI: ${Math.round(district.aqi)}`;
+  // }
 
   return fetch(shapefilePath)
     .then((response) => response.arrayBuffer())
@@ -58,7 +57,7 @@ const loadShapefile = (
             },
           })
             .bindPopup(function (layer) {
-              return content;
+              return popupContent;
             })
             .addTo(map);
 

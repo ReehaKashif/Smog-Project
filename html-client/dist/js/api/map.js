@@ -54,12 +54,24 @@ getMapAqi()
       districts.map((districtInfo) => {
         const formattedDistrict = districtInfo.district.replace(/\s+/g, "_");
         const shapefilePath = `./shapefiles/${formattedDistrict}.shp`;
-        return loadShapefile(
-          shapefilePath,
-          districtInfo,
-          districtMap,
-          "districtAqi"
-        );
+
+        getWeatherData(districtInfo.district).then(({ temp, windspeed }) => {
+          const popupContent = `<div class="flex gap-8">
+        <span><strong>District:</strong> ${districtInfo.district}</span>
+        <span><strong>AQI:</strong> ${Math.round(districtInfo.aqi)}</span>
+        </div>
+        <div class="flex gap-8">
+        <span><strong>Temp:</strong> ${temp}</span>
+        <span><strong>Windspeed:</strong> ${windspeed}</span>
+        </div>`;
+
+          return loadShapefile(
+            shapefilePath,
+            districtInfo,
+            districtMap,
+            popupContent
+          );
+        });
       })
     )
       .then(() => {
@@ -114,15 +126,27 @@ getMapRanking()
     ];
     Promise.all(
       mapRankingData.map((districtInfo) => {
-        const formattedDistrict = districtInfo.district.replace(/\s+/g, "_"); // Replace spaces with underscores
-        // .replace(/_/g, " ") // Replace underscores with spaces
+        const formattedDistrict = districtInfo.district.replace(/\s+/g, "_");
         const shapefilePath = `./shapefiles/${formattedDistrict}.shp`;
-        return loadShapefile(
-          shapefilePath,
-          districtInfo,
-          rankingMap,
-          "rankingMap"
-        );
+
+        getWeatherData(districtInfo.district).then(({ temp, windspeed }) => {
+          const popupContent = `<div>
+        <span><strong>Rank:</strong> ${districtInfo.rank}</span>
+        <span><strong>District:</strong> ${districtInfo.district}</span>
+        <span><strong>AQI:</strong> ${Math.round(districtInfo.aqi)}</span>
+        </div>
+        <div class="flex gap-8">
+        <span><strong>Temp:</strong> ${temp}</span>
+        <span><strong>Windspeed:</strong> ${windspeed}</span>
+        </div>
+        `;
+          return loadShapefile(
+            shapefilePath,
+            districtInfo,
+            rankingMap,
+            popupContent
+          );
+        });
       })
     )
       .then(() => {
@@ -236,7 +260,6 @@ const plotAllPollutantDistricts = (data) => {
   getDistrictAqiColor()
     .then((d) => {
       const districts = [{ district: "aoi_punjab", source: null }, ...data];
-      console.log({ districts });
       Promise.all(
         districts.map(async ({ district, source }) => {
           const formattedDistrict = district.replace(/\s+/g, "_");
@@ -246,13 +269,17 @@ const plotAllPollutantDistricts = (data) => {
             (data) => data.district === district
           )[0];
 
-          // console.log({ currentDistrict });
-          const html = `<div class="flex gap-8"><span><strong class="font-bold">District:</strong> ${district}</span><span><strong class="font-bold">AQI:</strong> ${Math.round(
+          const { temp, windspeed } = await getWeatherData(district);
+          const sourcesContributionTable = await calculateSourceContribution(
+            district
+          );
+
+          const popupContent = `<div class="flex gap-8"><span><strong>District:</strong> ${district}</span><span><strong>AQI:</strong> ${Math.round(
             currentDistrict["aqi"]
           )}</span></div>
-          <div class="flex gap-8"><span><strong class="font-bold">Temp:</strong> ---</span><span><strong class="font-bold">Windspeed:</strong> ---</span></div>
-         <hr class="my-2" />
-          <div>${calculateSourceContribution()}</div>`;
+          <div class="flex gap-8"><span><strong>Temp:</strong> ${temp}</span><span><strong>Windspeed:</strong> ${windspeed}</span></div>
+         <hr />
+          <div>${sourcesContributionTable}</div>`;
 
           let districtInfo = {
             district:
@@ -268,8 +295,7 @@ const plotAllPollutantDistricts = (data) => {
             shapefilePath,
             districtInfo,
             pollutantDistrictsMap,
-            "pollutantMap",
-            html
+            popupContent
           );
         })
       ).catch((error) => console.error("Error loading Shapefiles:", error));
@@ -302,14 +328,17 @@ const plotPollutantDistricts = (data, source) => {
             (data) => data.district === district
           )[0];
 
-          // console.log({ currentDistrict, district });
+          const { temp, windspeed } = await getWeatherData(district);
+          const sourcesContributionTable = await calculateSourceContribution(
+            district
+          );
 
-          const html = `<div class="flex gap-8"><span><strong>District:</strong> ${district}</span><span><strong>AQI:</strong> ${Math.round(
+          const popupContent = `<div class="flex gap-8"><span><strong>District:</strong> ${district}</span><span><strong>AQI:</strong> ${Math.round(
             currentDistrict["aqi"]
           )}</span></div>
-          <div class="flex gap-8"><span><strong>Temp:</strong> ---</span><span><strong>Windspeed:</strong> ---</span></div>
+          <div class="flex gap-8"><span><strong>Temp:</strong> ${temp}</span><span><strong>Windspeed:</strong> ${windspeed}</span></div>
          <hr />
-          <div>${calculateSourceContribution()}</div>`;
+          <div>${sourcesContributionTable}</div>`;
 
           let districtInfo = {
             district:
@@ -324,11 +353,18 @@ const plotPollutantDistricts = (data, source) => {
             shapefilePath,
             districtInfo,
             pollutantDistrictsMap,
-            "pollutantMap",
-            html
+            popupContent
           );
         })
       ).catch((error) => console.error("Error loading Shapefiles:", error));
     })
     .catch((error) => console.error("Error fetching district data:", error));
+};
+
+// TODO: Integrate API
+const getWeatherData = async (district) => {
+  return {
+    temp: 20,
+    windspeed: 10,
+  };
 };

@@ -90,3 +90,15 @@ const pollutantsSources = [
 ];
 
 const pollutantsKeys = Object.keys(pollutantsValues);
+
+const pollutantsUnits = {
+  Carbon_monoxide: "CO",
+  Dust: "Dust",
+  Nitrogen_dioxide: "NO2",
+  Ozone: "O3",
+  Pm_10: "PM10",
+  Pm_25: "PM2.5",
+  Sulphur_dioxide: "SO2",
+};
+
+const pollutantsUnitsKeys = Object.keys(pollutantsUnits);
