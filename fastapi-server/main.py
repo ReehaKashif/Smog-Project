@@ -5,6 +5,7 @@ from typing import Optional
 from pytz import timezone
 from datetime import datetime, timedelta
 import random  # Add this import at the top of your file
+from collect_weather_data import get_average_weather
 
 app = FastAPI()
 
@@ -538,6 +539,20 @@ def get_this_year_data(
             }
         }
     }
+    
+    
+    
+@app.get("/api/weather_data/")
+def wweather_data():
+    locations = 'fastapi-server/location_smog.csv'
+    data = get_average_weather(locations)
+    'District', 'Time', 'Temperature_2m', 'Wind_speed_10m'
+    result = {
+        'District': data['District'].values.tolist(),
+        "Temperature": data['Temperature_2m'].values.tolist(),
+        "Wind_speed": data['Wind_speed_10m'].values.tolist()
+    }
+    return result
 
 # Example of how to run the FastAPI server with Uvicorn
 if __name__ == "__main__":
