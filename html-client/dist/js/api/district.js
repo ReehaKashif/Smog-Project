@@ -112,8 +112,8 @@ const getDistrictAqiColor = () => {
     })
     .then((data) => {
       processAndCacheData(data.districts_aqi_color);
-      const aqiAverage = calculateAverageAQI(data.districts_aqi_color);
-      renderAverageAQI(aqiAverage);
+      // const aqiAverage = calculateAverageAQI(data.districts_aqi_color);
+      // renderAverageAQI(aqiAverage);
       return data;
     })
     .catch((err) => {
@@ -161,13 +161,6 @@ const renderAverageAQI = (aqiAverage) => {
   $("#aqi-average").text(`${aqiAverage}`);
   $("#aqi-average-meter").text(`${aqiAverage}`);
 
-  // $("#aqi-average-meter-neddle").css(
-  //   "rotate",
-  //   `calc(cos(${aqiAverage} * 180deg / 500) * -90deg)`
-  // );
-
-  // Declare variables for angle and rotation value
-  //aqiAverage = 300;
   let angle;
   let rotationValue;
 

@@ -230,13 +230,6 @@ const plotSmogCausesChart = (data) => {
   const this_year_next_two_months = data["this_year_data"]["next_two_months"];
   const this_year_past_two_months = data["this_year_data"]["past_two_months"];
 
-  // console.log({
-  //   last_year_next_two_months,
-  //   last_year_past_two_months,
-  //   this_year_next_two_months,
-  //   this_year_past_two_months,
-  // });
-
   let labels = [
     ...last_year_past_two_months.date,
     ...last_year_next_two_months.date,

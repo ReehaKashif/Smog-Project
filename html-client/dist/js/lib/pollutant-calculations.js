@@ -97,34 +97,12 @@ const renderPollutantDataInTable = (
     </tr>`;
   }
 
-  return tableHtml;
+  // console.log("🔥🔥🔥", tableData[0].source);
+  return {
+    html: tableHtml,
+    sourceWithHighestContribution: tableData[0].source,
+  };
 };
-
-// const renderPollutantDataInTable = (
-//   totalSourcesContributionValues,
-//   totalSourcesContributionPercentages
-// ) => {
-
-//   let tableData = [];
-//   let tableHtml =
-//     '<table class="pollutant-table w-[300px]"><thead class="p-2"><tr class="p-2"><th>Source</th><th>Value</th><th>%</th></tr></thead><tbody>';
-//   for (const source of pollutantsSources) {
-//     let sourceName = source === "Miscellaneous" ? "Misc" : source;
-//     tableData.push({
-//       source: sourceName,
-//       value: Math.round(totalSourcesContributionValues[source]),
-//       "%": Math.round(totalSourcesContributionPercentages[source]) + "%",
-//     });
-
-//     tableHtml += `<tr class="p-2">
-//       <td>${source}</td>
-//       <td>${Math.round(totalSourcesContributionValues[source])}</td>
-//       <td>${Math.round(totalSourcesContributionPercentages[source])}%</td>
-//     </tr>`;
-//   }
-
-//   return tableHtml;
-// };
 
 const getDistrictPollutantData = (district) => {
   return fetch(`${SERVER_URL}/current_pollutants?district=${district}`)

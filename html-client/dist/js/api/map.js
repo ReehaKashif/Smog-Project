@@ -197,6 +197,7 @@ const fetchAllPollutantDistricts = () => {
 const sources_color = {
   All: "#ee00fe",
   Vehicle: "#ffa500",
+  Vehicles: "#ffa500",
   Industry: "#f2af2a",
   Construction: "#ff2600",
   Agriculture: "#36454f",
@@ -270,16 +271,15 @@ const plotAllPollutantDistricts = (data) => {
           )[0];
 
           const { temp, windspeed } = await getWeatherData(district);
-          const sourcesContributionTable = await calculateSourceContribution(
-            district
-          );
+          const { html, sourceWithHighestContribution } =
+            await calculateSourceContribution(district);
 
           const popupContent = `<div class="flex gap-8"><span><strong>District:</strong> ${district}</span><span><strong>AQI:</strong> ${Math.round(
             currentDistrict["aqi"]
           )}</span></div>
           <div class="flex gap-8"><span><strong>Temp:</strong> ${temp}</span><span><strong>Windspeed:</strong> ${windspeed}</span></div>
          <hr />
-          <div>${sourcesContributionTable}</div>`;
+          <div>${html}</div>`;
 
           let districtInfo = {
             district:
@@ -287,7 +287,9 @@ const plotAllPollutantDistricts = (data) => {
                 ? "Punjab"
                 : currentDistrict["district"],
             color:
-              district === "aoi_punjab" ? "#000000" : sources_color[source],
+              district === "aoi_punjab"
+                ? "#000000"
+                : sources_color[sourceWithHighestContribution],
             aqi: district === "aoi_punjab" ? 0 : currentDistrict["aqi"],
           };
 
@@ -329,23 +331,22 @@ const plotPollutantDistricts = (data, source) => {
           )[0];
 
           const { temp, windspeed } = await getWeatherData(district);
-          const sourcesContributionTable = await calculateSourceContribution(
-            district
-          );
+          const { sourceWithHighestContribution, html } =
+            await calculateSourceContribution(district);
 
           const popupContent = `<div class="flex gap-8"><span><strong>District:</strong> ${district}</span><span><strong>AQI:</strong> ${Math.round(
             currentDistrict["aqi"]
           )}</span></div>
           <div class="flex gap-8"><span><strong>Temp:</strong> ${temp}</span><span><strong>Windspeed:</strong> ${windspeed}</span></div>
          <hr />
-          <div>${sourcesContributionTable}</div>`;
+          <div>${html}</div>`;
 
           let districtInfo = {
             district:
               district === "aoi_punjab"
                 ? "Punjab"
                 : currentDistrict["district"],
-            color: sources_color[source], // TODO: change this
+            color: sources_color[sourceWithHighestContribution], // TODO: change this
             aqi: district === "aoi_punjab" ? 0 : currentDistrict["aqi"],
           };
 
@@ -361,10 +362,38 @@ const plotPollutantDistricts = (data, source) => {
     .catch((error) => console.error("Error fetching district data:", error));
 };
 
-// TODO: Integrate API
 const getWeatherData = async (district) => {
+  const data = await getWeatherDataApi();
+  const districtIndex = data.District.findIndex((d) => d === district);
+
+  const temp = Math.round(data.Temperature[districtIndex]);
+  const windspeed = Math.round(data.Wind_speed[districtIndex]);
+
   return {
-    temp: 20,
-    windspeed: 10,
+    temp,
+    windspeed,
   };
+};
+
+const getWeatherDataApi = () => {
+  const weatherData = getLocalStorage("weather_data");
+  if (weatherData) {
+    return weatherData;
+  }
+
+  return fetch(`${SERVER_URL}/weather_data`)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      setLocalStorage("weather_data", data);
+      return data;
+    })
+    .catch((err) => {
+      console.error("Fetch error:", err);
+      return null;
+    });
 };
