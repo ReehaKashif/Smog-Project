@@ -20,7 +20,7 @@ def get_average_weather(csv_path):
     location_data = pd.read_csv(csv_path)
 
     # Setup the Open-Meteo API client with cache and retry on error
-    cache_session = requests_cache.CachedSession('.cache', expire_after=3600)
+    cache_session = requests_cache.CachedSession('.cache', expire_after=86400)
     retry_session = retry(cache_session, retries=5, backoff_factor=0.2)
 
     # Get the current date and time in Pakistan
