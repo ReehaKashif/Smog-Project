@@ -207,103 +207,103 @@ const sources_color = {
 const fetchPollutantDistrictsApi = () => {
   const source = $("#pollutant-source-selector").val();
 
-  if (source === "All") {
-    fetchAllPollutantDistricts().then((allDistricts) => {
-      const districts = [
-        ...allDistricts.Vehicle.districts.map((district) => ({
-          district,
-          source: "Vehicle",
-        })),
+  // if (source === "All") {
+  //   fetchAllPollutantDistricts().then((allDistricts) => {
+  //     const districts = [
+  //       ...allDistricts.Vehicle.districts.map((district) => ({
+  //         district,
+  //         source: "Vehicle",
+  //       })),
 
-        ...allDistricts.Industry.districts.map((district) => ({
-          district,
-          source: "Industry",
-        })),
+  //       ...allDistricts.Industry.districts.map((district) => ({
+  //         district,
+  //         source: "Industry",
+  //       })),
 
-        ...allDistricts.Construction.districts.map((district) => ({
-          district,
-          source: "Construction",
-        })),
+  //       ...allDistricts.Construction.districts.map((district) => ({
+  //         district,
+  //         source: "Construction",
+  //       })),
 
-        ...allDistricts.Agriculture.districts.map((district) => ({
-          district,
-          source: "Agriculture",
-        })),
+  //       ...allDistricts.Agriculture.districts.map((district) => ({
+  //         district,
+  //         source: "Agriculture",
+  //       })),
 
-        ...allDistricts.Miscellaneous.districts.map((district) => ({
-          district,
-          source: "Miscellaneous",
-        })),
-      ];
+  //       ...allDistricts.Miscellaneous.districts.map((district) => ({
+  //         district,
+  //         source: "Miscellaneous",
+  //       })),
+  //     ];
 
-      plotAllPollutantDistricts(districts);
-    });
-  } else {
-    getPollutantDistricts(source).then((districtData) => {
-      plotPollutantDistricts(districtData, source);
-    });
-  }
+  //     plotAllPollutantDistricts(districts);
+  //   });
+  // } else {
+  getPollutantDistricts(source).then((districtData) => {
+    plotPollutantDistricts(districtData, source);
+  });
+  // }
 };
 
-const plotAllPollutantDistricts = (data) => {
-  if (pollutantDistrictsMap) {
-    pollutantDistrictsMap.remove();
-  }
-  // Initial function call when the page loads
-  pollutantDistrictsMap = L.map("forecastMap").setView([31, 72.5], 7.45);
-  // Add Google Maps layer
-  L.tileLayer("http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", {
-    maxZoom: 20,
-    subdomains: ["mt0", "mt1", "mt2", "mt3"],
-  }).addTo(pollutantDistrictsMap);
+// const plotAllPollutantDistricts = (data) => {
+//   if (pollutantDistrictsMap) {
+//     pollutantDistrictsMap.remove();
+//   }
+//   // Initial function call when the page loads
+//   pollutantDistrictsMap = L.map("forecastMap").setView([31, 72.5], 7.45);
+//   // Add Google Maps layer
+//   L.tileLayer("http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", {
+//     maxZoom: 20,
+//     subdomains: ["mt0", "mt1", "mt2", "mt3"],
+//   }).addTo(pollutantDistrictsMap);
 
-  // Load Shapefiles for each district using the fetched data
-  getDistrictAqiColor()
-    .then((d) => {
-      const districts = [{ district: "aoi_punjab", source: null }, ...data];
-      Promise.all(
-        districts.map(async ({ district, source }) => {
-          const formattedDistrict = district.replace(/\s+/g, "_");
-          const shapefilePath = `./shapefiles/${formattedDistrict}.shp`;
+//   // Load Shapefiles for each district using the fetched data
+//   getDistrictAqiColor()
+//     .then((d) => {
+//       const districts = [{ district: "aoi_punjab", source: null }, ...data];
+//       Promise.all(
+//         districts.map(async ({ district, source }) => {
+//           const formattedDistrict = district.replace(/\s+/g, "_");
+//           const shapefilePath = `./shapefiles/${formattedDistrict}.shp`;
 
-          const currentDistrict = d.districts_aqi_color.filter(
-            (data) => data.district === district
-          )[0];
+//           const currentDistrict = d.districts_aqi_color.filter(
+//             (data) => data.district === district
+//           )[0];
 
-          const { temp, windspeed } = await getWeatherData(district);
-          const { html, sourceWithHighestContribution } =
-            await calculateSourceContribution(district);
+//           const { temp, windspeed } = await getWeatherData(district);
+//           const { html, sourceWithHighestContribution } =
+//             await calculateSourceContribution(district);
 
-          const popupContent = `<div class="flex gap-8"><span><strong>District:</strong> ${district}</span><span><strong>AQI:</strong> ${Math.round(
-            currentDistrict["aqi"]
-          )}</span></div>
-          <div class="flex gap-8"><span><strong>Temp:</strong> ${temp}</span><span><strong>Windspeed:</strong> ${windspeed}</span></div>
-         <hr />
-          <div>${html}</div>`;
+//           const popupContent = `<div class="flex gap-8"><span><strong>District:</strong> ${district}</span><span><strong>AQI:</strong> ${Math.round(
+//             currentDistrict["aqi"]
+//           )}</span></div>
+//           <div class="flex gap-8"><span><strong>Temp:</strong> ${temp}</span><span><strong>Windspeed:</strong> ${windspeed}</span></div>
+//          <hr />
+//           <div>${html}</div>`;
 
-          let districtInfo = {
-            district:
-              district === "aoi_punjab"
-                ? "Punjab"
-                : currentDistrict["district"],
-            color:
-              district === "aoi_punjab"
-                ? "#000000"
-                : sources_color[sourceWithHighestContribution],
-            aqi: district === "aoi_punjab" ? 0 : currentDistrict["aqi"],
-          };
+//           let districtInfo = {
+//             district:
+//               district === "aoi_punjab"
+//                 ? "Punjab"
+//                 : currentDistrict["district"],
+//             color:
+//               district === "aoi_punjab"
+//                 ? "#000000"
+//                 : sources_color[sourceWithHighestContribution],
+//             aqi: district === "aoi_punjab" ? 0 : currentDistrict["aqi"],
+//           };
 
-          return await loadShapefile(
-            shapefilePath,
-            districtInfo,
-            pollutantDistrictsMap,
-            popupContent
-          );
-        })
-      ).catch((error) => console.error("Error loading Shapefiles:", error));
-    })
-    .catch((error) => console.error("Error fetching district data:", error));
-};
+//           return await loadShapefile(
+//             shapefilePath,
+//             districtInfo,
+//             pollutantDistrictsMap,
+//             popupContent
+//           );
+//         })
+//       ).catch((error) => console.error("Error loading Shapefiles:", error));
+//     })
+//     .catch((error) => console.error("Error fetching district data:", error));
+// };
 
 const plotPollutantDistricts = (data, source) => {
   if (pollutantDistrictsMap) {
@@ -341,12 +341,17 @@ const plotPollutantDistricts = (data, source) => {
          <hr />
           <div>${html}</div>`;
 
+          const districtColour =
+            source === "All"
+              ? sources_color[sourceWithHighestContribution]
+              : sources_color[source];
+
           let districtInfo = {
             district:
               district === "aoi_punjab"
                 ? "Punjab"
                 : currentDistrict["district"],
-            color: sources_color[sourceWithHighestContribution], // TODO: change this
+            color: districtColour,
             aqi: district === "aoi_punjab" ? 0 : currentDistrict["aqi"],
           };
 
