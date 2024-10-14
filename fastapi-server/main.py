@@ -22,7 +22,7 @@ app.add_middleware(
 try:
     forecasted_pollutant_df = pd.read_csv('combined_forecast.csv')
     latest_forecast_df = pd.read_csv("latest_forecasts.csv")
-    latest_daily_forecast_df = pd.read_csv("latest_daily_forecasts.csv")
+    latest_daily_forecast_df = pd.read_csv("latest_daily_forecasts_1.csv")
     daily_forecast =  pd.read_csv('daily_forecast.csv')
     last_year_data = pd.read_csv('last_year_daily_data.csv')
     # renaming unnamed 0 as date
@@ -35,7 +35,7 @@ try:
 except FileNotFoundError as e:
     forecasted_pollutant_df = pd.read_csv('fastapi-server/combined_forecast.csv')
     latest_forecast_df = pd.read_csv("fastapi-server/latest_forecasts.csv")
-    latest_daily_forecast_df = pd.read_csv("fastapi-server/latest_daily_forecasts.csv")
+    latest_daily_forecast_df = pd.read_csv("fastapi-server/latest_daily_forecasts_1.csv")
     daily_forecast =  pd.read_csv('fastapi-server/daily_forecast.csv')
     last_year_data = pd.read_csv('fastapi-server/last_year_daily_data.csv')
     # renaming unnamed 0 as date
@@ -404,6 +404,7 @@ def get_forecast_data(
         (latest_daily_forecast_df['Date'] >= time_dt) &
         (latest_daily_forecast_df['Date'] <= end_date)
     ]
+    print(filtered_df.head())
 
     if filtered_df.empty:
         raise HTTPException(status_code=404, detail="No forecast data found for the specified parameters.")
