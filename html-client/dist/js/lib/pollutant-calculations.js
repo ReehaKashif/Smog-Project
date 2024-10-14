@@ -3,7 +3,6 @@ const calculateSourceContribution = async (district) => {
   let totalSourcesContributionPercentages = {};
 
   const data = await getDistrictPollutantData(district);
-
   const totalPollutantsContributionValue = Object.values(
     data.pollutants
   ).reduce((acc, curr) => acc + curr, 0);
