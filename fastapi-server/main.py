@@ -21,6 +21,8 @@ app.add_middleware(
 # Load CSV files
 try:
     forecasted_pollutant_df = pd.read_csv('combined_forecast.csv')
+    latest_forecast_df = pd.read_csv("latest_forecasts.csv")
+    latest_daily_forecast_df = pd.read_csv("latest_daily_forecasts.csv")
     daily_forecast =  pd.read_csv('daily_forecast.csv')
     last_year_data = pd.read_csv('last_year_daily_data.csv')
     # renaming unnamed 0 as date
@@ -32,6 +34,8 @@ try:
     daily_max_historical = pd.read_csv('daily_historical_data.csv')
 except FileNotFoundError as e:
     forecasted_pollutant_df = pd.read_csv('fastapi-server/combined_forecast.csv')
+    latest_forecast_df = pd.read_csv("fastapi-server/latest_forecasts.csv")
+    latest_daily_forecast_df = pd.read_csv("fastapi-server/latest_daily_forecasts.csv")
     daily_forecast =  pd.read_csv('fastapi-server/daily_forecast.csv')
     last_year_data = pd.read_csv('fastapi-server/last_year_daily_data.csv')
     # renaming unnamed 0 as date
@@ -392,13 +396,13 @@ def get_forecast_data(
     end_date = time_dt + timedelta(days=60)
     
     # Convert the Date column in daily_forecast to datetime format
-    daily_forecast['Date'] = pd.to_datetime(daily_forecast['Date'], format='mixed')
+    latest_daily_forecast_df['Date'] = pd.to_datetime(latest_daily_forecast_df['Date'], format='mixed')
     
     # Filter the DataFrame by district and date range
-    filtered_df = daily_forecast[
-        (daily_forecast['District'] == district) &
-        (daily_forecast['Date'] >= time_dt) &
-        (daily_forecast['Date'] <= end_date)
+    filtered_df = latest_daily_forecast_df[
+        (latest_daily_forecast_df['District'] == district) &
+        (latest_daily_forecast_df['Date'] >= time_dt) &
+        (latest_daily_forecast_df['Date'] <= end_date)
     ]
 
     if filtered_df.empty:
@@ -510,10 +514,10 @@ def get_this_year_data(
     historical_df = historical_df.rename(columns={'Final_AQI': 'Final_aqi'})
     
     # Prepare forecast data (next 2 months)
-    forecast_df = daily_forecast[
-        (daily_forecast['District'] == district) &
-        (pd.to_datetime(daily_forecast['Date']).dt.date >= current_date) &
-        (pd.to_datetime(daily_forecast['Date']).dt.date <= two_months_ahead)
+    forecast_df = latest_daily_forecast_df[
+        (latest_daily_forecast_df['District'] == district) &
+        (pd.to_datetime(latest_daily_forecast_df['Date']).dt.date >= current_date) &
+        (pd.to_datetime(latest_daily_forecast_df['Date']).dt.date <= two_months_ahead)
     ]
 
     if historical_df.empty and forecast_df.empty:
