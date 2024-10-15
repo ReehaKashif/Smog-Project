@@ -20,31 +20,19 @@ app.add_middleware(
 
 # Load CSV files
 try:
-    forecasted_pollutant_df = pd.read_csv('combined_forecast.csv')
-    latest_forecast_df = pd.read_csv("latest_forecasts.csv")
-    latest_daily_forecast_df = pd.read_csv("latest_daily_forecasts_1.csv")
-    daily_forecast =  pd.read_csv('daily_forecast.csv')
+    forecasted_pollutant_df = pd.read_csv('xgb_hr_forecasts.csv')
+    forecasted_pollutants = pd.read_csv('combined_forecast.csv')
+    latest_forecast_df = pd.read_csv("xgb_hr_forecasts.csv")
+    latest_daily_forecast_df = pd.read_csv("xgb_daily_forecasts.csv")
+    daily_forecast =  pd.read_csv('xgb_daily_forecasts.csv')
     last_year_data = pd.read_csv('last_year_daily_data.csv')
-    # renaming unnamed 0 as date
-    # print(forecasted_pollutant_df.head())
-    aqi_forecast_df = pd.read_csv('aqi_forecast.csv')
-    aqi_7_days_forecast_df = pd.read_csv('daily_7_days_lag_data.csv')
-    aqi_14_days_forecast_df = pd.read_csv('daily_14_days_lag_data.csv')
-    daily_max_forecasted = pd.read_csv('daily_forecasted_data.csv')
-    daily_max_historical = pd.read_csv('daily_historical_data.csv')
 except FileNotFoundError as e:
-    forecasted_pollutant_df = pd.read_csv('fastapi-server/combined_forecast.csv')
-    latest_forecast_df = pd.read_csv("fastapi-server/latest_forecasts.csv")
-    latest_daily_forecast_df = pd.read_csv("fastapi-server/latest_daily_forecasts_1.csv")
-    daily_forecast =  pd.read_csv('fastapi-server/daily_forecast.csv')
+    forecasted_pollutant_df = pd.read_csv('fastapi-server/xgb_hr_forecasts.csv')
+    forecasted_pollutants = pd.read_csv('fastapi-server/combined_forecast.csv')
+    latest_forecast_df = pd.read_csv("fastapi-server/xgb_hr_forecasts.csv")
+    latest_daily_forecast_df = pd.read_csv("fastapi-server/xgb_daily_forecasts.csv")
+    daily_forecast =  pd.read_csv('fastapi-server/xgb_daily_forecasts.csv')
     last_year_data = pd.read_csv('fastapi-server/last_year_daily_data.csv')
-    # renaming unnamed 0 as date
-    aqi_forecast_df = pd.read_csv('fastapi-server/aqi_forecast.csv')
-    aqi_7_days_forecast_df = pd.read_csv('fastapi-server/daily_7_days_lag_data.csv')
-    aqi_14_days_forecast_df = pd.read_csv('fastapi-server/daily_14_days_lag_data.csv')
-    daily_max_forecasted = pd.read_csv('fastapi-server/daily_forecasted_data.csv')
-    daily_max_historical = pd.read_csv('fastapi-server/daily_historical_data.csv')
-    # raise HTTPException(status_code=404, detail=str(e))
 
 def get_pakistan_time():
     # Example of getting the current date and time in Pakistan
@@ -404,7 +392,6 @@ def get_forecast_data(
         (latest_daily_forecast_df['Date'] >= time_dt) &
         (latest_daily_forecast_df['Date'] <= end_date)
     ]
-    print(filtered_df.head())
 
     if filtered_df.empty:
         raise HTTPException(status_code=404, detail="No forecast data found for the specified parameters.")
@@ -460,9 +447,9 @@ def get_current_pollutants(
     current_time = get_pakistan_time()
     
     # Filter the DataFrame by district and current time
-    filtered_df = forecasted_pollutant_df[
-        (forecasted_pollutant_df['District'] == district) &
-        (forecasted_pollutant_df['Date'] == current_time)
+    filtered_df = forecasted_pollutants[
+        (forecasted_pollutants['District'] == district) &
+        (forecasted_pollutants['Date'] == current_time)
     ]
 
     if filtered_df.empty:
