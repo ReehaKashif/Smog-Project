@@ -6,6 +6,7 @@ from pytz import timezone
 from datetime import datetime, timedelta
 import random  # Add this import at the top of your file
 from collect_weather_data import get_average_weather
+from currenthour import current_main
 
 app = FastAPI()
 
@@ -117,124 +118,183 @@ def get_pakistan_time_endpoint():
     
 
 @app.get("/api/districts_aqi_color")
-def get_districts_aqi_color():
+def get_districts_aqi_color(use_api=True):
     """
     Endpoint to get the AQI and color for each district at a specific time.
     """
     try:
         # Filter the DataFrame by the given time
         # convert the time to date time format
-        time = get_pakistan_time()
-        filtered_df = forecasted_pollutant_df[forecasted_pollutant_df['Date'] == time]
-        # reset the index
-        filtered_df = filtered_df.reset_index(drop=True)
-        # print(filtered_df)
+        if use_api==False:
+            time = get_pakistan_time()
+            filtered_df = forecasted_pollutant_df[forecasted_pollutant_df['Date'] == time]
+            # reset the index
+            filtered_df = filtered_df.reset_index(drop=True)
+            # print(filtered_df)
+            
+            if filtered_df.empty:
+                raise HTTPException(status_code=404, detail="No data found for the specified time.")
+            
+            # sort in ascending order
+            filtered_df = filtered_df.sort_values(by='Final_aqi')
+            
+            # Ensure unique districts
+            unique_districts_df = filtered_df.drop_duplicates(subset=['District'])
         
-        if filtered_df.empty:
-            raise HTTPException(status_code=404, detail="No data found for the specified time.")
-        
-        # sort in ascending order
-        filtered_df = filtered_df.sort_values(by='Final_aqi')
-        
-        # Ensure unique districts
-        unique_districts_df = filtered_df.drop_duplicates(subset=['District'])
-        
-        # Assign colors based on AQI and prepare the response
-        response = []
-        for index, row in unique_districts_df.iterrows():
-            color_name, color_code = get_AQI_color(row["Final_aqi"])
-            response.append({
-                "district": row["District"],
-                "aqi": row["Final_aqi"],
-                "aqi_name": color_name,  # Assuming color_name is the AQI name
-                "color_code": color_code
-            })
-        
-        return {"districts_aqi_color": response}
+            # Assign colors based on AQI and prepare the response
+            response = []
+            for index, row in unique_districts_df.iterrows():
+                color_name, color_code = get_AQI_color(row["Final_aqi"])
+                response.append({
+                    "district": row["District"],
+                    "aqi": row["Final_aqi"],
+                    "aqi_name": color_name,  # Assuming color_name is the AQI name
+                    "color_code": color_code
+                })
+            
+            return {"districts_aqi_color": response}
+        else: 
+            current = current_main()
+            df = pd.DataFrame(current)
+            # Assign colors based on AQI and prepare the response
+            response = []
+            for index, row in df.iterrows():
+                color_name, color_code = get_AQI_color(row["aqi"])
+                response.append({
+                    "district": row["districts"],
+                    "aqi": row["aqi"],
+                    "aqi_name": color_name,  # Assuming color_name is the AQI name
+                    "color_code": color_code
+                })
+            
+            return {"districts_aqi_color": response}
+            
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/aqi_status")
-def get_aqi_status():
+def get_aqi_status(use_api=True):
     """
     Endpoint to get the AQI status including best and worst district, highest pollutant, and cause of pollutant.
     """
     try:
-        time = get_pakistan_time()
-        # Filter the DataFrame by the given time
-        filtered_df = forecasted_pollutant_df[forecasted_pollutant_df['Date'] == time]
+        if use_api==False:
+            time = get_pakistan_time()
+            # Filter the DataFrame by the given time
+            filtered_df = forecasted_pollutant_df[forecasted_pollutant_df['Date'] == time]
+            
+            if filtered_df.empty:
+                raise HTTPException(status_code=404, detail="No data found for the specified time.")
+            
+            # sort in ascending order
+            filtered_df = filtered_df.sort_values(by='Final_aqi')
+            
+            # ensure unique districts
+            filtered_df = filtered_df.drop_duplicates(subset=['District'])
+            
+            # Find the district with the lowest (best) AQI
+            best_district_row = filtered_df.loc[filtered_df['Final_aqi'].idxmin()]
+            best_district = {"district": best_district_row["District"], "aqi": best_district_row["Final_aqi"]}
+            
+            # Find the district with the highest (worst) AQI
+            worst_district_row = filtered_df.loc[filtered_df['Final_aqi'].idxmax()]
+            worst_district = {"district": worst_district_row["District"], "aqi": worst_district_row["Final_aqi"]}
+            
+            # Set highest pollutant and cause (as per provided logic)
+            highest_pollutant = "Carbon Monoxide"
+            cause_of_pollutant = "Vehicle and Industry"
+            
+            # Prepare the response
+            response = {
+                "best_district": best_district,
+                "worst_district": worst_district,
+                "highest_pollutant": highest_pollutant,
+                "cause_of_pollutant": cause_of_pollutant
+            }
+            
+            return response
+        else: 
+            current = current_main()
+            df = pd.DataFrame(current)
+            # Find the district with the lowest (best) AQI
+            best_district_row = df.loc[df['aqi'].idxmin()]
+            best_district = {"district": best_district_row["districts"], "aqi": best_district_row["aqi"]}
+            
+            # Find the district with the highest (worst) AQI
+            worst_district_row = df.loc[df['aqi'].idxmax()]
+            worst_district = {"district": worst_district_row["districts"], "aqi": worst_district_row["aqi"]}
+            
+            # Set highest pollutant and cause (as per provided logic)
+            highest_pollutant = "Carbon Monoxide"
+            cause_of_pollutant = "Vehicle and Industry"
+            
+            # Prepare the response
+            response = {
+                "best_district": best_district,
+                "worst_district": worst_district,
+                "highest_pollutant": highest_pollutant,
+                "cause_of_pollutant": cause_of_pollutant
+            }
+            
+            return response
         
-        if filtered_df.empty:
-            raise HTTPException(status_code=404, detail="No data found for the specified time.")
-        
-        # sort in ascending order
-        filtered_df = filtered_df.sort_values(by='Final_aqi')
-        
-        # ensure unique districts
-        filtered_df = filtered_df.drop_duplicates(subset=['District'])
-        
-        # Find the district with the lowest (best) AQI
-        best_district_row = filtered_df.loc[filtered_df['Final_aqi'].idxmin()]
-        best_district = {"district": best_district_row["District"], "aqi": best_district_row["Final_aqi"]}
-        
-        # Find the district with the highest (worst) AQI
-        worst_district_row = filtered_df.loc[filtered_df['Final_aqi'].idxmax()]
-        worst_district = {"district": worst_district_row["District"], "aqi": worst_district_row["Final_aqi"]}
-        
-        # Set highest pollutant and cause (as per provided logic)
-        highest_pollutant = "Carbon Monoxide"
-        cause_of_pollutant = "Vehicle and Industry"
-        
-        # Prepare the response
-        response = {
-            "best_district": best_district,
-            "worst_district": worst_district,
-            "highest_pollutant": highest_pollutant,
-            "cause_of_pollutant": cause_of_pollutant
-        }
-        
-        return response
-    
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
     
 @app.get("/api/map_ranking")
-def get_map_ranking():
+def get_map_ranking(use_api=True):
     """
     Endpoint to get the AQI ranking of districts and assign colors based on the provided color palette.
     """
     try:
-        time = get_pakistan_time()
-        # Filter the DataFrame by the given time
-        filtered_df = forecasted_pollutant_df[forecasted_pollutant_df['Date'] == time]
+        if use_api == False:
+            time = get_pakistan_time()
+            # Filter the DataFrame by the given time
+            filtered_df = forecasted_pollutant_df[forecasted_pollutant_df['Date'] == time]
+            
+            if filtered_df.empty:
+                raise HTTPException(status_code=404, detail="No data found for the specified time.")
+            
+            # sort in ascending order
+            filtered_df = filtered_df.sort_values(by='Final_aqi')
+            
+            # Ensure unique districts and sort by AQI in ascending order
+            sorted_df = filtered_df.drop_duplicates(subset=['District']).sort_values(by='Final_aqi')
         
-        if filtered_df.empty:
-            raise HTTPException(status_code=404, detail="No data found for the specified time.")
-        
-        # sort in ascending order
-        filtered_df = filtered_df.sort_values(by='Final_aqi')
-        
-        # Ensure unique districts and sort by AQI in ascending order
-        sorted_df = filtered_df.drop_duplicates(subset=['District']).sort_values(by='Final_aqi')
- 
-        
-        # selecting the needed columns
-        sorted_df = sorted_df[['District', 'Final_aqi']].reset_index(drop=True)
-        # print(sorted_df)
-        # print(len(color_palette))
-        # Assign colors based on the sorted order
-        response = []
-        for index, row in sorted_df.iterrows():
-            # preparing the response
-            response.append({
-                "district": row["District"],
-                "aqi": row["Final_aqi"],
-                "color": color_palette[index]
-            })
-        
-        return {"map_ranking": response}
+            # selecting the needed columns
+            sorted_df = sorted_df[['District', 'Final_aqi']].reset_index(drop=True)
+            # Assign colors based on the sorted order
+            response = []
+            for index, row in sorted_df.iterrows():
+                # preparing the response
+                response.append({
+                    "district": row["District"],
+                    "aqi": row["Final_aqi"],
+                    "color": color_palette[index]
+                })
+            
+            return {"map_ranking": response}
+        else: 
+            current = current_main()
+            df = pd.DataFrame(current)
+            # sort in ascending order
+            df = df.sort_values(by='aqi')
+            # Ensure unique districts
+            unique_districts_df = df.drop_duplicates(subset=['districts'])
+            
+            # Assign colors based on AQI and prepare the response
+            response = []
+            for index, row in unique_districts_df.iterrows():
+                color_name, color_code = get_AQI_color(row["aqi"])
+                response.append({
+                    "district": row["districts"],
+                    "aqi": row["aqi"],
+                    "color": color_code
+                })
+            
+            return {"map_ranking": response}
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
