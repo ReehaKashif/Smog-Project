@@ -282,16 +282,18 @@ def get_map_ranking(use_api=True):
             # sort in ascending order
             df = df.sort_values(by='aqi')
             # Ensure unique districts
-            unique_districts_df = df.drop_duplicates(subset=['districts'])
+            unique_districts_df = df.drop_duplicates(subset=['districts']).sort_values(by='aqi')
             
-            # Assign colors based on AQI and prepare the response
+            # selecting the needed columns
+            sorted_df = unique_districts_df[['districts', 'aqi']].reset_index(drop=True)
+            # Assign colors based on the sorted order
             response = []
-            for index, row in unique_districts_df.iterrows():
-                color_name, color_code = get_AQI_color(row["aqi"])
+            for index, row in sorted_df.iterrows():
+                # preparing the response
                 response.append({
                     "district": row["districts"],
                     "aqi": row["aqi"],
-                    "color": color_code
+                    "color": color_palette[index]
                 })
             
             return {"map_ranking": response}
