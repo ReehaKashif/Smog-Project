@@ -10,3 +10,4 @@ notebook
 pandas
 fastapi
 uvicorn
+openpyxl
