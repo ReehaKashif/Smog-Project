@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Query ,HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
+import numpy as np
 from typing import Optional
 from pytz import timezone
 from datetime import datetime, timedelta
@@ -598,7 +599,7 @@ def get_this_year_data(
     
 
 @app.get("/api/october_sources")
-def load_and_group_by_district(input_date):
+def load_and_group_by_district(input_date, input_district):
     
     # Convert the 'date' column to pandas datetime
     OctoberSource['date'] = pd.to_datetime(OctoberSource['date'])
@@ -606,16 +607,23 @@ def load_and_group_by_district(input_date):
     # Ensure the input date is also a datetime object
     input_date = pd.to_datetime(input_date)
     
-    # Filter the data for the specified date
-    filtered_data = OctoberSource[OctoberSource['date'] == input_date]
+    # Filter the data for the specified date and district
+    filtered_data = OctoberSource[(OctoberSource['date'] == input_date) & (OctoberSource['Districts'] == input_district)]
     
-    # Group by 'Districts' and get the maximum value for each column
-    grouped_data = filtered_data.groupby('Districts').max()
+    # Calculate the maximum value for each column in the filtered data
+    max_values = filtered_data.max()
+    
+    # Drop the 'date' and 'Districts' columns (if necessary)
+    max_values = max_values.drop(['date', 'Districts'])
+    
+    # Replace NaN, inf, -inf with None so it's JSON serializable
+    max_values.replace([np.inf, -np.inf, np.nan], None, inplace=True)
     
     # Convert the result to a dictionary
-    result_dict = grouped_data.to_dict(orient='index')
+    result_dict = max_values.to_dict()
     
     return result_dict
+
     
     
 @app.get("/api/weather_data/")
