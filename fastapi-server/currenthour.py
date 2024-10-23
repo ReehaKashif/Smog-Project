@@ -97,7 +97,7 @@ def current_main():
     air_quality_df = fetch_air_quality_parallel(smog_df)
     
     # Group by district and calculate the mean AQI
-    district_aqi = air_quality_df.groupby('District')['AQI'].mean().reset_index()
+    district_aqi = air_quality_df.groupby('District')['AQI'].max().reset_index()
 
     # Create two lists: one for district names and one for AQI values
     districts = district_aqi['District'].values.tolist()
