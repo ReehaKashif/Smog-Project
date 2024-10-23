@@ -27,6 +27,7 @@ try:
     latest_daily_forecast_df = pd.read_csv("xgb_daily_forecasts.csv")
     daily_forecast =  pd.read_csv('xgb_daily_forecasts.csv')
     last_year_data = pd.read_csv('last_year_daily_data.csv')
+    OctoberSource =  pd.read_excel('OctoberSourceCalculatedData.xlsx')
 except FileNotFoundError as e:
     forecasted_pollutant_df = pd.read_csv('fastapi-server/xgb_hr_forecasts.csv')
     forecasted_pollutants = pd.read_csv('fastapi-server/combined_forecast.csv')
@@ -34,6 +35,7 @@ except FileNotFoundError as e:
     latest_daily_forecast_df = pd.read_csv("fastapi-server/xgb_daily_forecasts.csv")
     daily_forecast =  pd.read_csv('fastapi-server/xgb_daily_forecasts.csv')
     last_year_data = pd.read_csv('fastapi-server/last_year_daily_data.csv')
+    OctoberSource =  pd.read_excel('fastapi-server\OctoberSourceCalculatedData.xlsx')
 
 def get_pakistan_time():
     # Example of getting the current date and time in Pakistan
@@ -594,11 +596,30 @@ def get_this_year_data(
         }
     }
     
+
+@app.get("/api/october_sources")
+def load_and_group_by_district(input_date):
+    
+    # Convert the 'date' column to pandas datetime
+    OctoberSource['date'] = pd.to_datetime(OctoberSource['date'])
+    
+    # Ensure the input date is also a datetime object
+    input_date = pd.to_datetime(input_date)
+    
+    # Filter the data for the specified date
+    filtered_data = OctoberSource[OctoberSource['date'] == input_date]
+    
+    # Group by 'Districts' and get the maximum value for each column
+    grouped_data = filtered_data.groupby('Districts').max()
+    
+    # Convert the result to a dictionary
+    result_dict = grouped_data.to_dict(orient='index')
+    
+    return result_dict
     
     
 @app.get("/api/weather_data/")
 def wweather_data():
-    
     data = get_average_weather()
     'District', 'Time', 'Temperature_2m', 'Wind_speed_10m'
     result = {
