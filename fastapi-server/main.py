@@ -28,7 +28,7 @@ try:
     latest_daily_forecast_df = pd.read_csv("xgb_daily_forecasts.csv")
     daily_forecast =  pd.read_csv('xgb_daily_forecasts.csv')
     last_year_data = pd.read_csv('last_year_daily_data.csv')
-    OctoberSource =  pd.read_excel('OctoberSourceCalculatedData.xlsx')
+    OctoberSource =  pd.read_csv('October24.csv')
 except FileNotFoundError as e:
     forecasted_pollutant_df = pd.read_csv('fastapi-server/xgb_hr_forecasts.csv')
     forecasted_pollutants = pd.read_csv('fastapi-server/combined_forecast.csv')
@@ -36,7 +36,7 @@ except FileNotFoundError as e:
     latest_daily_forecast_df = pd.read_csv("fastapi-server/xgb_daily_forecasts.csv")
     daily_forecast =  pd.read_csv('fastapi-server/xgb_daily_forecasts.csv')
     last_year_data = pd.read_csv('fastapi-server/last_year_daily_data.csv')
-    OctoberSource =  pd.read_excel('fastapi-server\OctoberSourceCalculatedData.xlsx')
+    OctoberSource =  pd.read_csv('fastapi-server/October24.csv')
 
 def get_pakistan_time():
     # Example of getting the current date and time in Pakistan
