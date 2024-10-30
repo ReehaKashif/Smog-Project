@@ -453,7 +453,7 @@ def get_forecast_data(
     
     # Filter the DataFrame by district and date range
     filtered_df = latest_daily_forecast_df[
-        (latest_daily_forecast_df['District'] == district) &
+        (latest_daily_forecast_df['Districts'] == district) &
         (latest_daily_forecast_df['Date'] >= time_dt) &
         (latest_daily_forecast_df['Date'] <= end_date)
     ]
@@ -568,7 +568,7 @@ def get_this_year_data(
     
     # Prepare forecast data (next 2 months)
     forecast_df = latest_daily_forecast_df[
-        (latest_daily_forecast_df['District'] == district) &
+        (latest_daily_forecast_df['Districts'] == district) &
         (pd.to_datetime(latest_daily_forecast_df['Date']).dt.date >= current_date) &
         (pd.to_datetime(latest_daily_forecast_df['Date']).dt.date <= two_months_ahead)
     ]
