@@ -29,6 +29,7 @@ try:
     daily_forecast =  pd.read_csv('new_xgb_daily_forecasts.csv')
     last_year_data = pd.read_csv('last_year_daily_data.csv')
     OctoberSource =  pd.read_csv('November.csv')
+    miscellaneous = pd.read_excel('MiscellaneousPtsData.xlsx')
 except FileNotFoundError as e:
     forecasted_pollutant_df = pd.read_csv('fastapi-server/new_xgb_hr_forecasts.csv')
     forecasted_pollutants = pd.read_csv('fastapi-server/combined_forecast.csv')
@@ -37,6 +38,7 @@ except FileNotFoundError as e:
     daily_forecast =  pd.read_csv('fastapi-server/new_xgb_daily_forecasts.csv')
     last_year_data = pd.read_csv('fastapi-server/last_year_daily_data.csv')
     OctoberSource =  pd.read_csv('fastapi-server/November.csv')
+    miscellaneous = pd.read_excel('fastapi-server/MiscellaneousPtsData.xlsx')
 
 def get_pakistan_time():
     # Example of getting the current date and time in Pakistan
@@ -636,6 +638,19 @@ def wweather_data():
         "Wind_speed": data['Wind_speed_10m'].values.tolist()
     }
     return result
+
+@app.get("/api/miscellaneous_pts/")
+def miscellaneous_data(Type:str):
+    filter_data = miscellaneous[miscellaneous['TYPE'] == str(Type)]
+    data_long = filter_data['Longitude'].values.tolist()
+    data_lat = filter_data["Latitude"].values.tolist()
+    
+    result = {
+        "Longitude": data_long, 
+        "Latitude": data_lat
+    }
+    return result
+
 
 # Example of how to run the FastAPI server with Uvicorn
 if __name__ == "__main__":
