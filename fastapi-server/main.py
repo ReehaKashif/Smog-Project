@@ -27,7 +27,7 @@ try:
     latest_forecast_df = pd.read_csv("new_xgb_hr_forecasts.csv")
     latest_daily_forecast_df = pd.read_csv("new_xgb_daily_forecasts.csv")
     daily_forecast =  pd.read_csv('new_xgb_daily_forecasts.csv')
-    last_year_data = pd.read_csv('last_year_daily_data.csv')
+    last_year_data = pd.read_csv('new_last_year_daily_data.csv')
     OctoberSource =  pd.read_csv('November.csv')
     miscellaneous = pd.read_excel('MiscellaneousPtsData.xlsx')
 except FileNotFoundError as e:
@@ -36,7 +36,7 @@ except FileNotFoundError as e:
     latest_forecast_df = pd.read_csv("fastapi-server/new_xgb_hr_forecasts.csv")
     latest_daily_forecast_df = pd.read_csv("fastapi-server/new_xgb_daily_forecasts.csv")
     daily_forecast =  pd.read_csv('fastapi-server/new_xgb_daily_forecasts.csv')
-    last_year_data = pd.read_csv('fastapi-server/last_year_daily_data.csv')
+    last_year_data = pd.read_csv('fastapi-server/new_last_year_daily_data.csv')
     OctoberSource =  pd.read_csv('fastapi-server/November.csv')
     miscellaneous = pd.read_excel('fastapi-server/MiscellaneousPtsData.xlsx')
 
@@ -403,7 +403,7 @@ def get_last_year_data(
     
     # Filter last year's data
     filtered_df = last_year_data[
-        (last_year_data['District'] == district) &
+        (last_year_data['Districts'] == district) &
         (last_year_data['Date'].dt.date >= two_months_ago) &
         (last_year_data['Date'].dt.date <= two_months_ahead)
     ]
@@ -416,10 +416,10 @@ def get_last_year_data(
     next_two_months = filtered_df[filtered_df['Date'].dt.date >= last_year_date].sort_values('Date')
 
     past_dates = past_two_months['Date'].dt.strftime('%Y-%m-%d').tolist()
-    past_aqi_values = past_two_months['Final_AQI'].tolist()
+    past_aqi_values = past_two_months['Final_aqi'].tolist()
     
     next_dates = next_two_months['Date'].dt.strftime('%Y-%m-%d').tolist()
-    next_aqi_values = next_two_months['Final_AQI'].tolist()
+    next_aqi_values = next_two_months['Final_aqi'].tolist()
 
     # Return the data as a JSON response
     return {
@@ -560,13 +560,13 @@ def get_this_year_data(
     
     # Prepare historical data (last 2 months)
     historical_df = last_year_data[
-        (last_year_data['District'] == district) &
+        (last_year_data['Districts'] == district) &
         (pd.to_datetime(last_year_data['Date']).dt.date >= two_months_ago) &
         (pd.to_datetime(last_year_data['Date']).dt.date < current_date)
     ].copy()
     
     # Rename 'Final_AQI' to 'Final_aqi' in historical data
-    historical_df = historical_df.rename(columns={'Final_AQI': 'Final_aqi'})
+    # historical_df = historical_df.rename(columns={'Final_aqi': 'Final_aqi'})
     
     # Prepare forecast data (next 2 months)
     forecast_df = latest_daily_forecast_df[
