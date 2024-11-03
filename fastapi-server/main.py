@@ -611,13 +611,13 @@ def load_and_group_by_district(input_date, input_district):
     input_date = pd.to_datetime(input_date)
     
     # Filter the data for the specified date and district
-    filtered_data = OctoberSource[(OctoberSource['date'] == input_date) & (OctoberSource['Districts'] == input_district)]
+    filtered_data = OctoberSource[(OctoberSource['date'] == input_date) & (OctoberSource['District'] == input_district)]
     
     # Calculate the maximum value for each column in the filtered data
     max_values = filtered_data.max()
     
     # Drop the 'date' and 'Districts' columns (if necessary)
-    max_values = max_values.drop(['date', 'Districts'])
+    max_values = max_values.drop(['date', 'District'])
     
     # Replace NaN, inf, -inf with None so it's JSON serializable
     max_values.replace([np.inf, -np.inf, np.nan], None, inplace=True)
