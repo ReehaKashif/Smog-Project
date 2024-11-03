@@ -152,20 +152,20 @@ def calculate_contributions(merged_data):
     merged_data['Agriculture'] = (merged_data[['Agr_CO', 'Agr_Dust', 'Agr_NO2', 'Agr_O3',
                                                'Agr_PM10', 'Agr_PM25', 'Agr_SO2']].sum(axis=1))
 
-    # Calculate sum_sum and contributions
-    merged_data['sum_sum'] = merged_data[['Vehicle', 'Indrusty', 'Residential', 'Misc', 'Construction', 'Agriculture']].sum(axis=1)
+    # Calculate Sum_of_Sources and contributions
+    merged_data['Sum_of_Sources'] = merged_data[['Vehicle', 'Indrusty', 'Residential', 'Misc', 'Construction', 'Agriculture']].sum(axis=1)
 
     # Contribution calculations
-    merged_data['Vehicle%'] = (merged_data['Vehicle'] / merged_data['sum_sum']) * 100
-    merged_data['Industry%'] = (merged_data['Indrusty'] / merged_data['sum_sum']) * 100
-    merged_data['Residential%'] = (merged_data['Residential'] / merged_data['sum_sum']) * 100
-    merged_data['Misc%'] = (merged_data['Misc'] / merged_data['sum_sum']) * 100
-    merged_data['Construction%'] = (merged_data['Construction'] / merged_data['sum_sum']) * 100
-    merged_data['Agriculture%'] = (merged_data['Agriculture'] / merged_data['sum_sum']) * 100
+    merged_data['Vehicle%'] = (merged_data['Vehicle'] / merged_data['Sum_of_Sources']) * 100
+    merged_data['Industry%'] = (merged_data['Indrusty'] / merged_data['Sum_of_Sources']) * 100
+    merged_data['Residential%'] = (merged_data['Residential'] / merged_data['Sum_of_Sources']) * 100
+    merged_data['Misc%'] = (merged_data['Misc'] / merged_data['Sum_of_Sources']) * 100
+    merged_data['Construction%'] = (merged_data['Construction'] / merged_data['Sum_of_Sources']) * 100
+    merged_data['Agriculture%'] = (merged_data['Agriculture'] / merged_data['Sum_of_Sources']) * 100
 
     # Select the final output columns
     result = merged_data[['id', 'district_id',  'District','date', 'Vehicle', 'Indrusty', 'Residential',
-                          'Misc', 'Construction', 'Agriculture', 'sum_sum', 'Vehicle%',
+                          'Misc', 'Construction', 'Agriculture', 'Sum_of_Sources', 'Vehicle%',
                           'Industry%', 'Residential%', 'Misc%',
                           'Construction%', 'Agriculture%']]
 
