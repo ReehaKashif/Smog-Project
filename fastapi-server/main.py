@@ -8,6 +8,7 @@ from datetime import datetime, timedelta
 import random  # Add this import at the top of your file
 from collect_weather_data import get_average_weather
 from currenthour import current_main
+from pollutant_contribution import process_openmeteo_data
 
 app = FastAPI()
 
@@ -28,7 +29,7 @@ try:
     latest_daily_forecast_df = pd.read_csv("new_xgb_daily_forecasts.csv")
     daily_forecast =  pd.read_csv('new_xgb_daily_forecasts.csv')
     last_year_data = pd.read_csv('new_last_year_daily_data.csv')
-    OctoberSource =  pd.read_csv('November.csv')
+    OctoberSource =  pd.read_csv('contribution_results.csv')
     miscellaneous = pd.read_excel('MiscellaneousPtsData v1.xlsx')
 except FileNotFoundError as e:
     forecasted_pollutant_df = pd.read_csv('fastapi-server/new_xgb_hr_forecasts.csv')
@@ -37,7 +38,7 @@ except FileNotFoundError as e:
     latest_daily_forecast_df = pd.read_csv("fastapi-server/new_xgb_daily_forecasts.csv")
     daily_forecast =  pd.read_csv('fastapi-server/new_xgb_daily_forecasts.csv')
     last_year_data = pd.read_csv('fastapi-server/new_last_year_daily_data.csv')
-    OctoberSource =  pd.read_csv('fastapi-server/November.csv')
+    OctoberSource =  pd.read_csv('fastapi-server/contribution_results.csv')
     miscellaneous = pd.read_excel('fastapi-server/MiscellaneousPtsData.xlsx')
 
 def get_pakistan_time():
@@ -626,6 +627,12 @@ def load_and_group_by_district(input_date, input_district):
     
     return result_dict
 
+@app.get("/api/update_october_sources")
+def update_october(input_date, input_district):
+    
+    result = process_openmeteo_data()
+    result_dict = result.to_dict()
+    return result_dict
     
     
 @app.get("/api/weather_data/")
