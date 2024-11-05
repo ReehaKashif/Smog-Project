@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Query ,HTTPException, UploadFile, File
+from fastapi import FastAPI, Query ,HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 import numpy as np
@@ -9,8 +9,6 @@ import random  # Add this import at the top of your file
 from collect_weather_data import get_average_weather
 from currenthour import current_main
 from pollutant_contribution import process_openmeteo_data
-import traceback
-
 
 app = FastAPI()
 
@@ -33,6 +31,7 @@ try:
     last_year_data = pd.read_csv('new_last_year_daily_data.csv')
     OctoberSource =  pd.read_csv('Octapi.csv')
     miscellaneous = pd.read_excel('MiscellaneousPtsData v1.xlsx')
+    daily_aqi_min_max = pd.read_csv("daily_aqi_summary.csv")
 except FileNotFoundError as e:
     forecasted_pollutant_df = pd.read_csv('fastapi-server/new_xgb_hr_forecasts.csv')
     forecasted_pollutants = pd.read_csv('fastapi-server/combined_forecast.csv')
@@ -42,6 +41,7 @@ except FileNotFoundError as e:
     last_year_data = pd.read_csv('fastapi-server/new_last_year_daily_data.csv')
     OctoberSource =  pd.read_csv('fastapi-server/Octapi.csv')
     miscellaneous = pd.read_excel('fastapi-server/MiscellaneousPtsData.xlsx')
+    daily_aqi_min_max = pd.read_csv("fastapi-server/daily_aqi_summary.csv")
 
 def get_pakistan_time():
     # Example of getting the current date and time in Pakistan
@@ -660,47 +660,122 @@ def miscellaneous_data(Type:str):
     }
     return result
 
-
-@app.post("/Maxlast24hr/")
-async def max_last_24_hr(
-    file: UploadFile = File(...),
-    district: str = Query(..., description="District name to filter data for")
-):
+@app.get("/api/min_max_last_year/")
+def get_last_year_minmax(district: str): 
+    """
+    Get min and max AQI values for a district from last year, 
+    returning arrays of dates, min values, and max values for two 2-month periods.
+    """
     try:
-        data = pd.read_csv(file.file)
-        print("Columns in uploaded CSV:", data.columns)  # Debugging: list column names
+        # Getting today's date
+        current_date = datetime.strptime(get_pakistan_time(), '%Y-%m-%d %H:%M:%S').date()
+        
+        # Calculate the corresponding date last year
+        last_year_date = current_date.replace(year=current_date.year - 1)
+        
+        # Calculate date ranges
+        two_months_before = last_year_date - timedelta(days=60)
+        two_months_after = last_year_date + timedelta(days=60)
+        
+        # Convert dates in the dataframe to datetime
+        daily_aqi_min_max['Date'] = pd.to_datetime(daily_aqi_min_max['Date'])
+        
+        # Filter data for the specified district
+        district_data = daily_aqi_min_max[daily_aqi_min_max['District'] == district]
+        
+        # Split into before and after periods
+        before_period = district_data[
+            (district_data['Date'].dt.date >= two_months_before) &
+            (district_data['Date'].dt.date < last_year_date)
+        ].sort_values('Date')
+        
+        after_period = district_data[
+            (district_data['Date'].dt.date >= last_year_date) &
+            (district_data['Date'].dt.date <= two_months_after)
+        ].sort_values('Date')
+        
+        if before_period.empty and after_period.empty:
+            raise HTTPException(
+                status_code=404, 
+                detail=f"No data found for district {district} in the specified date range"
+            )
+            
+        # Prepare the response with separate arrays
+        response = {
+            "district": district,
+            "before_period": {
+                "date": before_period['Date'].dt.strftime('%Y-%m-%d').tolist(),
+                "min": before_period['Min'].astype(float).tolist(),
+                "max": before_period['Max'].astype(float).tolist()
+            },
+            "after_period": {
+                "date": after_period['Date'].dt.strftime('%Y-%m-%d').tolist(),
+                "min": after_period['Min'].astype(float).tolist(),
+                "max": after_period['Max'].astype(float).tolist()
+            }
+        }
+        
+        return response
+        
     except Exception as e:
-        print("File reading error:", e)
-        raise HTTPException(status_code=400, detail="Invalid file format")
+        raise HTTPException(status_code=500, detail=str(e))
 
-    # Check for required columns
-    required_columns = {'date', 'District', 'hour', 'AQI'}
-    missing_columns = required_columns - set(data.columns)
-    if missing_columns:
-        print("Missing columns in CSV:", missing_columns)
-        raise HTTPException(status_code=400, detail=f"Missing columns: {missing_columns}")
-
-    # Filter data by district
-    district_data = data[data['District'] == district]
-    if district_data.empty:
-        raise HTTPException(status_code=404, detail=f"No data found for district '{district}'")
-
-    # Get max AQI for the last 24 hours of data for the given district
+@app.get("/api/min_max_this_year/")
+def get_this_year_minmax(district: str): 
+    """
+    Get min and max AQI values for a district from current year, 
+    returning arrays of dates, min values, and max values for two 2-month periods.
+    """
     try:
-        result = get_latest_24hr_max_aqi(district_data)
-        return {"data": result}
+        # Getting today's date
+        current_date = datetime.strptime(get_pakistan_time(), '%Y-%m-%d %H:%M:%S').date()
+        
+        # Calculate date ranges
+        two_months_before = current_date - timedelta(days=60)
+        two_months_after = current_date + timedelta(days=60)
+        
+        # Convert dates in the dataframe to datetime
+        daily_aqi_min_max['Date'] = pd.to_datetime(daily_aqi_min_max['Date'])
+        
+        # Filter data for the specified district
+        district_data = daily_aqi_min_max[daily_aqi_min_max['District'] == district]
+        
+        # Split into before and after periods
+        before_period = district_data[
+            (district_data['Date'].dt.date >= two_months_before) &
+            (district_data['Date'].dt.date < current_date)
+        ].sort_values('Date')
+        
+        after_period = district_data[
+            (district_data['Date'].dt.date >= current_date) &
+            (district_data['Date'].dt.date <= two_months_after)
+        ].sort_values('Date')
+        
+        if before_period.empty and after_period.empty:
+            raise HTTPException(
+                status_code=404, 
+                detail=f"No data found for district {district} in the specified date range"
+            )
+            
+        # Prepare the response with separate arrays
+        response = {
+            "district": district,
+            "before_period": {
+                "date": before_period['Date'].dt.strftime('%Y-%m-%d').tolist(),
+                "min": before_period['Min'].astype(float).tolist(),
+                "max": before_period['Max'].astype(float).tolist()
+            },
+            "after_period": {
+                "date": after_period['Date'].dt.strftime('%Y-%m-%d').tolist(),
+                "min": after_period['Min'].astype(float).tolist(),
+                "max": after_period['Max'].astype(float).tolist()
+            }
+        }
+        
+        return response
+        
     except Exception as e:
-        print("Error processing data in API:", e)
-        raise HTTPException(status_code=500, detail="Error processing data")
-
-def get_latest_24hr_max_aqi(data):
-    # Ensure data is sorted to find the latest date
-    latest_date = data['date'].max()
-    latest_data = data[data['date'] == latest_date]
-    
-    # Group by hour and calculate max AQI for each hour
-    max_aqi_data = latest_data.groupby(['date', 'District', 'hour']).agg({'AQI': 'max'}).reset_index()
-    return max_aqi_data.to_dict(orient="records")
+        raise HTTPException(status_code=500, detail=str(e))
 
 # Example of how to run the FastAPI server with Uvicorn
 if __name__ == "__main__":

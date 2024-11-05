@@ -8,14 +8,14 @@ from datetime import datetime
 
 # Load CSV files
 try:
-    smog_file_path = 'location_smog.csv'
+    smog_file_path = 'fastapi-server/location_smog.csv'
 except FileNotFoundError as e:
     smog_file_path = 'fastapi-server/location_smog.csv'
     
 smog_df = pd.read_csv(smog_file_path)
 
 # Setup the Open-Meteo API client with cache and retry on error
-cache_session = requests_cache.CachedSession('.cache', expire_after=3600)
+cache_session = requests_cache.CachedSession('.currentcache', expire_after=3600)
 retry_session = retry(cache_session, retries=5, backoff_factor=0.2)
 
 # Weightage percentages for pollutants
