@@ -108,7 +108,7 @@ for index, row in location_data.iterrows():
     print(f"Air quality data saved to {csv_filename}")
 
 # Combine all individual CSV files into one
-combined_csv_path = "/content/combined_hourly_data.csv"
+combined_csv_path = "combined_hourly_data.csv"
 
 # List all CSV files in the directory
 csv_files = [f for f in os.listdir(output_dir) if f.endswith('.csv')]

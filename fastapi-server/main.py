@@ -9,6 +9,16 @@ import random  # Add this import at the top of your file
 from collect_weather_data import get_average_weather
 from currenthour import current_main
 from pollutant_contribution import process_openmeteo_data
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
+import requests_cache
+import pandas as pd
+from retry_requests import retry
+import openmeteo_requests
+import os
+import datetime
+from typing import Optional, List
+from fastapi import BackgroundTasks
 
 app = FastAPI()
 
@@ -769,6 +779,193 @@ def get_this_year_minmax(district: str):
                 "date": after_period['Date'].dt.strftime('%Y-%m-%d').tolist(),
                 "min": after_period['Min'].astype(float).tolist(),
                 "max": after_period['Max'].astype(float).tolist()
+            }
+        }
+        
+        return response
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/collect_district_data")
+async def collect_district_data(
+    background_tasks: BackgroundTasks,
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None
+):
+    """
+    Endpoint to collect air quality data for all districts.
+    Uses concurrent processing for faster data collection.
+    """
+    try:
+        # Setup the Open-Meteo API client with cache and retry on error
+        cache_session = requests_cache.CachedSession('.max_cache', expire_after=3600)
+        retry_session = retry(cache_session, retries=5, backoff_factor=0.2)
+        openmeteo = openmeteo_requests.Client(session=retry_session)
+
+        # Load location data
+        try:
+            location_data = pd.read_csv("location_smog1.csv")
+        except FileNotFoundError:
+            location_data = pd.read_csv("fastapi-server/location_smog1.csv")
+
+        # Set default dates if not provided
+        if not start_date or not end_date:
+            current_date = datetime.date.today()
+            start_date = current_date.strftime("%Y-%m-%d")
+            end_date = (current_date + datetime.timedelta(days=3)).strftime("%Y-%m-%d")
+
+        # Create output directory
+        output_dir = "Pollutant"
+        os.makedirs(output_dir, exist_ok=True)
+
+        async def process_district(row):
+            latitude = row['Latitude']
+            longitude = row['Longitude']
+            district = row['District']
+
+            # Make API requests for air quality
+            air_quality_url = "https://air-quality-api.open-meteo.com/v1/air-quality"
+            air_quality_params = {
+                "latitude": latitude,
+                "longitude": longitude,
+                "hourly": ["pm10", "pm2_5", "carbon_monoxide", "nitrogen_dioxide", "sulphur_dioxide", "ozone", "dust"],
+                "start_date": start_date,
+                "end_date": end_date
+            }
+
+            try:
+                # Fetch air quality data
+                air_quality_response = openmeteo.weather_api(air_quality_url, params=air_quality_params)[0]
+                
+                # Process air quality data
+                air_quality_hourly = air_quality_response.Hourly()
+                hourly_data = {
+                    "PM10": air_quality_hourly.Variables(0).ValuesAsNumpy(),
+                    "PM2.5": air_quality_hourly.Variables(1).ValuesAsNumpy(),
+                    "Carbon Monoxide": air_quality_hourly.Variables(2).ValuesAsNumpy(),
+                    "Nitrogen Dioxide": air_quality_hourly.Variables(3).ValuesAsNumpy(),
+                    "Sulphur Dioxide": air_quality_hourly.Variables(4).ValuesAsNumpy(),
+                    "Ozone": air_quality_hourly.Variables(5).ValuesAsNumpy(),
+                    "Dust": air_quality_hourly.Variables(6).ValuesAsNumpy(),
+                }
+
+                # Create time index
+                time_index = pd.date_range(
+                    start=pd.to_datetime(air_quality_hourly.Time(), unit="s"),
+                    end=pd.to_datetime(air_quality_hourly.TimeEnd(), unit="s"),
+                    freq=pd.Timedelta(seconds=air_quality_hourly.Interval()),
+                    inclusive="left"
+                )
+
+                # Format date and hour
+                hourly_data.update({
+                    "date": time_index.strftime('%m/%d/%Y'),
+                    "hour": time_index.strftime('%H:%M'),
+                    "Latitude": latitude,
+                    "Longitude": longitude,
+                    "District": district
+                })
+
+                # Create DataFrame
+                hourly_dataframe = pd.DataFrame(data=hourly_data)
+
+                # Calculate AQI
+                hourly_dataframe["AQI"] = (
+                    (hourly_dataframe["PM10"] * 0.25) +
+                    (hourly_dataframe["PM2.5"] * 0.25) +
+                    (hourly_dataframe["Carbon Monoxide"] * 0.1) +
+                    (hourly_dataframe["Nitrogen Dioxide"] * 0.15) +
+                    (hourly_dataframe["Sulphur Dioxide"] * 0.1) +
+                    (hourly_dataframe["Ozone"] * 0.1) +
+                    (hourly_dataframe["Dust"] * 0.05)
+                )
+
+                # Save individual district data
+                csv_filename = f"{output_dir}/hourly_data_{latitude}_{longitude}.csv"
+                hourly_dataframe.to_csv(csv_filename, index=False)
+                
+                return hourly_dataframe
+
+            except Exception as e:
+                print(f"Error processing district {district}: {str(e)}")
+                return None
+
+        # Process districts concurrently
+        async def process_all_districts():
+            tasks = []
+            for _, row in location_data.iterrows():
+                tasks.append(asyncio.create_task(process_district(row)))
+            
+            results = await asyncio.gather(*tasks)
+            return [df for df in results if df is not None]
+
+        # Run the processing
+        dataframes = await process_all_districts()
+
+        # Combine all DataFrames
+        if dataframes:
+            combined_df = pd.concat(dataframes, ignore_index=True)
+            combined_csv_path = "combined_hourly_data.csv"
+            combined_df.to_csv(combined_csv_path, index=False)
+            
+            return {
+                "status": "success",
+                "message": "Data collection completed",
+                "districts_processed": len(dataframes),
+                "combined_file": combined_csv_path
+            }
+        else:
+            raise HTTPException(status_code=500, detail="No data was collected")
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/hourly_aqi/{district}")
+async def get_hourly_aqi(
+    district: str,
+    date: str = Query(..., description="Date in MM/DD/YYYY format")
+):
+    """
+    Get hourly AQI data for a specific district and date from combined_hourly_data.csv
+    Returns hours and AQI values for the specified district and date
+    
+    Args:
+        district: Name of the district
+        date: Date in MM/DD/YYYY format
+    
+    Returns:
+        Dictionary containing hours and corresponding AQI values
+    """
+    try:
+        # Load the combined hourly data
+        try:
+            df = pd.read_csv("combined_hourly_data.csv")
+        except FileNotFoundError:
+            df = pd.read_csv("fastapi-server/combined_hourly_data.csv")
+            
+        # Filter data for the specified district and date
+        filtered_df = df[
+            (df['District'] == district) & 
+            (df['date'] == date)
+        ]
+        
+        if filtered_df.empty:
+            raise HTTPException(
+                status_code=404,
+                detail=f"No data found for district {district} on date {date}"
+            )
+            
+        # Sort by hour to ensure chronological order
+        filtered_df = filtered_df.sort_values('hour')
+        
+        # Prepare response
+        response = {
+            "district": district,
+            "date": date,
+            "data": {
+                "hours": filtered_df['hour'].tolist(),
+                "aqi": filtered_df['AQI'].tolist()
             }
         }
         
