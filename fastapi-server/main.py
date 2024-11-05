@@ -16,7 +16,6 @@ import pandas as pd
 from retry_requests import retry
 import openmeteo_requests
 import os
-import datetime
 from typing import Optional, List
 from fastapi import BackgroundTasks
 
@@ -793,6 +792,8 @@ async def collect_district_data(
     start_date: Optional[str] = None,
     end_date: Optional[str] = None
 ):
+    import datetime
+    
     """
     Endpoint to collect air quality data for all districts.
     Uses concurrent processing for faster data collection.
