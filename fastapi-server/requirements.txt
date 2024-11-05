@@ -11,3 +11,5 @@ pandas
 fastapi
 uvicorn
 openpyxl
+requests_cache
+python-multipart

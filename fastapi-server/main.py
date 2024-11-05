@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Query ,HTTPException
+from fastapi import FastAPI, Query ,HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
 import numpy as np
@@ -9,6 +9,8 @@ import random  # Add this import at the top of your file
 from collect_weather_data import get_average_weather
 from currenthour import current_main
 from pollutant_contribution import process_openmeteo_data
+import traceback
+
 
 app = FastAPI()
 
@@ -658,6 +660,47 @@ def miscellaneous_data(Type:str):
     }
     return result
 
+
+@app.post("/Maxlast24hr/")
+async def max_last_24_hr(
+    file: UploadFile = File(...),
+    district: str = Query(..., description="District name to filter data for")
+):
+    try:
+        data = pd.read_csv(file.file)
+        print("Columns in uploaded CSV:", data.columns)  # Debugging: list column names
+    except Exception as e:
+        print("File reading error:", e)
+        raise HTTPException(status_code=400, detail="Invalid file format")
+
+    # Check for required columns
+    required_columns = {'date', 'District', 'hour', 'AQI'}
+    missing_columns = required_columns - set(data.columns)
+    if missing_columns:
+        print("Missing columns in CSV:", missing_columns)
+        raise HTTPException(status_code=400, detail=f"Missing columns: {missing_columns}")
+
+    # Filter data by district
+    district_data = data[data['District'] == district]
+    if district_data.empty:
+        raise HTTPException(status_code=404, detail=f"No data found for district '{district}'")
+
+    # Get max AQI for the last 24 hours of data for the given district
+    try:
+        result = get_latest_24hr_max_aqi(district_data)
+        return {"data": result}
+    except Exception as e:
+        print("Error processing data in API:", e)
+        raise HTTPException(status_code=500, detail="Error processing data")
+
+def get_latest_24hr_max_aqi(data):
+    # Ensure data is sorted to find the latest date
+    latest_date = data['date'].max()
+    latest_data = data[data['date'] == latest_date]
+    
+    # Group by hour and calculate max AQI for each hour
+    max_aqi_data = latest_data.groupby(['date', 'District', 'hour']).agg({'AQI': 'max'}).reset_index()
+    return max_aqi_data.to_dict(orient="records")
 
 # Example of how to run the FastAPI server with Uvicorn
 if __name__ == "__main__":
