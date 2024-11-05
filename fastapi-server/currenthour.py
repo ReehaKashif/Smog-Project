@@ -8,7 +8,7 @@ from datetime import datetime
 
 # Load CSV files
 try:
-    smog_file_path = 'fastapi-server/location_smog.csv'
+    smog_file_path = 'location_smog.csv'
 except FileNotFoundError as e:
     smog_file_path = 'fastapi-server/location_smog.csv'
     
