@@ -36,8 +36,11 @@ def get_pakistan_time():
 
 def get_time_range():
     current_time = get_pakistan_time()
+    # Get 24 hours before the current time
     start_time = current_time - timedelta(hours=24)
-    return start_time.strftime('%Y-%m-%d'), current_time.strftime('%Y-%m-%d')
+    # Include current hour by adding 1 hour to end time
+    end_time = current_time + timedelta(hours=1)
+    return start_time.strftime('%Y-%m-%d'), end_time.strftime('%Y-%m-%d')
 
 # Modified function to fetch 24-hour air quality values
 def get_24hr_air_quality(latitude, longitude):
@@ -126,9 +129,9 @@ def fetch_air_quality_parallel(smog_df):
                 print(f"Error occurred: {e}")
     return pd.DataFrame(results)
 
-# Modified main function to return 24-hour data with max AQI per district per hour
+# Modified main function to return 25-hour data (current + past 24 hours)
 def get_24hr_data():
-    # Fetch 24-hour air quality and AQI data in parallel
+    # Fetch 25-hour air quality and AQI data in parallel
     air_quality_df = fetch_air_quality_parallel(smog_df)
     
     # Convert Time column to datetime for proper sorting
@@ -148,7 +151,7 @@ def get_24hr_data():
         'Dust': air_quality_df['Pollutants'].apply(lambda x: x['Dust'])
     })
     
-    # Group by District and Time, taking the maximum AQI value
+    # Group by District and Time, taking the maximum AQI value for each hour
     save_df = (save_df.groupby(['District', 'Time'])
                .agg({
                    'AQI': 'max',
@@ -164,6 +167,23 @@ def get_24hr_data():
     
     # Sort by District and Time
     save_df = save_df.sort_values(['District', 'Time'])
+    
+    # Ensure we have exactly 25 hours of data per district
+    pakistan_tz = timezone('Asia/Karachi')
+    current_time = get_pakistan_time().replace(tzinfo=None)  # Remove timezone info
+    start_time = current_time - pd.Timedelta(hours=24)
+    
+    # Convert save_df Time to datetime without timezone
+    save_df['Time'] = pd.to_datetime(save_df['Time']).dt.tz_localize(None)
+    
+    # Filter to keep only the last 25 hours of data
+    save_df = save_df[
+        (save_df['Time'] >= start_time) & 
+        (save_df['Time'] <= current_time)
+    ]
+    
+    # Convert time back to string format
+    save_df['Time'] = save_df['Time'].dt.strftime('%Y-%m-%d %H:%M')
     
     # Save to CSV
     try:
