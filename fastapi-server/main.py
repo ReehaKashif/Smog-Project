@@ -975,6 +975,122 @@ async def get_hourly_aqi(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/api/last_24hrs")
+async def get_last_24hrs_data():
+    """
+    Get AQI and pollutant data for all districts over the last 24 hours
+    """
+    try:
+        from last_24_hrs_data import get_24hr_data
+        
+        data = get_24hr_data()
+        return {
+            "status": "success",
+            "data": data
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/district_24hrs/{district}")
+async def get_district_24hrs(district: str, use_api: bool = True):
+    """
+    Get the last 24 hours of AQI data for a specific district.
+    Uses live API data if use_api=True, falls back to cached CSV data if False or if API fails.
+    
+    Args:
+        district: Name of the district
+        use_api: Whether to fetch fresh data from API (default: True)
+    
+    Returns:
+        Dictionary containing time series and AQI values for the last 24 hours
+    """
+    try:
+        if use_api:
+            try:
+                # Import and use the get_24hr_data function
+                from last_24_hrs_data import get_24hr_data
+                
+                # Get fresh data
+                df = get_24hr_data()
+                
+                # Filter for the specified district
+                district_data = df[df['District'] == district]
+                
+                if not district_data.empty:
+                    # Sort by time
+                    district_data = district_data.sort_values('Time')
+                    
+                    # Prepare response with fresh data
+                    response = {
+                        "district": district,
+                        "data": {
+                            "time": district_data['Time'].tolist(),
+                            "aqi": district_data['AQI'].tolist(),
+                        },
+                        "source": "live_api"
+                    }
+                    
+                    return response
+                
+            except Exception as e:
+                print(f"API fetch failed, falling back to cached data: {str(e)}")
+                # If API fails, fall back to cached data
+                use_api = False
+        
+        # Use cached CSV data if use_api is False or if API fetch failed
+        try:
+            df = pd.read_csv("last_24hrs_results.csv")
+        except FileNotFoundError:
+            df = pd.read_csv("fastapi-server/last_24hrs_results.csv")
+        
+        # Filter for the specified district
+        district_data = df[df['District'] == district]
+        
+        if district_data.empty:
+            raise HTTPException(
+                status_code=404,
+                detail=f"No data found for district {district}"
+            )
+        
+        # Sort by time
+        district_data = district_data.sort_values('Time')
+        
+        # Prepare response with cached data
+        response = {
+            "district": district,
+            "data": {
+                "time": district_data['Time'].tolist(),
+                "aqi": district_data['AQI'].tolist(),
+            },
+            "source": "cached_csv"
+        }
+        
+        return response
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Add a background task endpoint to update the CSV periodically
+@app.get("/api/update_24hrs_data")
+async def update_24hrs_data(background_tasks: BackgroundTasks):
+    """
+    Endpoint to trigger an update of the 24-hour data CSV file.
+    """
+    try:
+        from last_24_hrs_data import get_24hr_data
+        
+        # Add the update task to background tasks
+        background_tasks.add_task(get_24hr_data)
+        
+        return {
+            "status": "success",
+            "message": "Update of 24-hour data initiated in background"
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 # Example of how to run the FastAPI server with Uvicorn
 if __name__ == "__main__":
     import uvicorn
