@@ -141,7 +141,7 @@ def get_24hr_data():
     save_df = pd.DataFrame({
         'District': air_quality_df['District'],
         'Time': air_quality_df['Time'].dt.strftime('%Y-%m-%d %H:%M'),
-        'AQI': air_quality_df['AQI'],
+        'AQI': air_quality_df['AQI'],  # AQI is already calculated for each data point
         'PM10': air_quality_df['Pollutants'].apply(lambda x: x['PM10']),
         'PM2.5': air_quality_df['Pollutants'].apply(lambda x: x['PM2.5']),
         'Carbon_Monoxide': air_quality_df['Pollutants'].apply(lambda x: x['Carbon Monoxide']),
@@ -151,17 +151,17 @@ def get_24hr_data():
         'Dust': air_quality_df['Pollutants'].apply(lambda x: x['Dust'])
     })
     
-    # Group by District and Time, taking the maximum AQI value for each hour
+    # Group by District and Time, taking only the maximum AQI value
     save_df = (save_df.groupby(['District', 'Time'])
                .agg({
-                   'AQI': 'max',
-                   'PM10': 'max',
-                   'PM2.5': 'max',
-                   'Carbon_Monoxide': 'max',
-                   'Nitrogen_Dioxide': 'max',
-                   'Sulphur_Dioxide': 'max',
-                   'Ozone': 'max',
-                   'Dust': 'max'
+                   'AQI': 'max',  # Take max of pre-calculated AQI
+                   'PM10': 'first',  # Keep corresponding pollutant values
+                   'PM2.5': 'first',
+                   'Carbon_Monoxide': 'first',
+                   'Nitrogen_Dioxide': 'first',
+                   'Sulphur_Dioxide': 'first',
+                   'Ozone': 'first',
+                   'Dust': 'first'
                })
                .reset_index())
     
@@ -171,7 +171,7 @@ def get_24hr_data():
     # Ensure we have exactly 25 hours of data per district
     pakistan_tz = timezone('Asia/Karachi')
     current_time = get_pakistan_time().replace(tzinfo=None)  # Remove timezone info
-    start_time = current_time - pd.Timedelta(hours=24)
+    start_time = current_time - timedelta(hours=25)
     
     # Convert save_df Time to datetime without timezone
     save_df['Time'] = pd.to_datetime(save_df['Time']).dt.tz_localize(None)
