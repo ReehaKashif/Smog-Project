@@ -33,7 +33,7 @@ def get_pakistan_time():
     # Get the current date and time in Pakistan
     pakistan_timezone = timezone('Asia/Karachi')
     now = datetime.now(pakistan_timezone)
-    formatted_time = now.strftime('%Y-%m-%d %H:%M:%S')
+    formatted_time = now.strftime('%m/%d/%Y %H:00')  # Format as MM/DD/YYYY HH:00
     return formatted_time
 
 # Function to fetch current air quality values for a location
@@ -96,17 +96,43 @@ def current_main():
     # Fetch air quality and AQI data in parallel
     air_quality_df = fetch_air_quality_parallel(smog_df)
     
-    # Group by district and calculate the mean AQI
+    # Group by district and calculate the max AQI
     district_aqi = air_quality_df.groupby('District')['AQI'].max().reset_index()
 
-    # Create two lists: one for district names and one for AQI values
-    districts = district_aqi['District'].values.tolist()
-    aqis = district_aqi['AQI'].values.tolist()
+    # Get current date and hour
+    current_time = get_pakistan_time()
+    current_date, current_hour = current_time.split(' ')
 
-    # Return a dictionary containing the two lists
+    # Load existing combined hourly data
+    try:
+        combined_df = pd.read_csv('combined_hourly_data.csv')
+    except FileNotFoundError:
+        combined_df = pd.read_csv('fastapi-server/combined_hourly_data.csv')
+
+    # Prepare new data for the current hour
+    new_data = pd.DataFrame({
+        'date': [current_date] * len(district_aqi),
+        'hour': [current_hour] * len(district_aqi),
+        'District': district_aqi['District'],
+        'AQI': district_aqi['AQI']
+    })
+
+    # Append new data to the combined DataFrame
+    combined_df = pd.concat([combined_df, new_data], ignore_index=True)
+    
+    # Drop duplicates while keeping the last occurrence
+    combined_df.drop_duplicates(subset=['date', 'hour', 'District'], keep='last', inplace=True)
+
+    # Save updated combined data back to CSV
+    try:
+        combined_df.to_csv('combined_hourly_data.csv', index=False)
+    except:
+        combined_df.to_csv('fastapi-server/combined_hourly_data.csv', index=False)
+
+    # Return the updated data
     return {
-        'districts': districts,
-        'aqi': aqis
+        'districts': district_aqi['District'].values.tolist(),
+        'aqi': district_aqi['AQI'].values.tolist()
     }
 
 # Run the main function
