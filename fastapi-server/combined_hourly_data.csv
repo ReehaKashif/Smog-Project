@@ -201,7 +201,11 @@ date,hour,District,AQI
 11/6/2024,7:00,Chakwal,130.36
 11/6/2024,8:00,Chakwal,118.14
 11/6/2024,9:00,Chakwal,116.55
+<<<<<<< HEAD
 11/6/2024,10:00,Chakwal,118.0
+=======
+11/6/2024,10:00,Chakwal,118
+>>>>>>> 43bdb2a5efb7a47902de92f1bf6dbdc98da91f5d
 11/6/2024,11:00,Chakwal,125.345
 11/6/2024,12:00,Chakwal,125.66
 11/6/2024,13:00,Chakwal,136.24
@@ -351,7 +355,11 @@ date,hour,District,AQI
 11/6/2024,13:00,Faisalabad,306.05
 11/6/2024,14:00,Faisalabad,364.12
 11/6/2024,15:00,Faisalabad,396.885
+<<<<<<< HEAD
 11/6/2024,16:00,Faisalabad,385.0
+=======
+11/6/2024,16:00,Faisalabad,385
+>>>>>>> 43bdb2a5efb7a47902de92f1bf6dbdc98da91f5d
 11/6/2024,17:00,Faisalabad,349.25
 11/6/2024,18:00,Faisalabad,317.635
 11/6/2024,19:00,Faisalabad,301.39
@@ -635,7 +643,11 @@ date,hour,District,AQI
 11/6/2024,9:00,Kasur,154.045
 11/6/2024,10:00,Kasur,154.305
 11/6/2024,11:00,Kasur,159.325
+<<<<<<< HEAD
 11/6/2024,12:00,Kasur,201.0
+=======
+11/6/2024,12:00,Kasur,201
+>>>>>>> 43bdb2a5efb7a47902de92f1bf6dbdc98da91f5d
 11/6/2024,13:00,Kasur,226.535
 11/6/2024,14:00,Kasur,255.875
 11/6/2024,15:00,Kasur,282.72
@@ -755,7 +767,11 @@ date,hour,District,AQI
 11/7/2024,9:00,Khushab,173.515
 11/7/2024,10:00,Khushab,169.885
 11/7/2024,11:00,Khushab,167.87
+<<<<<<< HEAD
 11/7/2024,12:00,Khushab,166.0
+=======
+11/7/2024,12:00,Khushab,166
+>>>>>>> 43bdb2a5efb7a47902de92f1bf6dbdc98da91f5d
 11/7/2024,13:00,Khushab,170.855
 11/7/2024,14:00,Khushab,181.93
 11/7/2024,15:00,Khushab,192.315
@@ -1004,7 +1020,11 @@ date,hour,District,AQI
 11/7/2024,18:00,Mianwali,164.71
 11/7/2024,19:00,Mianwali,160.505
 11/7/2024,20:00,Mianwali,155.105
+<<<<<<< HEAD
 11/7/2024,21:00,Mianwali,151.0
+=======
+11/7/2024,21:00,Mianwali,151
+>>>>>>> 43bdb2a5efb7a47902de92f1bf6dbdc98da91f5d
 11/7/2024,22:00,Mianwali,150.76
 11/7/2024,23:00,Mianwali,152.235
 11/6/2024,0:00,Multan,148.5
@@ -1110,7 +1130,11 @@ date,hour,District,AQI
 11/6/2024,4:00,Nankana Sahib,202.525
 11/6/2024,5:00,Nankana Sahib,178.005
 11/6/2024,6:00,Nankana Sahib,162.495
+<<<<<<< HEAD
 11/6/2024,7:00,Nankana Sahib,154.0
+=======
+11/6/2024,7:00,Nankana Sahib,154
+>>>>>>> 43bdb2a5efb7a47902de92f1bf6dbdc98da91f5d
 11/6/2024,8:00,Nankana Sahib,149.325
 11/6/2024,9:00,Nankana Sahib,147.635
 11/6/2024,10:00,Nankana Sahib,149.865
@@ -1327,7 +1351,11 @@ date,hour,District,AQI
 11/7/2024,5:00,Rahim Yar Khan,123.68
 11/7/2024,6:00,Rahim Yar Khan,128.64
 11/7/2024,7:00,Rahim Yar Khan,117.755
+<<<<<<< HEAD
 11/7/2024,8:00,Rahim Yar Khan,98.0
+=======
+11/7/2024,8:00,Rahim Yar Khan,98
+>>>>>>> 43bdb2a5efb7a47902de92f1bf6dbdc98da91f5d
 11/7/2024,9:00,Rahim Yar Khan,83.585
 11/7/2024,10:00,Rahim Yar Khan,77.805
 11/7/2024,11:00,Rahim Yar Khan,73.6
@@ -1521,7 +1549,11 @@ date,hour,District,AQI
 11/7/2024,7:00,Sargodha,193.225
 11/7/2024,8:00,Sargodha,187.605
 11/7/2024,9:00,Sargodha,186.435
+<<<<<<< HEAD
 11/7/2024,10:00,Sargodha,189.0
+=======
+11/7/2024,10:00,Sargodha,189
+>>>>>>> 43bdb2a5efb7a47902de92f1bf6dbdc98da91f5d
 11/7/2024,11:00,Sargodha,198.46
 11/7/2024,12:00,Sargodha,206.85
 11/7/2024,13:00,Sargodha,217.59
@@ -1727,6 +1759,7 @@ date,hour,District,AQI
 11/7/2024,21:00,Vehari,230.895
 11/7/2024,22:00,Vehari,216.575
 11/7/2024,23:00,Vehari,196.23
+<<<<<<< HEAD
 11/07/2024,19:00,Attock,325.29
 11/07/2024,19:00,Bahawalnagar,139.54000000000002
 11/07/2024,19:00,Bahawalpur,160.215
@@ -1763,3 +1796,5 @@ date,hour,District,AQI
 11/07/2024,19:00,Sialkot,257.60499999999996
 11/07/2024,19:00,Toba Tek Singh,142.335
 11/07/2024,19:00,Vehari,163.67000000000002
+=======
+>>>>>>> 43bdb2a5efb7a47902de92f1bf6dbdc98da91f5d
