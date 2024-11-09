@@ -33,7 +33,12 @@ def get_pakistan_time():
     # Get the current date and time in Pakistan
     pakistan_timezone = timezone('Asia/Karachi')
     now = datetime.now(pakistan_timezone)
-    formatted_time = now.strftime('%m/%d/%Y %H:00')  # Format as MM/DD/YYYY HH:00
+    
+    # Format date with single digit for days 1-9
+    day = str(now.day)  # This will give '1' instead of '01'
+    month = str(now.month)  # This will give '1' instead of '01'
+    formatted_time = f"{month}/{day}/{now.year} {now.hour}:00"
+    
     return formatted_time
 
 # Function to fetch current air quality values for a location
