@@ -11,3 +11,4 @@ pandas
 fastapi
 uvicorn
 openpyxl
+psycopg2
