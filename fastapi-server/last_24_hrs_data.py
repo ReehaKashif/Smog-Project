@@ -187,9 +187,9 @@ def get_24hr_data():
     
     # Save to CSV
     try:
-        save_df.to_csv('fastapi-server/last_24hrs_results.csv', index=False)
-    except:
         save_df.to_csv('last_24hrs_results.csv', index=False)
+    except:
+        save_df.to_csv('fastapi-server/last_24hrs_results.csv', index=False)
     
     return save_df
 
