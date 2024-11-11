@@ -338,7 +338,7 @@ def get_historical_data(
 
     # Filter historical data
     filtered_df = historical_data[
-        (historical_data['District'] == district) &
+        (historical_data['Districts'] == district) &
         (historical_data['Date'].dt.date >= start_date) &
         (historical_data['Date'].dt.date <= time_dt)
     ]
@@ -350,14 +350,14 @@ def get_historical_data(
 
     # Get last 7 days of last year's data
     forecast_7d = last_year_data_renamed[
-        (last_year_data_renamed['District'] == district) &
+        (last_year_data_renamed['Districts'] == district) &
         (pd.to_datetime(last_year_data_renamed['Date']).dt.date > last_year_7d_start) &
         (pd.to_datetime(last_year_data_renamed['Date']).dt.date <= last_year_date)
     ]
 
     # Get last 14 days of last year's data
     forecast_14d = last_year_data_renamed[
-        (last_year_data_renamed['District'] == district) &
+        (last_year_data_renamed['Districts'] == district) &
         (pd.to_datetime(last_year_data_renamed['Date']).dt.date > last_year_14d_start) &
         (pd.to_datetime(last_year_data_renamed['Date']).dt.date <= last_year_date)
     ]
@@ -367,13 +367,13 @@ def get_historical_data(
     
     # Prepare response data
     historical_dates = filtered_df['Date'].dt.strftime('%Y-%m-%d').tolist()
-    historical_aqi = filtered_df['Final_aqi'].tolist()
+    historical_aqi = pd.Series(filtered_df['Final_aqi']).replace([np.inf, -np.inf], np.nan).interpolate().fillna(method='bfill').tolist()
     
     forecast_7d_dates = pd.to_datetime(forecast_7d['Date']).dt.strftime('%Y-%m-%d').tolist()
-    forecast_7d_aqi = forecast_7d['Final_aqi'].tolist()
+    forecast_7d_aqi = pd.Series(forecast_7d['Final_aqi']).replace([np.inf, -np.inf], np.nan).interpolate().fillna(method='bfill').tolist()
     
     forecast_14d_dates = pd.to_datetime(forecast_14d['Date']).dt.strftime('%Y-%m-%d').tolist()
-    forecast_14d_aqi = forecast_14d['Final_aqi'].tolist()
+    forecast_14d_aqi = pd.Series(forecast_14d['Final_aqi']).replace([np.inf, -np.inf], np.nan).interpolate().fillna(method='bfill').tolist()
 
     # Return the data as a JSON response
     return {
@@ -588,6 +588,10 @@ def get_this_year_data(
     forecast_aqi_values = forecast_df['Final_aqi'].tolist()
 
     # Return the data as a JSON response
+    # Interpolate NaN and infinity values in historical and forecast AQI values
+    historical_aqi_values = pd.Series(historical_aqi_values).replace([np.inf, -np.inf], np.nan).interpolate().fillna(method='bfill').tolist()
+    forecast_aqi_values = pd.Series(forecast_aqi_values).replace([np.inf, -np.inf], np.nan).interpolate().fillna(method='bfill').tolist()
+
     return {
         "this_year_data": {
             "past_two_months": {
@@ -1084,4 +1088,4 @@ async def update_24hrs_data(background_tasks: BackgroundTasks):
 # Example of how to run the FastAPI server with Uvicorn
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=5000)
+    uvicorn.run(app, host="127.0.0.1", port=8000)
