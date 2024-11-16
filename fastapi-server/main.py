@@ -16,6 +16,7 @@ import pandas as pd
 from retry_requests import retry
 import openmeteo_requests
 import os
+from connect_db import fetch_hourly_aqi_from_db
 from typing import Optional, List
 from fastapi import BackgroundTasks
 
@@ -922,50 +923,40 @@ async def get_hourly_aqi(
     date: str = Query(..., description="Date in MM/DD/YYYY format")
 ):
     """
-    Get hourly AQI data for a specific district and date from combined_hourly_data.csv
-    Returns hours and AQI values for the specified district and date
+    API endpoint to get hourly AQI data for a specific district and date.
     
     Args:
         district: Name of the district
         date: Date in MM/DD/YYYY format
     
     Returns:
-        Dictionary containing hours and corresponding AQI values
+        JSON response containing formatted hours and AQI values.
     """
     try:
-        # Load the combined hourly data
-        try:
-            df = pd.read_csv("combined_hourly_data.csv")
-        except FileNotFoundError:
-            df = pd.read_csv("fastapi-server/combined_hourly_data.csv")
-            
-        # Filter data for the specified district and date
-        filtered_df = df[
-            (df['District'] == district) & 
-            (df['date'] == date)
-        ]
-        
-        if filtered_df.empty:
+        # Fetch data from the database
+        hours, aqi_values = fetch_hourly_aqi_from_db(district, date)
+
+        # If no data is found, raise a 404 error
+        if hours is None or aqi_values is None:
             raise HTTPException(
                 status_code=404,
                 detail=f"No data found for district {district} on date {date}"
             )
-            
-        # Sort by hour to ensure chronological order
-        filtered_df = filtered_df.sort_values('hour')
-        
-        # Prepare response
+
+        # Prepare the response
         response = {
             "district": district,
             "date": date,
             "data": {
-                "hours": filtered_df['hour'].tolist(),
-                "aqi": filtered_df['AQI'].tolist()
+                "hours": hours,
+                "aqi": aqi_values
             }
         }
         
         return response
         
+    except HTTPException as e:
+        raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

@@ -5,6 +5,7 @@ import requests
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from pytz import timezone
 from datetime import datetime
+from connect_db import insert_pivot_data
 
 # Load CSV files
 try:
@@ -17,6 +18,9 @@ smog_df = pd.read_csv(smog_file_path)
 # Setup the Open-Meteo API client with cache and retry on error
 cache_session = requests_cache.CachedSession('.currentcache', expire_after=3600)
 retry_session = retry(cache_session, retries=5, backoff_factor=0.2)
+
+api_key = "dmjxSgVmXqx5O1Iq"
+url = "https://customer-air-quality-api.open-meteo.com/v1/air-quality"
 
 # Weightage percentages for pollutants
 weights = {
@@ -43,8 +47,8 @@ def get_pakistan_time():
 
 # Function to fetch current air quality values for a location
 def get_current_air_quality(latitude, longitude):
-    url = "https://air-quality-api.open-meteo.com/v1/air-quality"
     params = {
+        "apikey": api_key,
         "latitude": latitude,
         "longitude": longitude,
         "current": ["pm10", "pm2_5", "carbon_monoxide", "nitrogen_dioxide", "sulphur_dioxide", "ozone", "dust"]
@@ -108,12 +112,6 @@ def current_main():
     current_time = get_pakistan_time()
     current_date, current_hour = current_time.split(' ')
 
-    # Load existing combined hourly data
-    try:
-        combined_df = pd.read_csv('combined_hourly_data.csv')
-    except FileNotFoundError:
-        combined_df = pd.read_csv('fastapi-server/combined_hourly_data.csv')
-
     # Prepare new data for the current hour
     new_data = pd.DataFrame({
         'date': [current_date] * len(district_aqi),
@@ -121,27 +119,44 @@ def current_main():
         'District': district_aqi['District'],
         'AQI': district_aqi['AQI']
     })
-
-    # Append new data to the combined DataFrame
-    combined_df = pd.concat([combined_df, new_data], ignore_index=True)
     
-    # Drop duplicates while keeping the last occurrence
-    combined_df.drop_duplicates(subset=['date', 'hour', 'District'], keep='last', inplace=True)
+    # Pivot the data to have unique districts as columns
+    pivot_data = new_data.pivot_table(index=['date', 'hour'], columns='District', values='AQI', fill_value=None)
+    # Reset the index to flatten the DataFrame
+    pivot_data.reset_index(inplace=True)
+    # Adding to DB
+    new_data = insert_pivot_data(pivot_data)
+    print(new_data)
+    # Provided district names
+    district_names = [
+        'Attock', 'Bahawalnagar', 'Bahawalpur', 'Bhakkar', 'Chakwal', 'Chiniot', 'Dera Ghazi Khan', 
+        'Faisalabad', 'Gujranwala', 'Gujrat', 'Hafizabad', 'Jhang', 'Jhelum', 'Kasur', 'Khanewal', 
+        'Khushab', 'Lahore', 'Layyah', 'Lodhran', 'Mandi Bahuddin', 'Mianwali', 'Multan', 
+        'Muzaffargarh', 'Nankana Sahib', 'Narowal', 'Okara', 'Pakpattan', 'Rahim Yar Khan', 
+        'Rajanpur', 'Rawalpindi', 'Sahiwal', 'Sargodha', 'Sheikhupura', 'Sialkot', 'Toba Tek Singh', 
+        'Vehari'
+    ]
 
-    # Save updated combined data back to CSV
-    try:
-        combined_df.to_csv('combined_hourly_data.csv', index=False)
-    except:
-        combined_df.to_csv('fastapi-server/combined_hourly_data.csv', index=False)
+    # Define the columns with 'date' and 'hour' followed by district names
+    columns = ['date', 'hour'] + district_names
 
-    # Return the updated data
-    return {
-        'districts': district_aqi['District'].values.tolist(),
-        'aqi': district_aqi['AQI'].values.tolist()
+    # Convert to DataFrame
+    df = pd.DataFrame(new_data, columns=columns)
+    
+    # Melt the DataFrame to get the desired long format
+    df_melted = pd.melt(df, id_vars=['date', 'hour'], value_vars=district_names,
+                        var_name='District', value_name='AQI')
+
+    # Sort by date, hour, and district for better readability (optional)
+    df_melted = df_melted.sort_values(by=['date', 'hour', 'District']).reset_index(drop=True)
+    
+    result = {
+        'districts': df_melted['District'].tolist(),
+        'aqi': df_melted['AQI'].tolist()
     }
+    return result
 
 # Run the main function
 if __name__ == '__main__':
     result = current_main()
-    df = pd.DataFrame(result)
-    print(df)
+    print(result)
