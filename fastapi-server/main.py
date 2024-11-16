@@ -33,6 +33,7 @@ app.add_middleware(
 
 # Load CSV files
 try:
+    LastMonth = pd.read_csv("LastMonth.csv")
     forecasted_pollutant_df = pd.read_csv('new_xgb_hr_forecasts.csv')
     forecasted_pollutants = pd.read_csv('combined_forecast.csv')
     latest_forecast_df = pd.read_csv("new_xgb_hr_forecasts.csv")
@@ -43,6 +44,7 @@ try:
     miscellaneous = pd.read_excel('MiscellaneousPtsData v1.xlsx')
     daily_aqi_min_max = pd.read_csv("daily_aqi_summary.csv")
 except FileNotFoundError as e:
+    LastMonth = pd.read_csv("fastapi-server/LastMonth.csv")
     forecasted_pollutant_df = pd.read_csv('fastapi-server/new_xgb_hr_forecasts.csv')
     forecasted_pollutants = pd.read_csv('fastapi-server/combined_forecast.csv')
     latest_forecast_df = pd.read_csv("fastapi-server/new_xgb_hr_forecasts.csv")
@@ -56,9 +58,6 @@ except FileNotFoundError as e:
 def get_pakistan_time():
     # Example of getting the current date and time in Pakistan
     now = datetime.now(timezone('Asia/Karachi'))
-    # now = "2024-07-01 23:00:00"
-    # converting to time format
-    # now = datetime.strptime(now, '%Y-%m-%d %H:%M:%S')
     # returning it in this format '2024-07-01 00:00:00'
     formatted_time = now.strftime('%Y-%m-%d %H:00:00')
     print(formatted_time)
@@ -1075,6 +1074,35 @@ async def update_24hrs_data(background_tasks: BackgroundTasks):
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/last_month")
+async def get_last_two_months_aqi(district_name):
+    dataframe=LastMonth
+    # Get current time in Pakistan
+    current_time = get_pakistan_time()
+    # Format the current time to match the CSV date format ('m/d/yyyy')
+    current_date = datetime.strptime(current_time, '%Y-%m-%d %H:%M:%S')
+    two_months_ago = current_date - timedelta(days=60)
+    
+    # Convert the formatted dates to match the CSV format
+    formatted_current_date = current_date.strftime('%m/%d/%Y')
+    formatted_two_months_ago = two_months_ago.strftime('%m/%d/%Y')
+
+    # Filter the DataFrame for the specified district and the last 2 months
+    filtered_df = dataframe[
+        (dataframe['Districts'] == district_name) &
+        (pd.to_datetime(dataframe['Date'], format='%m/%d/%Y') >= two_months_ago) &
+        (pd.to_datetime(dataframe['Date'], format='%m/%d/%Y') <= current_date)
+    ]
+    
+    # Convert the filtered DataFrame to a dictionary with lists for Date and AQI
+    result_dict = {
+        "Date": filtered_df['Date'].tolist(),
+        "AQI": filtered_df['AQI'].tolist()
+    }
+    
+    return result_dict
 
 # Example of how to run the FastAPI server with Uvicorn
 if __name__ == "__main__":
