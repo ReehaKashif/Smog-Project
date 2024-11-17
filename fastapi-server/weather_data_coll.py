@@ -1,3 +1,5 @@
+
+
 import requests_cache
 import pandas as pd
 from retry_requests import retry
@@ -7,7 +9,7 @@ from datetime import datetime
 
 # Load CSV files
 try:
-    locations = 'location_smog.csv'
+    locations = '/content/location_smog.csv'
 except FileNotFoundError:
     locations = 'fastapi-server/location_smog.csv'
 
@@ -104,5 +106,5 @@ def get_average_weather(csv_path=locations):
     # Return the final processed DataFrame
     return average_weather_df[['District', 'Time', 'Temperature_2m', 'Wind_speed_10m']]
 
-# # Example usage:
-# print(get_average_weather(locations))
+# Example usage:
+print(get_average_weather(locations))
