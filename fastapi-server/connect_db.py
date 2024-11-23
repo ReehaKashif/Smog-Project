@@ -268,7 +268,23 @@ def load_db_and_group_by_district(input_date: str, input_district: str):
         
         # Get column names from the database
         cursor.execute("SELECT column_name FROM information_schema.columns WHERE table_name = 'octapi_data';")
-        column_names = [row[0] for row in cursor.fetchall()]
+        column_names = ['date',
+                        'District',
+                        'Vehicle',
+                        'Industry',
+                        'Residential',
+                        'Misc',
+                        'Construction',
+                        'Agriculture',
+                        'Sum_of_Sources',
+                        'Vehicle_percentage',
+                        'Industry_percentage',
+                        'Residential_percentage',
+                        'Misc_percentage',
+                        'Construction_percentage',
+                        'Agriculture_percentage']
+        
+        print(column_names)
         
         # Convert the result to a pandas DataFrame
         filtered_data = pd.DataFrame(rows, columns=column_names)
@@ -301,5 +317,6 @@ def load_db_and_group_by_district(input_date: str, input_district: str):
     except Exception as e:
         # Handle exceptions and return an error message
         return {"error": str(e)}
+
 
 # print(check_row_count())
