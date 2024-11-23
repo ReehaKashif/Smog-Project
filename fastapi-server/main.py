@@ -16,7 +16,7 @@ import pandas as pd
 from retry_requests import retry
 import openmeteo_requests
 import os
-from connect_db import fetch_hourly_aqi_from_db
+from connect_db import fetch_hourly_aqi_from_db, load_db_and_group_by_district
 from typing import Optional, List
 from fastapi import BackgroundTasks
 
@@ -609,26 +609,7 @@ def get_this_year_data(
 @app.get("/api/october_sources")
 def load_and_group_by_district(input_date, input_district):
     
-    # Convert the 'date' column to pandas datetime
-    OctoberSource['date'] = pd.to_datetime(OctoberSource['date'])
-    
-    # Ensure the input date is also a datetime object
-    input_date = pd.to_datetime(input_date)
-    
-    # Filter the data for the specified date and district
-    filtered_data = OctoberSource[(OctoberSource['date'] == input_date) & (OctoberSource['District'] == input_district)]
-    
-    # Calculate the maximum value for each column in the filtered data
-    max_values = filtered_data.max()
-    
-    # Drop the 'date' and 'Districts' columns (if necessary)
-    max_values = max_values.drop(['date', 'District'])
-    
-    # Replace NaN, inf, -inf with None so it's JSON serializable
-    max_values.replace([np.inf, -np.inf, np.nan], None, inplace=True)
-    
-    # Convert the result to a dictionary
-    result_dict = max_values.to_dict()
+    result_dict = load_db_and_group_by_district(input_date, input_district)
     
     return result_dict
 
