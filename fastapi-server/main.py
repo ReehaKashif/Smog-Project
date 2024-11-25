@@ -18,6 +18,8 @@ import openmeteo_requests
 import os
 from connect_db import fetch_hourly_aqi_from_db, load_db_and_group_by_district
 from typing import Optional, List
+from octoberapiautomisation import process_air_quality_data
+
 from fastapi import BackgroundTasks
 
 app = FastAPI()
@@ -614,11 +616,10 @@ def load_and_group_by_district(input_date, input_district):
     return result_dict
 
 @app.get("/api/update_october_sources")
-def update_october(input_date, input_district):
+def update_october():
     
-    result = process_openmeteo_data()
-    result_dict = result.to_dict()
-    return result_dict
+    result = process_air_quality_data()
+    return result
     
     
 @app.get("/api/weather_data/")
