@@ -319,4 +319,42 @@ def load_db_and_group_by_district(input_date: str, input_district: str):
         return {"error": str(e)}
 
 
-# print(check_row_count())
+def delete_data_by_date(input_date: str):
+    """
+    Deletes rows from the 'octapi_data' table that match the given date, ignoring time.
+    """
+    try:
+        # Ensure the input date is a datetime object
+        input_date = pd.to_datetime(input_date).strftime('%Y-%m-%d')  # Format to YYYY-MM-DD for SQL
+        
+        # Connect to the database
+        conn = psycopg2.connect(**db_params)
+        cursor = conn.cursor()
+        
+        # SQL query to delete rows where the date matches the specified input date
+        delete_query = """
+        DELETE FROM octapi_data
+        WHERE DATE("date") = %s;
+        """
+        
+        # Execute the delete query
+        cursor.execute(delete_query, (input_date,))
+        
+        # Commit the transaction
+        conn.commit()
+        
+        # Check how many rows were deleted
+        rows_deleted = cursor.rowcount
+        
+        # Close the connection
+        cursor.close()
+        conn.close()
+        
+        # Return the number of rows deleted
+        return {"message": f"{rows_deleted} rows deleted successfully."}
+    
+    except Exception as e:
+        # Handle exceptions and return an error message
+        return {"error": str(e)}
+
+# print(delete_data_by_date('2024-11-27'))

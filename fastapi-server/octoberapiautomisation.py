@@ -121,10 +121,14 @@ def process_air_quality_data():
         merged_data['Vehicle_percentage'] = (merged_data['Vehicle'] / merged_data['Sum_of_Sources']) * 100
         merged_data['Industry_percentage'] = (merged_data['Industry'] / merged_data['Sum_of_Sources']) * 100
         merged_data['Residential_percentage'] = (merged_data['Residential'] / merged_data['Sum_of_Sources']) * 100
+        merged_data['Misc_percentage'] = (merged_data['Misc'] / merged_data['Sum_of_Sources']) * 100
+        merged_data['Construction_percentage'] = (merged_data['Construction'] / merged_data['Sum_of_Sources']) * 100
+        merged_data['Agriculture_percentage'] = (merged_data['Agriculture'] / merged_data['Sum_of_Sources']) * 100
 
-        result = merged_data[['district', 'date', 'Vehicle', 'Industry', 'Residential',
-                              'Sum_of_Sources', 'Vehicle_percentage', 'Industry_percentage',
-                              'Residential_percentage']]
+        result = merged_data[['district','date', 'Vehicle', 'Industry', 'Residential',
+                          'Misc', 'Construction', 'Agriculture', 'Sum_of_Sources', 'Vehicle_percentage',
+                          'Industry_percentage', 'Residential_percentage', 'Misc_percentage',
+                          'Construction_percentage', 'Agriculture_percentage']]
         result.rename(columns={'district': 'District'}, inplace=True)
         return result
 
