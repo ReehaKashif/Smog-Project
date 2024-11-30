@@ -172,6 +172,7 @@ def process_air_quality_data():
 
     # Final results
     result = calculate_contributions(merged_data)
+    print(result.head())
 
     # Save the result
     result.to_csv(output_csv_path, index=False)

@@ -297,17 +297,11 @@ def load_db_and_group_by_district(input_date: str, input_district: str):
         if filtered_data.empty:
             return {}
         
-        # Calculate the maximum value for each column in the filtered data
-        max_values = filtered_data.max()
-        
-        # Drop the 'date' and 'District' columns
-        max_values = max_values.drop(['date', 'District'])
-        
-        # Replace NaN, inf, -inf with None so it's JSON serializable
-        max_values.replace([np.inf, -np.inf, np.nan], None, inplace=True)
+        # Find the row with the highest value of 'Sum_of_Sources'
+        max_row = filtered_data.loc[filtered_data['Sum_of_Sources'].idxmax()]
         
         # Convert the result to a dictionary
-        result_dict = max_values.to_dict()
+        result_dict = max_row.drop(['date', 'District']).replace([np.inf, -np.inf, np.nan], None).to_dict()
         
         # Replace '_percentage' with '%' in the keys
         result_dict = {key.replace('_percentage', '%'): value for key, value in result_dict.items()}
