@@ -86,6 +86,7 @@ def process_air_quality_data():
 
     # Perform calculations
     def calculate_contributions(merged_data):
+        # Perform Vehicle calculations
         merged_data['Veh_CO'] = merged_data['Carbon Monoxide'] * merged_data['Veh_CO_Formula']
         merged_data['Veh_Dust'] = merged_data['Dust'] * merged_data['Veh_Dust_Formula']
         merged_data['Veh_NO2'] = merged_data['Nitrogen Dioxide'] * merged_data['Veh_NO2_Formula']
@@ -93,9 +94,10 @@ def process_air_quality_data():
         merged_data['Veh_PM10'] = merged_data['PM10'] * merged_data['Veh_PM10_Formula']
         merged_data['Veh_PM25'] = merged_data['PM2.5'] * merged_data['Veh_PM2.5_Formula']
         merged_data['Veh_SO2'] = merged_data['Sulphur Dioxide'] * merged_data['Veh_SO2_Formula']
-        merged_data['Vehicle'] = merged_data[['Veh_CO', 'Veh_Dust', 'Veh_NO2', 'Veh_O3',
-                                              'Veh_PM10', 'Veh_PM25', 'Veh_SO2']].sum(axis=1)
+        merged_data['Vehicle'] = (merged_data[['Veh_CO', 'Veh_Dust', 'Veh_NO2', 'Veh_O3',
+                                            'Veh_PM10', 'Veh_PM25', 'Veh_SO2']].sum(axis=1))
 
+        # Perform Industry calculations
         merged_data['Ind_CO'] = merged_data['Carbon Monoxide'] * merged_data['Ind_CO_Formula']
         merged_data['Ind_Dust'] = merged_data['Dust'] * merged_data['Ind_Dust_Formula']
         merged_data['Ind_NO2'] = merged_data['Nitrogen Dioxide'] * merged_data['Ind_NO2_Formula']
@@ -103,9 +105,10 @@ def process_air_quality_data():
         merged_data['Ind_PM10'] = merged_data['PM10'] * merged_data['Ind_PM10_Formula']
         merged_data['Ind_PM25'] = merged_data['PM2.5'] * merged_data['Ind_PM2.5_Formula']
         merged_data['Ind_SO2'] = merged_data['Sulphur Dioxide'] * merged_data['Ind_SO2_Formula']
-        merged_data['Industry'] = merged_data[['Ind_CO', 'Ind_Dust', 'Ind_NO2', 'Ind_O3',
-                                               'Ind_PM10', 'Ind_PM25', 'Ind_SO2']].sum(axis=1)
+        merged_data['Industry'] = (merged_data[['Ind_CO', 'Ind_Dust', 'Ind_NO2', 'Ind_O3',
+                                                'Ind_PM10', 'Ind_PM25', 'Ind_SO2']].sum(axis=1))
 
+        # Perform Residential calculations
         merged_data['Res_CO'] = merged_data['Carbon Monoxide'] * merged_data['Res_CO_Formula']
         merged_data['Res_Dust'] = merged_data['Dust'] * merged_data['Res_Dust_Formula']
         merged_data['Res_NO2'] = merged_data['Nitrogen Dioxide'] * merged_data['Res_NO2_Formula']
@@ -113,10 +116,45 @@ def process_air_quality_data():
         merged_data['Res_PM10'] = merged_data['PM10'] * merged_data['Res_PM10_Formula']
         merged_data['Res_PM25'] = merged_data['PM2.5'] * merged_data['Res_PM2.5_Formula']
         merged_data['Res_SO2'] = merged_data['Sulphur Dioxide'] * merged_data['Res_SO2_Formula']
-        merged_data['Residential'] = merged_data[['Res_CO', 'Res_Dust', 'Res_NO2', 'Res_O3',
-                                                  'Res_PM10', 'Res_PM25', 'Res_SO2']].sum(axis=1)
+        merged_data['Residential'] = (merged_data[['Res_CO', 'Res_Dust', 'Res_NO2', 'Res_O3',
+                                                'Res_PM10', 'Res_PM25', 'Res_SO2']].sum(axis=1))
 
-        merged_data['Sum_of_Sources'] = merged_data[['Vehicle', 'Industry', 'Residential']].sum(axis=1)
+        # Perform Misc calculations
+        merged_data['Misc_CO'] = merged_data['Carbon Monoxide'] * merged_data['Misc_CO_Formula']
+        merged_data['Misc_Dust'] = merged_data['Dust'] * merged_data['Misc_Dust_Formula']
+        merged_data['Misc_NO2'] = merged_data['Nitrogen Dioxide'] * merged_data['Misc_NO2_Formula']
+        merged_data['Misc_O3'] = merged_data['Ozone'] * merged_data['Misc_O3_Formula']
+        merged_data['Misc_PM10'] = merged_data['PM10'] * merged_data['Misc_PM10_Formula']
+        merged_data['Misc_PM25'] = merged_data['PM2.5'] * merged_data['Misc_PM2.5_Formula']
+        merged_data['Misc_SO2'] = merged_data['Sulphur Dioxide'] * merged_data['Misc_SO2_Formula']
+        merged_data['Misc'] = (merged_data[['Misc_CO', 'Misc_Dust', 'Misc_NO2', 'Misc_O3',
+                                            'Misc_PM10', 'Misc_PM25', 'Misc_SO2']].sum(axis=1))
+
+        # Perform Construction calculations
+        merged_data['Cons_CO'] = merged_data['Carbon Monoxide'] * merged_data['Cons_CO_Formula']
+        merged_data['Cons_Dust'] = merged_data['Dust'] * merged_data['Cons_Dust_Formula']
+        merged_data['Cons_NO2'] = merged_data['Nitrogen Dioxide'] * merged_data['Cons_NO2_Formula']
+        merged_data['Cons_O3'] = merged_data['Ozone'] * merged_data['Cons_O3_Formula']
+        merged_data['Cons_PM10'] = merged_data['PM10'] * merged_data['Cons_PM10_Formula']
+        merged_data['Cons_PM25'] = merged_data['PM2.5'] * merged_data['Cons_PM2.5_Formula']
+        merged_data['Cons_SO2'] = merged_data['Sulphur Dioxide'] * merged_data['Cons_SO2_Formula']
+        merged_data['Construction'] = (merged_data[['Cons_CO', 'Cons_Dust', 'Cons_NO2', 'Cons_O3',
+                                                    'Cons_PM10', 'Cons_PM25', 'Cons_SO2']].sum(axis=1))
+
+        # Perform Agriculture calculations
+        merged_data['Agr_CO'] = merged_data['Carbon Monoxide'] * merged_data['Agr_CO_Formula']
+        merged_data['Agr_Dust'] = merged_data['Dust'] * merged_data['Agr_Dust_Formula']
+        merged_data['Agr_NO2'] = merged_data['Nitrogen Dioxide'] * merged_data['Agr_NO2_Formula']
+        merged_data['Agr_O3'] = merged_data['Ozone'] * merged_data['Agr_O3_Formula']
+        merged_data['Agr_PM10'] = merged_data['PM10'] * merged_data['Agr_PM10_Formula']
+        merged_data['Agr_PM25'] = merged_data['PM2.5'] * merged_data['Agr_PM2.5_Formula']
+        merged_data['Agr_SO2'] = merged_data['Sulphur Dioxide'] * merged_data['Agr_SO2_Formula']
+        merged_data['Agriculture'] = (merged_data[['Agr_CO', 'Agr_Dust', 'Agr_NO2', 'Agr_O3',
+                                                'Agr_PM10', 'Agr_PM25', 'Agr_SO2']].sum(axis=1))
+
+        # Calculate sum_sum and contributions
+        merged_data['Sum_of_Sources'] = merged_data[['Vehicle', 'Industry', 'Residential', 'Misc', 'Construction', 'Agriculture']].sum(axis=1)
+
 
         merged_data['Vehicle_percentage'] = (merged_data['Vehicle'] / merged_data['Sum_of_Sources']) * 100
         merged_data['Industry_percentage'] = (merged_data['Industry'] / merged_data['Sum_of_Sources']) * 100
