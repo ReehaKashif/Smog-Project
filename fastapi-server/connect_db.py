@@ -18,6 +18,7 @@ db_params = {
 def insert_pivot_data(pivot_data, db_params=db_params, table_name="combined_hourly_data"):
     """
     Insert pivot data into the database. Handle duplicate key violations gracefully.
+    If data for a specific (date, hour) already exists, the new data will be accepted if it's greater.
 
     Args:
         pivot_data: DataFrame containing the data to insert.
@@ -37,11 +38,19 @@ def insert_pivot_data(pivot_data, db_params=db_params, table_name="combined_hour
         columns = list(pivot_data.columns)
 
         # Create the INSERT query with quoted column names
-        insert_query = sql.SQL(
-            "INSERT INTO {} ({}) VALUES %s"
-        ).format(
+        insert_query = sql.SQL("""
+            INSERT INTO {} ({}) VALUES %s
+            ON CONFLICT (date, hour) 
+            DO UPDATE SET 
+                {} 
+            WHERE {} ;
+        """).format(
             sql.Identifier(table_name),
-            sql.SQL(", ").join([sql.Identifier(col) for col in columns])
+            sql.SQL(", ").join([sql.Identifier(col) for col in columns]),
+            # Dynamically build the update part for each column (skip date, hour)
+            sql.SQL(", ").join([sql.SQL(f'"{col}" = EXCLUDED."{col}"') for col in columns[2:]]),  # Skip date and hour
+            # Dynamically build the WHERE part for each column to update only if greater
+            sql.SQL(" OR ").join([sql.SQL(f'combined_hourly_data."{col}" < EXCLUDED."{col}"') for col in columns[2:]])  # Skip date and hour
         )
 
         # Prepare data for insertion
@@ -93,6 +102,7 @@ def insert_pivot_data(pivot_data, db_params=db_params, table_name="combined_hour
         # Handle any other exceptions
         print(f"An error occurred: {e}")
         return {"status": "error", "message": str(e)}
+
 
 
 def get_last_24_hours(district):
