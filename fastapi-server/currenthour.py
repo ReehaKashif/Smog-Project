@@ -16,7 +16,7 @@ except FileNotFoundError as e:
 smog_df = pd.read_csv(smog_file_path)
 
 # Setup the Open-Meteo API client with cache and retry on error
-cache_session = requests_cache.CachedSession('.currentcache', expire_after=3600)
+cache_session = requests_cache.CachedSession('.currentcache', expire_after=1800)
 retry_session = retry(cache_session, retries=5, backoff_factor=0.2)
 
 api_key = "dmjxSgVmXqx5O1Iq"
